@@ -1,0 +1,26 @@
+generated: '2026-07-19'
+method: searched
+probe: true
+note: >-
+  Habu was acquired by LiveRamp (2024) and its product is now LiveRamp Clean
+  Room. habu.com redirects to liveramp.com, so the successor trust surface at
+  trust.liveramp.com is recorded here.
+url: https://trust.liveramp.com/
+certifications:
+- SOC 2 Type 2
+- ISO 27001
+- GDPR
+- CCPA
+- SOX
+evidence:
+- source: https://trust.liveramp.com/
+  keywords:
+  - soc 2 type 2
+  - iso 27001
+  - gdpr
+  - ccpa
+  - sox
+- source: https://liveramp.com/
+  keywords:
+  - iso 27001
+  - gdpr

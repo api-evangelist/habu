@@ -1,22 +1,54 @@
 aid: habu
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/habu.png
 name: Habu
-description: 'Habu is a company surfaced as a portfolio company of norwest-venture-partners, wing-venture-capital
-  and added to the API Evangelist network as a stub for enrichment. Sector: unknown. This profile is a
-  lead awaiting the enrichment pipeline.'
+description: >-
+  Habu was a data clean room and data collaboration company, founded in 2017 and
+  headquartered in San Francisco, that let brands, publishers, and media platforms
+  run privacy-safe joins and analytics on each other's first-party data without
+  moving or exposing raw records. In January 2024 Habu was acquired by LiveRamp,
+  and the product now ships as LiveRamp Clean Room within the LiveRamp data
+  collaboration network. The standalone habu.com domain now 301-redirects to
+  liveramp.com, and Habu's former developer surface (docs.habu.com,
+  developer.habu.com) no longer resolves — the successor developer, security, and
+  compliance surfaces live under liveramp.com. This profile originated as a
+  portfolio-lead stub (backed by Norwest Venture Partners and Wing Venture Capital)
+  and is enriched here to reflect the acquisition and the real, still-live security
+  posture inherited by LiveRamp.
 url: https://raw.githubusercontent.com/api-evangelist/habu/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - norwest-venture-partners
 - wing-venture-capital
+x-status: acquired
+x-acquired-by: liveramp
+x-acquired-date: '2024-01'
+x-successor-product: LiveRamp Clean Room
 x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
 tags:
 - Company
-- Unknown
+- Data Clean Room
+- Data Collaboration
+- Advertising
+- Privacy
+- Identity
+- Marketing
+- Analytics
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -26,3 +58,30 @@ maintainers:
 common:
 - type: Website
   url: https://habu.com
+- type: Documentation
+  url: https://liveramp.com/our-platform/apis
+- type: Blog
+  url: https://liveramp.com/blog
+- type: Pricing
+  url: https://liveramp.com/pricing
+- type: Support
+  url: https://liveramp.com/contact
+- type: PrivacyPolicy
+  url: https://liveramp.com/privacy
+- type: TrustCenter
+  url: https://trust.liveramp.com/
+- type: Compliance
+  url: https://trust.liveramp.com/
+- type: Security
+  url: https://liveramp.com/security/bug-bounty
+- type: VulnerabilityDisclosure
+  url: security/habu-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/habu-domain-security.yml
+- type: TrustCenter
+  url: security/habu-trust-center.yml
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
