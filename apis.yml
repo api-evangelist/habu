@@ -18,13 +18,16 @@ description: >-
   run privacy-safe joins and analytics on each other's first-party data without
   moving or exposing raw records. In January 2024 Habu was acquired by LiveRamp,
   and the product now ships as LiveRamp Clean Room within the LiveRamp data
-  collaboration network. The standalone habu.com domain now 301-redirects to
-  liveramp.com, and Habu's former developer surface (docs.habu.com,
-  developer.habu.com) no longer resolves — the successor developer, security, and
-  compliance surfaces live under liveramp.com. This profile originated as a
-  portfolio-lead stub (backed by Norwest Venture Partners and Wing Venture Capital)
-  and is enriched here to reflect the acquisition and the real, still-live security
-  posture inherited by LiveRamp.
+  collaboration network. The habu.com marketing domain 301-redirects to
+  liveramp.com and the old docs.habu.com / developer.habu.com hosts no longer
+  resolve, but the product API itself is still very much alive on Habu's own
+  infrastructure: api.habu.com/v1 answers today, and LiveRamp publishes its full
+  151-operation OpenAPI 3.0.0 contract — titled "External APIs for Customer
+  Integration", contact platform_admin@habu.com — under developers.liveramp.com.
+  The console is still Habu-branded at console.habu.com. This profile originated
+  as a portfolio-lead stub (backed by Norwest Venture Partners and Wing Venture
+  Capital) and is enriched here from that live, publicly documented surface plus
+  the security and compliance posture inherited by LiveRamp.
 url: https://raw.githubusercontent.com/api-evangelist/habu/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -35,11 +38,11 @@ x-status: acquired
 x-acquired-by: liveramp
 x-acquired-date: '2024-01'
 x-successor-product: LiveRamp Clean Room
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: enriched
+x-tier-reason: live-api-surface-recovered
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-19'
+modified: '2026-08-12'
 tags:
 - Company
 - Data Clean Room
@@ -49,17 +52,92 @@ tags:
 - Identity
 - Marketing
 - Analytics
-apis: []
+apis:
+- name: Habu Clean Room API
+  description: >-
+    The Habu Clean Room API — published by LiveRamp as "External APIs for Customer
+    Integration" and still served from Habu's own api.habu.com host — lets customers
+    set up and manage clean rooms, provision data connections and datasets, invite
+    partners, author and permission analytical questions, run those questions and
+    flows, and retrieve or export the results, without going through the console UI.
+    It is a 151-operation OpenAPI 3.0.0 contract over 108 paths, secured with an
+    OAuth 2.0 client-credentials flow whose token endpoint is api.habu.com/v1/oauth/token.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/habu.png
+  tags:
+  - Data Clean Room
+  - Data Collaboration
+  - Privacy
+  - Analytics
+  - Advertising
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-clean-room-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DeveloperPortal
+  url: https://developers.liveramp.com/clean-room-api
+- type: APIReference
+  url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+- type: GettingStarted
+  url: https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+- type: GitHubOrganization
+  url: https://github.com/liveramp
+- type: TermsOfService
+  url: https://liveramp.com/liveramp-terms-of-service/
+- type: Login
+  url: https://console.habu.com/login
+- type: StatusPage
+  url: https://status.liveramp.com/
+- type: Lifecycle
+  url: lifecycle/habu-lifecycle.yml
+- type: ChangeLog
+  url: changelog/habu-changelog.yml
+- type: Packages
+  url: packages/habu-packages.yml
+- type: SDKs
+  url: packages/habu-packages.yml
+- type: Conventions
+  url: conventions/habu-conventions.yml
+- type: ErrorCatalog
+  url: errors/habu-problem-types.yml
+- type: Conformance
+  url: conformance/habu-conformance.yml
+- type: DataModel
+  url: data-model/habu-data-model.yml
+- type: RateLimits
+  url: rate-limits/habu-rate-limits.yml
+- type: Plans
+  url: plans/habu-plans-pricing.yml
+- type: LLMsTxt
+  url: llms/habu-llms.txt
+- type: Overlay
+  url: overlays/habu-clean-room-api-overlay.yaml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: OAuthScopes
+  url: scopes/habu-scopes.yml
+- type: Authentication
+  url: authentication/habu-authentication.yml
 - type: Website
   url: https://habu.com
 - type: Documentation
-  url: https://liveramp.com/our-platform/apis
+  url: https://developers.liveramp.com/clean-room-api
 - type: Blog
   url: https://liveramp.com/blog
 - type: Pricing
@@ -81,7 +159,17 @@ common:
 - type: TrustCenter
   url: security/habu-trust-center.yml
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-12'
+  status: enriched
+  artifacts_added: 21
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+  note: >-
+    Round 2. The round-1 profile recorded "no developer surface" because
+    docs.habu.com and developer.habu.com no longer resolve. STEP 0b contract
+    discovery on the API HOST ROOT found api.habu.com still live and serving the
+    Clean Room API (GET /v1/health -> 200), and the full published OpenAPI 3.0.0
+    (108 paths / 151 operations / 294 schemas) at
+    https://storage.googleapis.com/lr-tech-docs-resources/Files/clean-room/api/liveramp-clean-room-api-specification.yml,
+    linked from developers.liveramp.com/clean-room-api. Ownership confirmed:
+    servers[] https://api.habu.com/v1/, info.contact platform_admin@habu.com,
+    description "from LiveRamp (previously Habu)".

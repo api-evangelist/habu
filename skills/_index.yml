@@ -1,0 +1,35 @@
+generated: '2026-08-12'
+method: generated
+source: Generated from openapi/habu-clean-room-api-openapi.yml (151 verified operationIds), conventions/habu-conventions.yml,
+  rate-limits/habu-rate-limits.yml and errors/habu-problem-types.yml. Every operationId cited in these
+  skills was checked against the spec; none is invented.
+description: Packaged Agent Skills for the Habu Clean Room API (LiveRamp Clean Room). LiveRamp publishes
+  no AGENTS.md or skills index of its own for this API, so these are generated.
+api: Habu Clean Room API
+base_url: https://api.habu.com/v1/
+docs: https://developers.liveramp.com/clean-room-api
+skills:
+- name: habu-run-a-cleanroom-question
+  file: skills/habu-run-a-cleanroom-question.md
+  description: Run an existing clean room question and retrieve its results, respecting the 20-runs-per-hour
+    ceiling and the absence of idempotency.
+  operations: 8
+- name: habu-provision-a-data-connection
+  file: skills/habu-provision-a-data-connection.md
+  description: Land a dataset by creating a data connection from a data source and mapping its fields
+    to identifier types.
+  operations: 11
+- name: habu-set-up-a-cleanroom-collaboration
+  file: skills/habu-set-up-a-cleanroom-collaboration.md
+  description: Stand up a clean room end to end — create it, provision datasets, invite a partner, attach
+    a question and set permissions.
+  operations: 14
+cross_cutting:
+  auth: OAuth 2.0 client credentials → 12-hour bearer token, max 2 tokens per 24 hours. Cache the token.
+  idempotency: None. No Idempotency-Key on any operation — read before every retry of a POST.
+  rate_limits: 20 question-run creations per hour and 20 flow-run creations per hour, per user/org/IP.
+    No rate-limit response headers; the 429 is the only signal.
+  errors: 'JSON, not RFC 9457. Live envelope: {status, code, timestamp, message, details}. Correlate with
+    the x-request-id response header.'
+  do_not_call: The 4 operations tagged "Internal" — LiveRamp states they are outside the supported external
+    customer contract.

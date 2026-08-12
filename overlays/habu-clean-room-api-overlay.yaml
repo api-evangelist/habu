@@ -1,0 +1,88 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements — Habu Clean Room API
+  version: 1.0.0
+  description: Overlay of the API Evangelist enrichment findings onto the published Habu Clean Room OpenAPI.
+    It adds provenance, the runtime semantics the contract omits (rate limits on run creation, the token-issuance
+    ceiling, the request-id header, the richer live error envelope) and stability annotations on the Internal
+    tag. Applies to openapi/habu-clean-room-api-openapi.yml; the original is never mutated.
+extends: openapi/habu-clean-room-api-openapi.yml
+actions:
+- target: $.info
+  description: Stamp provenance and the acquisition context.
+  update:
+    x-apievangelist:
+      profile: https://apis.io/provider/habu
+      generated: '2026-08-12'
+      method: searched
+      spec_source: https://storage.googleapis.com/lr-tech-docs-resources/Files/clean-room/api/liveramp-clean-room-api-specification.yml
+      docs: https://developers.liveramp.com/clean-room-api
+      note: Habu was acquired by LiveRamp in January 2024. The API is still served from Habu infrastructure
+        (api.habu.com) and the console is still console.habu.com, while the documentation moved to developers.liveramp.com.
+- target: $.servers
+  description: Record that the declared server was verified live.
+  update:
+  - url: https://api.habu.com/v1/
+    description: External APIs for Customer Integration
+    x-verified:
+      date: '2026-08-12'
+      evidence: GET https://api.habu.com/v1/health → 200 {"status":"UP","statusCode":200,"description":"External
+        API is available","version":"v1.0.0"}
+- target: $.paths['/cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-runs'].post
+  description: Document the published 20-per-hour rate limit and the undeclared 429 on question-run creation.
+  update:
+    x-rate-limit:
+      limit: 20
+      window: hour
+      scope: per API user, organization and IP address
+      enforcement: token bucket
+      docs: https://developers.liveramp.com/clean-room-api/reference/api-limits
+    x-undeclared-responses:
+    - 429 Too Many Requests — documented at https://developers.liveramp.com/clean-room-api/reference/api-limits
+      but absent from this operation's responses block.
+- target: $.components.securitySchemes.application
+  description: Add the token-request mechanics the securityScheme cannot express.
+  update:
+    x-token-request:
+      method: POST
+      content_type: application/x-www-form-urlencoded
+      body: grant_type=client_credentials
+      authorization: Basic base64(client_id:client_secret)
+      response_fields:
+      - accessToken
+      - tokenType
+      - expiresIn
+      - expiresAt
+      token_lifetime_seconds: 43200
+      issuance_limit: 2 tokens per 24-hour period per API user
+      docs: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+- target: $.components.schemas.ReturnObject
+  description: Record the richer error envelope observed live, which the declared schema understates.
+  update:
+    x-observed-envelope:
+      fields:
+      - status
+      - code
+      - timestamp
+      - message
+      - details
+      example: '{"status":"UNAUTHORIZED","code":401,"timestamp":"12-08-2026 05:17:12","message":"Full
+        authentication is required to access this resource","details":"uri=/v1/cleanrooms"}'
+      observed: '2026-08-12'
+      note: The spec declares only {code, message}; the live API returns five fields and code is an integer,
+        not a string.
+- target: $.tags[?(@.name=="Internal")]
+  description: Flag the Internal tag as outside the supported external contract.
+  update:
+    x-stability: internal
+    x-agent-guidance: Do not call operations tagged Internal from an agent — LiveRamp states they are
+      not part of the supported external customer contract and may change without notice.
+- target: $.info
+  description: Record the cross-cutting gaps found during enrichment.
+  update:
+    x-enrichment-gaps:
+    - No Idempotency-Key on any of the 151 operations — retried run creation can duplicate work.
+    - No rate-limit response headers; the 429 is the only runtime signal.
+    - No request or response examples anywhere in the spec.
+    - Only 11 of 151 operations accept limit/offset; the rest are unpaginated.
+    - No operation declares 429 despite a documented rate limit.

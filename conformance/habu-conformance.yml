@@ -1,0 +1,73 @@
+generated: '2026-08-12'
+method: derived
+source: Derived from openapi/habu-clean-room-api-openapi.yml (securitySchemes, response schemas, parameters)
+  plus searched compliance claims at https://trust.liveramp.com/ and probes of api.habu.com (2026-08-12).
+standards:
+- id: oauth2
+  conforms: true
+  evidence: 'components.securitySchemes.application is type oauth2 with a clientCredentials flow, tokenUrl
+    https://api.habu.com/v1/oauth/token; applied globally via the root security block. Confirmed live:
+    POST /v1/oauth/token requires Basic client credentials and returns a bearer token.'
+- id: oauth2-scopes
+  conforms: false
+  evidence: 'The clientCredentials flow declares scopes: {} — no scopes are defined in the spec and none
+    are documented. Authorization is by clean room role, not by OAuth scope.'
+- id: oidc
+  conforms: false
+  evidence: https://api.habu.com/.well-known/openid-configuration → 404 (probed 2026-08-12). No OIDC discovery
+    document on any Habu host.
+- id: rfc8414-oauth-metadata
+  conforms: false
+  evidence: https://api.habu.com/.well-known/oauth-authorization-server → 404 (probed 2026-08-12).
+- id: rfc9457
+  conforms: false
+  evidence: Errors return components.schemas.ReturnObject as application/json, not application/problem+json.
+    No type/title/detail/instance members.
+- id: rfc9727-api-catalog
+  conforms: false
+  evidence: https://api.habu.com/.well-known/api-catalog → 404; habu.com answers 200 with the liveramp.com
+    marketing SPA shell for every /.well-known/ path, which is not a document. The successor docs host
+    developers.liveramp.com DOES serve a real linkset at /.well-known/api-catalog listing clean-room-api,
+    but that is LiveRamp's catalog, not Habu's.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: No security.txt on any Habu host; habu.com/.well-known/security.txt returns the marketing
+    SPA shell (soft 200).
+- id: idempotency
+  conforms: false
+  evidence: No Idempotency-Key parameter on any of the 151 operations, and no replay-safe retry mechanism
+    documented.
+- id: pagination
+  conforms: true
+  evidence: 'Offset pagination via limit/offset query parameters, present on 11 operations. Partial: the
+    other 140 operations are unpaginated.'
+  partial: true
+- id: rfc8594-sunset
+  conforms: false
+  evidence: 'No Sunset/Deprecation headers documented; no operation carries deprecated: true.'
+- id: openapi-3.0
+  conforms: true
+  evidence: 'openapi: 3.0.0; 108 paths, 151 operations, 294 component schemas. Every operation has a unique
+    operationId, a summary, a description and tags; every operation declares 200/400/401/404/500.'
+- id: tls-1.2-plus
+  conforms: true
+  evidence: api.habu.com negotiates TLS 1.2; habu.com negotiates TLS 1.3 (probed 2026-08-12). HSTS is
+    served on api.habu.com (max-age=31536000; includeSubDomains).
+- id: soc2-type2
+  conforms: true
+  evidence: Published on the successor trust center https://trust.liveramp.com/ — see security/habu-trust-center.yml.
+- id: iso-27001
+  conforms: true
+  evidence: Published on https://trust.liveramp.com/ and liveramp.com.
+- id: gdpr
+  conforms: true
+  evidence: Published on https://trust.liveramp.com/; DPA at https://www.liveramp.com/legal/dpa/ and subprocessor
+    list at https://liveramp.com/legal/subprocessors/.
+- id: ccpa
+  conforms: true
+  evidence: Published on https://trust.liveramp.com/; California privacy notice at https://liveramp.com/privacy/california-privacy-notice.
+- id: sox
+  conforms: true
+  evidence: Published on https://trust.liveramp.com/ (LiveRamp is NYSE-listed).
+note: Compliance rows describe the certifications inherited from the acquirer LiveRamp, which operates
+  the Clean Room product today; protocol rows describe the Habu-hosted API contract itself.

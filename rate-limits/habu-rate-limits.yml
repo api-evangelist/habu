@@ -1,0 +1,53 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+provider: Habu
+providerId: habu
+generated: '2026-08-12'
+method: searched
+modified: '2026-08-12'
+source: https://developers.liveramp.com/clean-room-api/reference/api-limits and https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+description: Published limits for the Habu Clean Room API. LiveRamp documents two hard ceilings — question/flow
+  run creation and OAuth token issuance — and no response headers to read remaining budget from.
+headers:
+  requestId: x-request-id
+  rateLimit: null
+  retryAfter: null
+  note: No X-RateLimit-*, RateLimit-* or Retry-After header is documented, and none was present on live
+    responses probed 2026-08-12. The runtime signal an agent needs does not exist; only the 429 status
+    does.
+responseCodes:
+  throttled: 429
+limit_count: 3
+limits:
+- name: Create a Question Run
+  scope: per API user, organization and IP address
+  metric: requests_per_hour
+  limit: 20
+  timeFrame: hour
+  endpoints:
+  - createCleanroomQuestionRun
+  enforcement: token bucket
+  onExceeded: 429 Too Many Requests
+- name: Create a Cleanroom Flow Run
+  scope: per API user, organization and IP address
+  metric: requests_per_hour
+  limit: 20
+  timeFrame: hour
+  endpoints:
+  - createCleanroomFlowRun
+  enforcement: token bucket
+  onExceeded: 429 Too Many Requests
+- name: OAuth access token issuance
+  scope: per API user
+  metric: tokens_per_day
+  limit: 2
+  timeFrame: 24 hours
+  endpoints:
+  - POST /oauth/token
+  onExceeded: Token request rejected — LiveRamp instructs clients to reuse the token until it expires.
+  note: Tokens are valid 12 hours (expiresIn 43200), so 2 tokens per 24 hours is exactly enough to stay
+    continuously authenticated with no margin for a lost token.
+guidance:
+- LiveRamp recommends polling run status hourly and caps status polling at 20 checks per hour.
+- Cache the bearer token to disk/secret store — re-authenticating on every process start will exhaust
+  the 2-token daily budget.

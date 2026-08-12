@@ -1,0 +1,40 @@
+generated: '2026-08-12'
+method: searched
+source: 'https://developers.liveramp.com/clean-room-api (ReadMe hub: reference + Updates/changelog), https://status.liveramp.com/,
+  and openapi/habu-clean-room-api-openapi.yml.'
+versioning:
+  scheme: uri-path
+  current: v1
+  mechanism: The major version is carried in the path (https://api.habu.com/v1/). There is no version
+    request header and no date-pinned version.
+  evidence: servers[0].url https://api.habu.com/v1/ ; info.version v1.0.0 ; GET /v1/health → {"status":"UP","statusCode":200,"description":"External
+    API is available","version":"v1.0.0"} (probed 2026-08-12).
+  notes: https://api.habu.com/v2/ answers 401 rather than 404, so a v2 surface exists on the host, but
+    it is not documented or published anywhere public.
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecated_operations: []
+  evidence: 'No operation, parameter or schema in the 151-operation spec carries deprecated: true, and
+    no deprecation or sunset policy page exists under developers.liveramp.com/clean-room-api.'
+  partial_signal: The spec does declare an "Internal" tag covering 4 operations, described as "For internal
+    LiveRamp consumption. These operations are not part of the supported external customer contract and
+    may change without notice." That is a stability boundary, not a deprecation policy.
+sla:
+  url: null
+  public_uptime_target: null
+  notes: No public uptime SLA is published for the Clean Room API; availability commitments sit in the
+    LiveRamp Platform Terms (https://liveramp.com/legal/platform-terms/) and enterprise agreements.
+status_page: https://status.liveramp.com/
+changelog: https://developers.liveramp.com/clean-room-api/changelog
+support: https://liveramp.com/contact
+company_lifecycle:
+  status: acquired
+  acquired_by: LiveRamp
+  acquired: 2024-01
+  successor_product: LiveRamp Clean Room
+  surface_notes: habu.com 301s to liveramp.com and docs.habu.com / developer.habu.com no longer resolve,
+    but the API host (api.habu.com) and the product console (console.habu.com) are both still live and
+    still Habu-branded, and the published OpenAPI still carries contact platform_admin@habu.com. The developer
+    documentation moved to developers.liveramp.com/clean-room-api.

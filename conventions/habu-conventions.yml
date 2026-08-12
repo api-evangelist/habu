@@ -1,0 +1,83 @@
+generated: '2026-08-12'
+method: searched
+source: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token, https://developers.liveramp.com/clean-room-api/reference/api-limits,
+  https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints, plus derivation from
+  openapi/habu-clean-room-api-openapi.yml and live probes of https://api.habu.com/v1/.
+description: Cross-cutting request/response semantics for the Habu Clean Room API (LiveRamp Clean Room)
+  that apply across all 151 operations and are not fully expressed in the OpenAPI.
+base_url: https://api.habu.com/v1/
+api_style: REST over HTTPS; JSON request/response (application/xml is also declared on every operation).
+authentication:
+  scheme: OAuth 2.0 client credentials → bearer token
+  token_endpoint: https://api.habu.com/v1/oauth/token
+  token_request: 'POST with Content-Type: application/x-www-form-urlencoded, body grant_type=client_credentials,
+    and Authorization: Basic base64(client_id:client_secret)'
+  token_response_fields:
+  - accessToken
+  - tokenType
+  - expiresIn
+  - expiresAt
+  token_lifetime_seconds: 43200
+  call_header: 'Authorization: Bearer <accessToken>'
+  docs: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  detail: authentication/habu-authentication.yml
+idempotency:
+  supported: false
+  mechanism: null
+  evidence: No Idempotency-Key (or equivalent) parameter appears on any of the 151 operations in the OpenAPI,
+    and the documentation does not describe a replay-safe retry mechanism.
+  consequence: A retried POST — for example createCleanroomQuestionRun — can create a duplicate run. Because
+    run creation is also the rate-limited operation (20/hour), a blind retry both duplicates work and
+    consumes budget.
+  note: Recorded as an honest absence. No Idempotency pointer is emitted in apis.yml for this provider.
+pagination:
+  style: offset
+  request_params:
+    limit: page size (query parameter, 11 operations)
+    offset: zero-based row offset (query parameter, 11 operations)
+  coverage: Only 11 of 151 operations accept limit/offset; most list operations return the full collection
+    unpaginated.
+  response_fields: No envelope — list operations return a bare JSON array or a typed list object; there
+    is no has_more/next-cursor field.
+field_expansion:
+  supported: false
+  note: No expand/fields/include parameter anywhere in the spec.
+metadata:
+  supported: false
+  note: No free-form metadata object on the core resources.
+request_tracing:
+  header: x-request-id
+  direction: response
+  evidence: 'Observed on every live response from api.habu.com (probed 2026-08-12), e.g. x-request-id:
+    87319cd3-e681-4ca5-a0e5-25109a64ee35. Not declared in the OpenAPI.'
+versioning:
+  scheme: URI path
+  current: v1
+  evidence: servers[0].url = https://api.habu.com/v1/ ; info.version = v1.0.0 ; GET /v1/health returns
+    {"version":"v1.0.0"}. A /v2/ prefix also answers (401 rather than 404) but is undocumented.
+  detail: lifecycle/habu-lifecycle.yml
+error_envelope:
+  documented: '{ "code": string, "message": string } (components.schemas.ReturnObject)'
+  observed_live: '{ "status": string, "code": integer, "timestamp": string, "message": string, "details":
+    string }'
+  rfc9457: false
+  detail: errors/habu-problem-types.yml
+rate_limit_signaling:
+  headers: none — no X-RateLimit-*, RateLimit-* or Retry-After header is documented, and none was observed
+    on live responses
+  status_on_exhaustion: 429
+  note: An agent cannot read remaining budget from the response; it must track the 20-runs-per-hour and
+    2-tokens-per-24-hours ceilings itself.
+  detail: rate-limits/habu-rate-limits.yml
+content_negotiation:
+  request: application/json
+  response: application/json or application/xml (both declared on every operation)
+security_headers_observed:
+- 'strict-transport-security: max-age=31536000 ; includeSubDomains'
+- 'x-content-type-options: nosniff'
+- 'x-frame-options: DENY'
+cross_links:
+  errors: errors/habu-problem-types.yml
+  lifecycle: lifecycle/habu-lifecycle.yml
+  authentication: authentication/habu-authentication.yml
+  rate_limits: rate-limits/habu-rate-limits.yml

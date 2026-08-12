@@ -1,0 +1,18 @@
+generated: '2026-08-12'
+method: searched
+source: openapi/habu-clean-room-api-openapi.yml (components.securitySchemes.application) plus a search
+  of the Clean Room API documentation for a scopes/permissions reference.
+docs: https://developers.liveramp.com/clean-room-api/reference/configuring-a-clean-room-api-user
+schemes:
+- name: application
+  source: openapi/habu-clean-room-api-openapi.yml
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://api.habu.com/v1/oauth/token
+scope_count: 0
+scopes: []
+finding: 'The OAuth 2.0 client-credentials flow declares scopes: {} and LiveRamp publishes no scope or
+  permission reference for the Clean Room API. Authorization is enforced by CLEAN ROOM ROLE (getCleanroomRoles
+  / addCleanroomUser / configureCleanRoomQuestionPermissions), which is data in the platform rather than
+  a claim in the token. An agent therefore cannot reason about what a token may do before calling — it
+  can only discover it from a 403.'

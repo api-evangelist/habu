@@ -1,14 +1,30 @@
-generated: '2026-07-19'
+generated: '2026-08-12'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: habu.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug 19 11:37:29 2026 GMT
+  cert_expires: Oct 18 10:40:03 2026 GMT
   hsts: false
+- host: developers.liveramp.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct 10 03:33:14 2026 GMT
+  hsts: false
+- host: api.habu.com
+  https: true
+  tls_version: TLSv1.2
+  cert_expires: Jan 19 23:59:59 2027 GMT
+  hsts: null
 domains:
 - domain: habu.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
+- domain: liveramp.com
   dnssec: false
   caa: []
   spf: true

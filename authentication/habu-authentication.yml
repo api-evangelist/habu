@@ -1,0 +1,63 @@
+generated: '2026-08-12'
+method: searched
+source: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token and https://developers.liveramp.com/clean-room-api/reference/configuring-a-clean-room-api-user,
+  reconciled against openapi/habu-clean-room-api-openapi.yml components.securitySchemes and live probes
+  of https://api.habu.com/v1/oauth/token (2026-08-12).
+docs: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+summary:
+  types:
+  - oauth2
+  oauth2_flows:
+  - clientCredentials
+  scopes_defined: 0
+  model: OAuth 2.0 client-credentials service account. Authorization inside the API is by clean room ROLE,
+    not by OAuth scope — the flow declares an empty scopes object.
+schemes:
+- name: application
+  type: oauth2
+  applied: 'globally, via the root security block (security: [{application: []}])'
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://api.habu.com/v1/oauth/token
+    scopes: 0
+  sources:
+  - openapi/habu-clean-room-api-openapi.yml
+provisioning:
+  where: A service account is created in the Clean Room console; client credentials are read from the
+    "Manage API Key" page.
+  docs: https://developers.liveramp.com/clean-room-api/reference/configuring-a-clean-room-api-user
+  note: Credentials cannot be created through the API. The docs state credential creation is deliberately
+    not exposed externally to avoid transmitting raw credential values.
+token_request:
+  method: POST
+  url: https://api.habu.com/v1/oauth/token
+  content_type: application/x-www-form-urlencoded
+  authorization_header: Basic base64(client_id:client_secret)
+  body: grant_type=client_credentials
+  response_fields:
+  - accessToken
+  - tokenType
+  - expiresIn
+  - expiresAt
+  token_type: Bearer
+  expires_in_seconds: 43200
+  issuance_limit: 2 tokens per 24-hour period per API user — reuse the token until it expires.
+  live_evidence:
+  - GET https://api.habu.com/v1/oauth/token → 405 {"status":"METHOD_NOT_ALLOWED",...} (POST only)
+  - 'POST with Content-Type: application/json → 415 {"status":"UNSUPPORTED_MEDIA_TYPE","message":"Content-Type
+    ''application/json'' is not supported"}'
+  - POST form-encoded without an Authorization header → 400 {"message":"Required request header 'Authorization'
+    for method parameter type String is not present"}
+call_authorization: 'Authorization: Bearer <accessToken> on every operation except GET /health, which
+  is unauthenticated.'
+unauthenticated_operations:
+- getHealth
+discovery:
+  openid_configuration: 404 on api.habu.com
+  oauth_authorization_server: 404 on api.habu.com
+  oauth_protected_resource: 404 on api.habu.com
+  note: No RFC 8414 / RFC 9728 discovery metadata is published; the token endpoint is only discoverable
+    from the OpenAPI and the docs.
+transport:
+  tls: TLS 1.2 on api.habu.com
+  hsts: 'strict-transport-security: max-age=31536000 ; includeSubDomains'

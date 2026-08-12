@@ -1,0 +1,55 @@
+generated: '2026-08-12'
+method: searched
+source: https://developers.liveramp.com/clean-room-api/reference/about-the-clean-room-api ("Clean Room
+  Python SDK" section) and the PyPI JSON metadata API (pypi.org/pypi/<pkg>/json), queried 2026-08-12.
+description: First-party client libraries for the Habu Clean Room API (LiveRamp Clean Room). Only one
+  SDK is linked from the official documentation. There is no JavaScript, Java, Go, Ruby, PHP or .NET client,
+  and there is no public source repository for either package — both are published to PyPI as wheels only.
+packages:
+- language: python
+  registry: pypi
+  name: liveramp-cleanroom-sdk
+  url: https://pypi.org/project/liveramp-cleanroom-sdk/
+  source: null
+  install: pip install liveramp-cleanroom-sdk
+  official: true
+  version: 1.0.0
+  published: '2026-06-15'
+  releases: 1
+  license: MIT
+  publisher: LiveRamp Clean Room Delta Team <integration@liveramp.com>
+  note: The SDK LiveRamp links from the Clean Room API docs. One release only, and its declared Homepage/Documentation
+    URLs both point back at the PyPI page rather than at a repository or the docs hub — there is no public
+    source to audit.
+- language: python
+  registry: pypi
+  name: liveramp-clean-room
+  url: https://pypi.org/project/liveramp-clean-room/
+  source: null
+  install: pip install liveramp-clean-room
+  official: true
+  version: 0.3.3
+  published: '2024-07-15'
+  releases: null
+  publisher: Datahub Eng <datahub_ops@liveramp.com>
+  note: An earlier first-party Python client ("high level functions for interacting with liveramp's clean
+    room"), published by a different LiveRamp team and last released July 2024 — two years stale and superseded
+    in the docs by liveramp-cleanroom-sdk. Not linked from the current documentation.
+not_first_party:
+- registry: pypi
+  name: habu
+  why: Unrelated — "Hacking Toolkit" by Fabian Martinez Portantier (github.com/fportantier/habu).
+- registry: npm
+  name: habu
+  why: Unrelated — an aphrodite-based CSS-in-JS styling library (github.com/rhythnic/habu).
+registries_checked:
+- pypi
+- npm
+- maven-central
+- nuget
+- pkg.go.dev
+- rubygems
+- packagist
+- crates.io
+github_org: https://github.com/liveramp — no habu/habu-inc GitHub organization exists (api.github.com/orgs/habu
+  → 404, probed 2026-08-12), and neither SDK links a repository.

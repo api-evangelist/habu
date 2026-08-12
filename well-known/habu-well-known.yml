@@ -1,0 +1,124 @@
+generated: '2026-08-12'
+method: probed
+description: 'Results of probing the /.well-known/ discovery surface on every Habu host in apis.yml and
+  in the OpenAPI servers[] (api.habu.com), plus the console and the successor documentation host. Status
+  is the HTTP code observed at fetch time on 2026-08-12. Nothing was saved: no Habu host returned a real
+  well-known document.'
+hosts:
+- host: https://api.habu.com
+  note: The OpenAPI servers[] host. Returns text/plain 404 with an empty body for every well-known path
+    — a clean, honest 404.
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://habu.com
+  note: 301-redirects to liveramp.com, whose Webflow site answers 200 with the same text/html marketing
+    shell for EVERY /.well-known/ path. These are soft 404s, not documents — recorded as misses.
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+  - path: /.well-known/openid-configuration
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+  - path: /.well-known/api-catalog
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+  - path: /.well-known/agent.json
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell — not a well-known document
+- host: https://console.habu.com
+  note: The live Clean Room console. Its edge returns 403 Forbidden for every /.well-known/ path.
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/ai-plugin.json
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://developers.liveramp.com
+  note: 'The successor documentation host (LiveRamp, not Habu). It DOES serve a real RFC 9727 linkset
+    at /.well-known/api-catalog, and that linkset includes an anchor for https://developers.liveramp.com/clean-room-api
+    — the Habu Clean Room API. Recorded as evidence, but not claimed as a Habu-served surface: the document
+    belongs to LiveRamp''s developer hub, so no WellKnown pointer is emitted on this profile.'
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    type: application/linkset+json
+    document: true
+    owner: liveramp.com
+    covers_this_api: true
+  - path: /.well-known/security.txt
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell
+  - path: /.well-known/agent-card.json
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell
+  - path: /.well-known/agent.json
+    status: 200
+    type: text/html
+    document: false
+    verdict: soft-404 SPA shell
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+verdict: No WellKnown or SecurityTxt pointer is emitted for Habu. Habu serves no well-known document on
+  any host it controls, and the one real document found (developers.liveramp.com api-catalog) is served
+  by the acquirer's docs hub.
+agent_card: MISS on all four hosts across both the 1.0 (/.well-known/agent-card.json) and pre-0.3 (/.well-known/agent.json)
+  paths. No a2a/ artifact is written.

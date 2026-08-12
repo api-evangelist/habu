@@ -1,0 +1,18 @@
+generated: '2026-08-12'
+method: searched
+source: https://developers.liveramp.com/clean-room-api/changelog (HTTP 200, probed 2026-08-12)
+url: https://developers.liveramp.com/clean-room-api/changelog
+scheme: dated posts on the ReadMe "Updates" tab
+current_version: v1.0.0
+entry_count: 1
+entries:
+- date: '2025-01-22'
+  title: Clean Room API Changelog
+  breaking: null
+  summary: The only post on the Clean Room API Updates feed. It is a pointer post rather than a change
+    record; no per-release entries are published on this feed.
+  url: https://developers.liveramp.com/clean-room-api/changelog
+notes: The changelog surface exists and is publicly reachable, but has been effectively dormant since
+  January 2025 — one post, no per-release notes. The OpenAPI itself is actively maintained (the published
+  document was last updated 2026-07-25), so the contract is changing without a public change record. That
+  gap is the finding.

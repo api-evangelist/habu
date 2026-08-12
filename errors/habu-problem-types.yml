@@ -1,0 +1,64 @@
+generated: '2026-08-12'
+method: derived
+format: vendor-json
+source: openapi/habu-clean-room-api-openapi.yml — every 4xx/5xx response in the 151 operations $refs one
+  of the seven shared components.responses entries, all of which return components.schemas.ReturnObject.
+docs: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+rfc9457: false
+envelope:
+  media_type: application/json (application/xml also offered on every response)
+  schema: components.schemas.ReturnObject
+  shape: '{ "code": string, "message": string }'
+  required:
+  - code
+  - message
+  note: 'The Clean Room API does NOT use RFC 9457 application/problem+json. Errors observed live on api.habu.com
+    carry a richer envelope than the spec documents: {"status","code","timestamp","message","details"}
+    — e.g. GET https://api.habu.com/v1/cleanrooms returns {"status":"UNAUTHORIZED","code":401,"timestamp":"12-08-2026
+    05:17:12","message":"Full authentication is required to access this resource","details":"uri=/v1/cleanrooms"}.
+    The spec understates the real payload.'
+shared_responses:
+- name: BadRequest
+  status: 400
+  description: Bad Request - Incorrect syntax or request
+  operations: 150
+- name: Unauthorized
+  status: 401
+  description: Authorization information was missing or invalid
+  operations: 150
+  remediation: Request a fresh bearer token from POST https://api.habu.com/v1/oauth/token; tokens expire
+    after 12 hours.
+- name: Forbidden
+  status: 403
+  description: This action is not allowed
+  operations: 91
+  remediation: The API service account lacks the clean room role/permission for this resource.
+- name: NotFound
+  status: 404
+  description: The specified resource was not found
+  operations: 150
+- name: ResourceConflict
+  status: 409
+  description: Conflict with the current state of the resource
+  operations: 2
+- name: PreconditionFailed
+  status: 412
+  description: Precondition Failed - a required precondition for the request has not been met
+  operations: 1
+- name: InternalServerError
+  status: 500
+  description: Internal Server Error
+  operations: 150
+undocumented_observed:
+- status: 405
+  observed: POST https://api.habu.com/v1/oauth/token with GET → {"status":"METHOD_NOT_ALLOWED","code":405,...}
+  note: Not present in the OpenAPI.
+- status: 415
+  observed: 'POST /v1/oauth/token with Content-Type: application/json → {"status":"UNSUPPORTED_MEDIA_TYPE",...}'
+  note: The token endpoint requires application/x-www-form-urlencoded. Not present in the OpenAPI.
+- status: 429
+  observed: Documented at https://developers.liveramp.com/clean-room-api/reference/api-limits as the response
+    when the 20-runs-per-hour limit is exceeded.
+  note: Not declared on any operation in the OpenAPI.
+gaps: No operation in the spec declares 429, and no error response carries an example. The error catalog
+  is structural only — there is no published enumerated error-code registry for this API.

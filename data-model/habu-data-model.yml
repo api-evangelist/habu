@@ -1,0 +1,214 @@
+generated: '2026-08-12'
+method: derived
+source: openapi/habu-clean-room-api-openapi.yml — entity graph derived from the 108 path templates, their
+  path-parameter id fields (cleanroomId, cleanroomQuestionId, cleanroomFlowId, dataConnectionId, ...)
+  and the $ref links between the 294 components.schemas.
+docs: https://developers.liveramp.com/clean-room-api/reference/where-to-find-relevant-metadata
+notation: relationships use has_one / has_many / belongs_to with the id field that carries the reference;
+  direction is from the entity that owns the reference.
+entities:
+- name: Organization
+  description: The customer account/tenant that owns credentials, users, data connections and clean rooms.
+- name: OrganizationUser
+  description: A user belonging to the organization.
+- name: OrganizationCredential
+  description: A stored credential (created in the UI, never via the API) used by data connections.
+- name: CredentialSource
+  description: The credential type/source a data connection can authenticate with.
+- name: DataSource
+  description: An available source system (warehouse, cloud storage, platform) a data connection can be
+    created from.
+- name: DataType
+  description: A data type available for a given data source.
+- name: DataSourceParameter
+  description: A configuration parameter required by a data source/data type pair.
+- name: DataConnection
+  description: A configured, mapped connection that lands a dataset into the platform.
+- name: FieldConfiguration
+  description: The per-field mapping (including identifier type) of a data connection.
+- name: DataConnectionView
+  description: A SQL-defined view over one or more data connections.
+- name: Cleanroom
+  description: The privacy-safe collaboration space where partners join data and run questions.
+- name: CleanroomType
+  description: The clean room flavor/technology a clean room is created as.
+- name: CleanroomUser
+  description: A user granted access to a clean room, with a clean room role.
+- name: CleanroomRole
+  description: A role assignable inside a clean room.
+- name: CleanroomPartner
+  description: A partner organization invited into a clean room.
+- name: Invitation
+  description: An invitation to a partner organization to join a clean room.
+- name: CleanroomDataset
+  description: A dataset (from a data connection) provisioned into a clean room.
+- name: Question
+  description: A question template in the organization library.
+- name: CleanroomQuestion
+  description: A question instantiated into a clean room, with dataset macros and permissions.
+- name: CleanroomQuestionDataset
+  description: The binding of a clean room dataset to a question dataset macro.
+- name: CleanroomQuestionPermission
+  description: Per-partner permissions on a clean room question.
+- name: CleanroomQuestionTag
+  description: A tag applied to a clean room question.
+- name: CleanroomQuestionResultShare
+  description: A configuration sharing question results with a partner.
+- name: CleanroomQuestionRun
+  description: A single execution of a clean room question.
+- name: CleanroomQuestionRunSchedule
+  description: A recurring schedule that creates question runs.
+- name: CleanroomFlow
+  description: A DAG of nodes and edges orchestrating questions and exports.
+- name: FlowDecisionConfiguration
+  description: A decision node configuration inside a flow.
+- name: CleanroomFlowRun
+  description: A single execution of a clean room flow.
+- name: Destination
+  description: An activation destination configured for the organization.
+- name: CleanroomDestination
+  description: A destination provisioned into a clean room.
+- name: CleanroomExport
+  description: An export job moving question/flow output out of a clean room.
+- name: BillableConfig
+  description: A billing configuration attached to compute/usage.
+relationships:
+- from: Organization
+  to: OrganizationUser
+  kind: has_many
+  via: organizationId
+- from: Organization
+  to: OrganizationCredential
+  kind: has_many
+  via: organizationId
+- from: Organization
+  to: DataConnection
+  kind: has_many
+  via: organizationId
+- from: Organization
+  to: Cleanroom
+  kind: has_many
+  via: organizationId
+- from: Organization
+  to: Question
+  kind: has_many
+  via: organizationId
+- from: Organization
+  to: Destination
+  kind: has_many
+  via: organizationId
+- from: DataConnection
+  to: DataSource
+  kind: belongs_to
+  via: dataSourceId
+- from: DataConnection
+  to: DataType
+  kind: belongs_to
+  via: dataTypeId
+- from: DataConnection
+  to: OrganizationCredential
+  kind: belongs_to
+  via: organizationCredentialId
+- from: DataConnection
+  to: FieldConfiguration
+  kind: has_many
+  via: dataConnectionId
+- from: DataConnectionView
+  to: DataConnection
+  kind: has_many
+  via: dataConnectionId
+- from: Cleanroom
+  to: CleanroomType
+  kind: belongs_to
+  via: cleanroomTypeId
+- from: Cleanroom
+  to: CleanroomUser
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: CleanroomPartner
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: Invitation
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: CleanroomDataset
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: CleanroomQuestion
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: CleanroomFlow
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: CleanroomDestination
+  kind: has_many
+  via: cleanroomId
+- from: Cleanroom
+  to: CleanroomExport
+  kind: has_many
+  via: cleanroomId
+- from: CleanroomUser
+  to: CleanroomRole
+  kind: belongs_to
+  via: cleanRoomRoleId
+- from: CleanroomDataset
+  to: DataConnection
+  kind: belongs_to
+  via: dataConnectionId
+- from: CleanroomQuestion
+  to: Question
+  kind: belongs_to
+  via: questionId
+- from: CleanroomQuestion
+  to: CleanroomQuestionDataset
+  kind: has_many
+  via: cleanroomQuestionId
+- from: CleanroomQuestion
+  to: CleanroomQuestionPermission
+  kind: has_many
+  via: cleanroomQuestionId
+- from: CleanroomQuestion
+  to: CleanroomQuestionTag
+  kind: has_many
+  via: cleanroomQuestionId
+- from: CleanroomQuestion
+  to: CleanroomQuestionResultShare
+  kind: has_many
+  via: cleanroomQuestionId
+- from: CleanroomQuestion
+  to: CleanroomQuestionRun
+  kind: has_many
+  via: cleanroomQuestionId
+- from: CleanroomQuestion
+  to: CleanroomQuestionRunSchedule
+  kind: has_many
+  via: cleanroomQuestionId
+- from: CleanroomQuestionDataset
+  to: CleanroomDataset
+  kind: belongs_to
+  via: datasetId
+- from: CleanroomFlow
+  to: CleanroomFlowRun
+  kind: has_many
+  via: cleanroomFlowId
+- from: CleanroomFlow
+  to: FlowDecisionConfiguration
+  kind: has_many
+  via: cleanroomFlowId
+- from: CleanroomFlowRun
+  to: CleanroomExport
+  kind: has_many
+  via: cleanroomFlowRunId
+- from: CleanroomDestination
+  to: Destination
+  kind: belongs_to
+  via: destinationId
+notes: The API exposes no create operation for OrganizationCredential values themselves — the docs state
+  credentials must be configured in the Habu/Clean Room console before they can be referenced via the
+  external API, to avoid transmitting raw credential values.

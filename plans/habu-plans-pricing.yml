@@ -1,0 +1,15 @@
+generated: '2026-08-12'
+method: searched
+source: https://liveramp.com/pricing (HTTP 200, probed 2026-08-12) and https://developers.liveramp.com/clean-room-api
+  — no pricing or plan tiers are published for the Clean Room API.
+description: LiveRamp does not publish plan tiers, list prices or included quotas for LiveRamp Clean Room
+  (formerly Habu). The pricing page is a contact-sales surface; access to the Clean Room API requires
+  an existing Clean Room contract and a service account provisioned in the console.
+model: contact-sales
+currency: null
+plan_count: 0
+plans: []
+self_serve_signup: false
+free_tier: false
+notes: The only quantitative commercial signal exposed publicly is the "Billable Configs" tag in the OpenAPI
+  (3 operations) — billing configurations are readable through the API but their pricing is not published.
