@@ -40,7 +40,7 @@ x-acquired-date: '2024-01'
 x-successor-product: LiveRamp Clean Room
 x-tier: enriched
 x-tier-reason: live-api-surface-recovered
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-08-12'
 tags:
