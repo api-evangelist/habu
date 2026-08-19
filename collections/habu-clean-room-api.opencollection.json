@@ -1,0 +1,3848 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "External APIs for Customer Integration",
+    "version": "v1.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "oauth2",
+      "flow": "client_credentials",
+      "accessTokenUrl": "https://api.habu.com/v1/oauth/token",
+      "credentials": {
+        "clientId": "{{clientId}}",
+        "clientSecret": "{{clientSecret}}"
+      }
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Health",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check API availability",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/health"
+          },
+          "docs": "Returns the health status of the API. Unauthenticated — use this to verify connectivity before making authenticated calls."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Billable Configs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get billable config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/billable-configs",
+            "params": [
+              {
+                "name": "sourceId",
+                "value": "",
+                "type": "query",
+                "description": "Identifier of the billable source (e.g. clean room ID, question run ID)"
+              },
+              {
+                "name": "sourceType",
+                "value": "",
+                "type": "query",
+                "description": "Type of billable source"
+              },
+              {
+                "name": "compositeSourceId",
+                "value": "",
+                "type": "query",
+                "description": "Optional; not used by any source type exposed on the external API"
+              }
+            ]
+          },
+          "docs": "Fetches the billable config for a given source ID and source type. Absence of a config row means the source inherits billability from the hierarchy above it. See unhygienix billing-status documentation for resolution order."
+        },
+        {
+          "info": {
+            "name": "Upsert billable config",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/billable-configs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates a billable config for the given source. Use after creating a question run or flow run to opt out of billing (`value: \"false\"`). Leaving billing enabled requires no row — the hierarchy above applies."
+        },
+        {
+          "info": {
+            "name": "Delete billable config",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/billable-configs/:billableConfigId",
+            "params": [
+              {
+                "name": "billableConfigId",
+                "value": "",
+                "type": "path",
+                "description": "Billable config primary key ID"
+              }
+            ]
+          },
+          "docs": "Deletes the billable config by its config ID (from a prior GET or upsert response). Returns 404 if no config with that ID was deleted. To resolve sourceId/sourceType to a config ID, call GET /billable-configs first."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanrooms",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanrooms",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of Cleanrooms returned per page - default is 500"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Cleanrooms that are created for the Customer Integration."
+        },
+        {
+          "info": {
+            "name": "Create Cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a new Cleanroom."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The cleanroom ID to fetch a single Cleanroom's details"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom by ID."
+        },
+        {
+          "info": {
+            "name": "Update Cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID to be updated"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates an existing cleanroom."
+        },
+        {
+          "info": {
+            "name": "Delete Cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID to be deleted"
+              }
+            ]
+          },
+          "docs": "This operation deletes an existing cleanroom."
+        },
+        {
+          "info": {
+            "name": "Fetch all Cleanroom Types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/cleanroom-types"
+          },
+          "docs": "This operation fetches all the available Cleanroom Types."
+        },
+        {
+          "info": {
+            "name": "Get comprehensive asset details for cleanroom operations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/assets",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches comprehensive asset details including questions, datasets, compute capacity options, field types, and stakeholders for cleanroom operations."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Partners",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Cleanroom Partner Invitations For a Cleanroom Inviter",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/invitations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID to see invitations"
+              }
+            ]
+          },
+          "docs": "This operation lists a invitation list for a CleanRoom Inviter."
+        },
+        {
+          "info": {
+            "name": "Cancel Cleanroom Partner Invitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/invitations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID of inviter's clean-room"
+              },
+              {
+                "name": "partnerEmail",
+                "value": "",
+                "type": "query",
+                "description": "the email for the partner whose invitation is getting canceled"
+              }
+            ]
+          },
+          "docs": "This operation cancels a invitation for a CleanRoom Inviter."
+        },
+        {
+          "info": {
+            "name": "Cancel Cleanroom Partner Invitation",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/invitations/:invitationId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID of inviter's clean-room"
+              },
+              {
+                "name": "invitationId",
+                "value": "",
+                "type": "path",
+                "description": "the ID of the invitation getting canceled"
+              }
+            ]
+          },
+          "docs": "This operation cancels a invitation for a CleanRoom Inviter."
+        },
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Partners",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the partners"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Cleanroom partners in a cleanroom and their respective users."
+        },
+        {
+          "info": {
+            "name": "Add Cleanroom Partner",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the partner"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation adds a new partner to an existing cleanroom."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom Partner by Partner ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners/:cleanroomPartnerId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with this partner"
+              },
+              {
+                "name": "cleanroomPartnerId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Partner by Partner ID."
+        },
+        {
+          "info": {
+            "name": "Delete Cleanroom Partner",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners/:cleanroomPartnerId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with this partner"
+              },
+              {
+                "name": "cleanroomPartnerId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner ID to be removed"
+              }
+            ]
+          },
+          "docs": "This operation deletes an existing partner from a cleanroom."
+        },
+        {
+          "info": {
+            "name": "Get Cleanroom Partner Roles in Cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners/:cleanroomPartnerId/cleanRoomRoles",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with this user"
+              },
+              {
+                "name": "cleanroomPartnerId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner ID associated with this user"
+              }
+            ]
+          },
+          "docs": "This operation fetches the Cleanroom partner roles in a cleanroom."
+        },
+        {
+          "info": {
+            "name": "Get Cleanroom Partner Role by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners/:cleanroomPartnerId/cleanRoomRoles/:cleanRoomRoleId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with this user"
+              },
+              {
+                "name": "cleanroomPartnerId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner ID"
+              },
+              {
+                "name": "cleanRoomRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner Role ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches the Cleanroom partner role by Id."
+        },
+        {
+          "info": {
+            "name": "Remove Cleanroom Partner User",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners/:cleanroomPartnerId/users/:cleanroomUserId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with this user"
+              },
+              {
+                "name": "cleanroomPartnerId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner ID associated with this user"
+              },
+              {
+                "name": "cleanroomUserId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User ID to be removed"
+              }
+            ]
+          },
+          "docs": "This operation removes an existing partner user from a cleanroom."
+        },
+        {
+          "info": {
+            "name": "Update a partner cleanroom user role",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/partners/:cleanroomPartnerId/users/:cleanroomUserId/cleanRoomRoles/:cleanRoomRoleId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the users"
+              },
+              {
+                "name": "cleanroomPartnerId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Partner ID"
+              },
+              {
+                "name": "cleanroomUserId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User ID"
+              },
+              {
+                "name": "cleanRoomRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User Role ID"
+              }
+            ]
+          },
+          "docs": "This operation updates a partner cleanroom user role except Administrator and Partner Administrator Role."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Questions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Questions for a Cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-questions",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The cleanroom ID to fetch all the underlying Cleanroom Questions"
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "A filter applied on the CreatedOn field for a Cleanroom Question that marks as the beginning of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "A filter applied on the CreatedOn field for a Cleanroom Question that marks as the end of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of Cleanroom Questions returned per page - default is 500"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              },
+              {
+                "name": "questionType",
+                "value": "",
+                "type": "query",
+                "description": "List or Analytical"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Cleanroom Questions that are tied to a Cleanroom."
+        },
+        {
+          "info": {
+            "name": "Add Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-questions",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the Cleanroom Question"
+              },
+              {
+                "name": "questionId",
+                "value": "",
+                "type": "query",
+                "description": "Question ID"
+              },
+              {
+                "name": "isEditable",
+                "value": "",
+                "type": "query",
+                "description": "Whether the resultant Cleanroom Question can be edited further"
+              }
+            ]
+          },
+          "docs": "This operation adds a question to an existing cleanroom."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom Question by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID to fetch a single Cleanroom Question's details"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Question by ID."
+        },
+        {
+          "info": {
+            "name": "Delete Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID to be deleted"
+              }
+            ]
+          },
+          "docs": "This operation deletes an existing cleanroom question."
+        },
+        {
+          "info": {
+            "name": "Update the compute capacity for a cleanroom question",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/compute-capacity",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "ID of the cleanroom question"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates the compute capacity for a cleanroom question. This is currently only supported for Snowflake and Hybrid Cleanrooms"
+        },
+        {
+          "info": {
+            "name": "Get Cleanroom Question by Cleanroom ID and Question ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/questions/:questionId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the Cleanroom Question"
+              },
+              {
+                "name": "questionId",
+                "value": "",
+                "type": "path",
+                "description": "Question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Question for a given Cleanroom ID and Question ID."
+        },
+        {
+          "info": {
+            "name": "Enable segmentation for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/segmentation",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID for which segmentation is being enabled"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation enables segmentation for a Cleanroom Question."
+        },
+        {
+          "info": {
+            "name": "Update segmentation for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/segmentation",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID for which segmentation is being updated"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates segmentation for a Cleanroom Question."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Question Result Shares",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the possible sharing options for the result of a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-result-shares",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a the possible sharing options for the result of a Cleanroom Question."
+        },
+        {
+          "info": {
+            "name": "Upsert clean room question result shares",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-result-shares",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID for which result share is being shared"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation shares the results of a cleanroom question."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Question Tags",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the tags for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-tags",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a the tags for a Cleanroom Question."
+        },
+        {
+          "info": {
+            "name": "Get the parameters for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-parameters",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a the parameters for a Cleanroom Question."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Question Run Schedule",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a Cleanroom Question Run Schedule by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-run-schedules/:cleanroomQuestionRunScheduleId",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunScheduleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question Run Schedule ID"
+              },
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a the a Cleanroom Question Run Schedule by ID."
+        },
+        {
+          "info": {
+            "name": "Update a run schedule for a cleanroom question",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-run-schedules/:cleanroomQuestionRunScheduleId",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunScheduleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question Run Schedule ID"
+              },
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation modifies a run schedule for a cleanroom question"
+        },
+        {
+          "info": {
+            "name": "delete a Cleanroom Question Run Schedule by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-run-schedules/:cleanroomQuestionRunScheduleId",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunScheduleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question Run Schedule ID"
+              },
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom question ID"
+              }
+            ]
+          },
+          "docs": "This operation deletes a Cleanroom Question Run Schedule by ID."
+        },
+        {
+          "info": {
+            "name": "Get all Cleanroom Question Run Schedules for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-run-schedules",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches all run schedules for a cleanroom question"
+        },
+        {
+          "info": {
+            "name": "Create a new run schedule for a cleanroom question",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-run-schedules",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a new run schedule for a cleanroom question"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Question Runs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Question Runs for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-runs",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID to fetch all the associated Cleanroom Question Runs"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "The status of the Cleanroom Question Run"
+              },
+              {
+                "name": "startDate",
+                "value": "",
+                "type": "query",
+                "description": "A filter applied on the SubmitAt field for a Cleanroom Question Run that marks as the beginning of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd"
+              },
+              {
+                "name": "endDate",
+                "value": "",
+                "type": "query",
+                "description": "A filter applied on the SubmitAt field for a Cleanroom Question Run that marks as the end of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of Cleanroom Question Runs returned per page - default is 30 and maximum is 100"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Cleanroom Question Runs (including metadata) for a given Cleanroom Question. The Customer can optionally use the status parameter to filter the list of Cleanroom Question Runs."
+        },
+        {
+          "info": {
+            "name": "Create a Cleanroom Question Run for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/create-run",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID for which the Cleanroom Question Run is being created"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation facilitates creation of a Cleanroom Question Run for a given Cleanroom Question. The Cleanroom Question must be in the READY state before a run can be created. If datasets have not yet been configured, use the `configureCleanroomQuestionDatasets` operation (`POST /cleanroom-questions/{cleanroomQuestionId}/datasets`) first."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom Question Run by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID to fetch a single Cleanroom Question Run's details"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Question Run (including metadata) by Cleanroom Question Run ID."
+        },
+        {
+          "info": {
+            "name": "Update Question Run Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID for which the update request is being sent"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation lets the Customer share an update on the status of an in-progress Cleanroom Question Run with Habu. It also lets them send the status and details for a completed/failed Cleanroom Question Run to Habu."
+        },
+        {
+          "info": {
+            "name": "Delete Cleanroom Question Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID"
+              }
+            ]
+          },
+          "docs": "This operation lets the Customer delete a Cleanroom Question Run by ID."
+        },
+        {
+          "info": {
+            "name": "Get the result data for Cleanroom Question Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/data",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID corresponding to this run"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of Cleanroom Question Run results data returned per page - default is 500"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              }
+            ]
+          },
+          "docs": "This operation is to get the result data for the Cleanroom Question Run."
+        },
+        {
+          "info": {
+            "name": "Get the output file for Cleanroom Question Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/download/:fileName",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID corresponding to this run"
+              },
+              {
+                "name": "fileName",
+                "value": "",
+                "type": "path",
+                "description": "Output File Name"
+              }
+            ]
+          },
+          "docs": "This operation is to get the output file for the Cleanroom Question Run."
+        },
+        {
+          "info": {
+            "name": "Get the count of result data for Cleanroom Question Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/data/count",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID corresponding to this run"
+              }
+            ]
+          },
+          "docs": "This operation is to get the count of result data for the Cleanroom Question Run."
+        },
+        {
+          "info": {
+            "name": "Get audit details for Cleanroom Question Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/audit",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID corresponding to this run"
+              }
+            ]
+          },
+          "docs": "This operation is to get the audit details for the Cleanroom Question Run."
+        },
+        {
+          "info": {
+            "name": "Fetch the Activation Summary for a Cleanroom question run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/activation-summary",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID to fetch the associated Activation Summary"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list the Activation Summary for a Cleanroom question run"
+        },
+        {
+          "info": {
+            "name": "Fetch the Partition Parameters for a Cleanroom question run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/partition-parameters",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID to fetch the associated partition parameters"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of the partition parameters for a Cleanroom question run"
+        },
+        {
+          "info": {
+            "name": "Get the explain plan for a SQL Cleanroom Question Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-question-runs/:cleanroomQuestionRunId/explain-plan",
+            "params": [
+              {
+                "name": "cleanroomQuestionRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question Run ID to fetch the explain plan for"
+              }
+            ]
+          },
+          "docs": "This operation returns the execution plan (explain plan) for the specified Cleanroom Question Run. This operation applies only to Cleanroom Questions of type SQL; it is not supported for other question types."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of cleanRoom roles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanRoomRoles",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the users"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of roles applicable to the given cleanroom in this organization."
+        },
+        {
+          "info": {
+            "name": "Fetch a cleanroom role by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanRoomRoles/:cleanRoomRoleId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the users"
+              },
+              {
+                "name": "cleanRoomRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Role ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom role by ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of Cleanroom Users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/users",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the users"
+              },
+              {
+                "name": "cleanroomUserEmail",
+                "value": "",
+                "type": "query",
+                "description": "Email for a particular cleanroom user"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of the Cleanroom users in a cleanroom."
+        },
+        {
+          "info": {
+            "name": "Add Cleanroom User",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/users",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the user"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation adds a new user to an existing cleanroom."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom User by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/users/:cleanroomUserId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the user"
+              },
+              {
+                "name": "cleanroomUserId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom user by ID."
+        },
+        {
+          "info": {
+            "name": "Remove Cleanroom User",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/users/:cleanroomUserId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the user"
+              },
+              {
+                "name": "cleanroomUserId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User ID to be removed"
+              }
+            ]
+          },
+          "docs": "This operation removes an existing user from a cleanroom."
+        },
+        {
+          "info": {
+            "name": "Update Cleanroom User Role",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/users/:cleanroomUserId/cleanRoomRoles/:cleanRoomRoleId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the user"
+              },
+              {
+                "name": "cleanroomUserId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User ID"
+              },
+              {
+                "name": "cleanRoomRoleId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom User Role ID"
+              }
+            ]
+          },
+          "docs": "This operation updates cleanroom user role."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Data Connections",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Data Connections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-connections"
+          },
+          "docs": "This operation fetches a list of all the data connections created as part of this Customer Integration."
+        },
+        {
+          "info": {
+            "name": "Create Data Connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/data-connections",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a new data connection."
+        },
+        {
+          "info": {
+            "name": "Fetch a Data Connection by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-connections/:dataConnectionId",
+            "params": [
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a data connection by ID."
+        },
+        {
+          "info": {
+            "name": "Update a Data Connection by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/data-connections/:dataConnectionId",
+            "params": [
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates a data connection by ID."
+        },
+        {
+          "info": {
+            "name": "Delete a Data Connection by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/data-connections/:dataConnectionId",
+            "params": [
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "path",
+                "description": "DataConnection ID to be deleted"
+              }
+            ]
+          },
+          "docs": "This operation deletes a data connection by ID."
+        },
+        {
+          "info": {
+            "name": "Retry a Data Connection Job by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/data-connections/:dataConnectionId/retry",
+            "params": [
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection ID"
+              }
+            ]
+          },
+          "docs": "This operation retries a data connection job by ID."
+        },
+        {
+          "info": {
+            "name": "Fetch a list of all Field Configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-connections/:dataConnectionId/field-configurations",
+            "params": [
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection ID associated with the Field Configurations"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Field Configurations for the given Data Connection."
+        },
+        {
+          "info": {
+            "name": "Map Field Configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/data-connections/:dataConnectionId/field-configurations",
+            "params": [
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection ID associated with the Field Configurations"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation maps the Field Configurations for the given Data Connection."
+        },
+        {
+          "info": {
+            "name": "Fetch a list of all Identifier Types for Field Mapping",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/identifier-types"
+          },
+          "docs": "This operation fetches a list of all the Identifier Types to select from for mapping a Field - this is applicable during the mapping step of a Data Connection."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Datasets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Datasets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/datasets",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the datasets"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Datasets that can be assigned or configured for a Cleanroom."
+        },
+        {
+          "info": {
+            "name": "Get a Cleanroom Dataset by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/datasets/:datasetId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the dataset"
+              },
+              {
+                "name": "datasetId",
+                "value": "",
+                "type": "path",
+                "description": "Dataset ID"
+              }
+            ]
+          },
+          "docs": "This operation gets a Cleanroom Dataset by ID."
+        },
+        {
+          "info": {
+            "name": "Update a Cleanroom Dataset by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/datasets/:datasetId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the dataset"
+              },
+              {
+                "name": "datasetId",
+                "value": "",
+                "type": "path",
+                "description": "Dataset ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates the field mappings and field filters for a Cleanroom Dataset."
+        },
+        {
+          "info": {
+            "name": "Configure a Cleanroom Dataset by Data Connection ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/datasets/configure",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the dataset"
+              },
+              {
+                "name": "dataConnectionId",
+                "value": "",
+                "type": "query",
+                "description": "Data Connection ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation configures a Cleanroom Dataset based on Data Connection ID."
+        },
+        {
+          "info": {
+            "name": "Configure whether a partner can assign a Cleanroom Dataset",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/datasets/partner-assignment",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID associated with the dataset"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation configure whether a partner can assign a Cleanroom Dataset"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Question Datasets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of stakeholders for this cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/stakeholders",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of stakeholders for this Cleanroom that need datasets assigned while managing datasets for Cleanroom Question."
+        },
+        {
+          "info": {
+            "name": "Fetch a list of data type options for this cleanroom question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/data-type-options",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              },
+              {
+                "name": "dataType",
+                "value": "",
+                "type": "query",
+                "description": "Data Type"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of DataTypeOptions for this Cleanroom Question."
+        },
+        {
+          "info": {
+            "name": "Assign Cleanroom Question Datasets Ownership",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/datasets-ownership",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID associated with the datasets"
+              },
+              {
+                "name": "AssignCleanroomQuestionDatasetRequests",
+                "value": "",
+                "type": "query",
+                "description": "request body to assign cleanroom question dataset ownership"
+              }
+            ]
+          },
+          "docs": "This operation assigns ownership to a Cleanroom Question Datasets."
+        },
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Question Datasets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/datasets",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID associated with the datasets"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all Cleanroom Question Datasets."
+        },
+        {
+          "info": {
+            "name": "Configure Cleanroom Question Datasets",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/datasets",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID associated with the datasets"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation configures and assigns Datasets to a Cleanroom Question."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Question Permissions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get the permissions for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-permissions",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches the existing permissions for a Cleanroom Question."
+        },
+        {
+          "info": {
+            "name": "Configure the permissions for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanroom-questions/:cleanroomQuestionId/cleanroom-question-permissions",
+            "params": [
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Question ID for which permissions need to be updated"
+              },
+              {
+                "name": "cleanroomQuestionPermissions",
+                "value": "",
+                "type": "query",
+                "description": "List of Updated Cleanroom Question Permissions"
+              }
+            ]
+          },
+          "docs": "This operation configures cleanroom question permissions"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Organization Users",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Organization Users",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/users",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of organization users returned per page - default is 500"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the users created for this organization."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Organization Credentials",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Organization Credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/organization-credentials"
+          },
+          "docs": "This operation fetches a list of all the Organization Credentials created for this Customer Integration. Ensure that the credentials are configured on the Habu platform before they can be accessed via external APIs. Creation of credentials is not exposed via external APIs to prevent potential security issues with transmitting raw credential values."
+        },
+        {
+          "info": {
+            "name": "Create Organization Credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/organization-credentials",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a new credential."
+        },
+        {
+          "info": {
+            "name": "Fetch an Organization Credential by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/organization-credentials/:organizationCredentialId",
+            "params": [
+              {
+                "name": "organizationCredentialId",
+                "value": "",
+                "type": "path",
+                "description": "Organization Credential ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches an Organization Credential by ID."
+        },
+        {
+          "info": {
+            "name": "Update Organization Credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/organization-credentials/:organizationCredentialId",
+            "params": [
+              {
+                "name": "organizationCredentialId",
+                "value": "",
+                "type": "path",
+                "description": "Organization Credential ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates an existing credential."
+        },
+        {
+          "info": {
+            "name": "Delete an Organization Credential by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/organization-credentials/:organizationCredentialId",
+            "params": [
+              {
+                "name": "organizationCredentialId",
+                "value": "",
+                "type": "path",
+                "description": "Organization Credential ID to be deleted"
+              }
+            ]
+          },
+          "docs": "This operation deletes an organization credential by ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Credential Sources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Credential Sources",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/credential-sources"
+          },
+          "docs": "This operation fetches a list of all the Credential Sources created for this Customer Integration."
+        },
+        {
+          "info": {
+            "name": "Fetch a Credential Source by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/credential-sources/:credentialSourceId",
+            "params": [
+              {
+                "name": "credentialSourceId",
+                "value": "",
+                "type": "path",
+                "description": "Credential Source ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Credential Source by ID."
+        },
+        {
+          "info": {
+            "name": "Fetch a Credential Source by Name",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/credential-sources/credential-name/:name",
+            "params": [
+              {
+                "name": "name",
+                "value": "",
+                "type": "path",
+                "description": "Credential Source Name"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Credential Source by Name."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Data Sources",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Data Sources",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-sources"
+          },
+          "docs": "This operation fetches a list of all the Data Sources that are available to create a new Data Connection for this Customer Integration."
+        },
+        {
+          "info": {
+            "name": "Fetch a Data Source by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-sources/:dataSourceId",
+            "params": [
+              {
+                "name": "dataSourceId",
+                "value": "",
+                "type": "path",
+                "description": "Data Source ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Data Source by ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Data Types",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of Data Types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-sources/:dataSourceId/data-types",
+            "params": [
+              {
+                "name": "dataSourceId",
+                "value": "",
+                "type": "path",
+                "description": "Data Source ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Data Types for a Data Source ID."
+        },
+        {
+          "info": {
+            "name": "Fetch a Data Type by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-sources/data-types/:dataTypeId",
+            "params": [
+              {
+                "name": "dataTypeId",
+                "value": "",
+                "type": "path",
+                "description": "Data Type ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Data Type by ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Data Source Parameters",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch all Data Source Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-sources/:dataSourceId/data-types/:dataTypeId/data-source-parameters",
+            "params": [
+              {
+                "name": "dataSourceId",
+                "value": "",
+                "type": "path",
+                "description": "Data Source ID"
+              },
+              {
+                "name": "dataTypeId",
+                "value": "",
+                "type": "path",
+                "description": "Data Type ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches all the Data Source Parameters for the given data source and data type."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Questions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch question details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/question/:questionID",
+            "params": [
+              {
+                "name": "questionID",
+                "value": "",
+                "type": "path",
+                "description": "The question ID to fetch a single Question's details"
+              },
+              {
+                "name": "cleanRoomID",
+                "value": "",
+                "type": "query",
+                "description": "The cleanroom ID for where the question is"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "query",
+                "description": "The version of the question"
+              }
+            ]
+          },
+          "docs": "This operation fetches the details of a question by the question ID."
+        },
+        {
+          "info": {
+            "name": "Update question",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/question/:questionID",
+            "params": [
+              {
+                "name": "questionID",
+                "value": "",
+                "type": "path",
+                "description": "The question ID of the question to be updated"
+              },
+              {
+                "name": "cleanRoomID",
+                "value": "",
+                "type": "query",
+                "description": "The cleanroom ID for where the question is"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates a question."
+        },
+        {
+          "info": {
+            "name": "Delete question",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/question/:questionID",
+            "params": [
+              {
+                "name": "questionID",
+                "value": "",
+                "type": "path",
+                "description": "The question ID to fetch a single Question's details"
+              }
+            ]
+          },
+          "docs": "This operation deletes a question given its ID"
+        },
+        {
+          "info": {
+            "name": "Create question",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/question",
+            "params": [
+              {
+                "name": "cleanRoomID",
+                "value": "",
+                "type": "query",
+                "description": "The cleanroom ID for where the question is"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a question."
+        },
+        {
+          "info": {
+            "name": "Fetch question data types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/question/:questionID/data-types",
+            "params": [
+              {
+                "name": "questionID",
+                "value": "",
+                "type": "path",
+                "description": "The question ID to fetch a question data types"
+              }
+            ]
+          },
+          "docs": "This operation fetches the question types by the question ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Import Data Types",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Import Data Types",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-connections/import-data-types"
+          },
+          "docs": "This operation fetches a list of all the Import Data Types that are available to the organization."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "DataConnectionViews",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Data Connection Views",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-connection-views",
+            "params": [
+              {
+                "name": "stage",
+                "value": "",
+                "type": "query",
+                "description": "Filter views by stage"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter views by status"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of data connection views returned per page - default is 30, minimum is 1, maximum is 100"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0, minimum is 0"
+              }
+            ]
+          },
+          "docs": "This operation fetches a paginated list of data connection views for the organization."
+        },
+        {
+          "info": {
+            "name": "Create a Data Connection View",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/data-connection-views",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a new data connection view from a SQL query and source data connections."
+        },
+        {
+          "info": {
+            "name": "Fetch a Data Connection View by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/data-connection-views/:viewId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection View ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a data connection view by ID."
+        },
+        {
+          "info": {
+            "name": "Update a Data Connection View by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/data-connection-views/:viewId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection View ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation updates a data connection view by ID."
+        },
+        {
+          "info": {
+            "name": "Delete a Data Connection View by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/data-connection-views/:viewId",
+            "params": [
+              {
+                "name": "viewId",
+                "value": "",
+                "type": "path",
+                "description": "Data Connection View ID to be deleted"
+              }
+            ]
+          },
+          "docs": "This operation deletes a data connection view by ID."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Flows",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get a Cleanroom Flow by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Flow by its ID, including flow structure (nodes, edges) and version information."
+        },
+        {
+          "info": {
+            "name": "Create or update a cleanroom flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates or updates a Cleanroom Flow."
+        },
+        {
+          "info": {
+            "name": "Set Cleanroom Flow Version",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/version/:version",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "The target flow version to set"
+              }
+            ]
+          },
+          "docs": "This operation changes a cleanroom flow to use a specific existing flow version. Use this for rollback or switching between flow versions."
+        },
+        {
+          "info": {
+            "name": "List Cleanroom Flows",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/list",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "List cleanroom flows for a cleanroom with pagination, filters and search."
+        },
+        {
+          "info": {
+            "name": "Assign datasets and fields to a cleanroom flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/assign-datasets",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation assigns datasets and field mappings to nodes in a cleanroom flow using dataset and organization names instead of IDs."
+        },
+        {
+          "info": {
+            "name": "Get organization information for datasets by UUID or name",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/dataset-organizations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID to scope the dataset search"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation retrieves organization information for datasets by UUID or name within a cleanroom context."
+        },
+        {
+          "info": {
+            "name": "Bulk list flow node export jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/nodes/exports",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              },
+              {
+                "name": "nodeIds",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of node IDs to list exports for"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of export jobs returned per node per page - default is 500"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              }
+            ]
+          },
+          "docs": "Lists all export jobs for one or more flow nodes. Pass a comma-separated list of node IDs via the nodeIds query parameter."
+        },
+        {
+          "info": {
+            "name": "Bulk create flow node export jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/nodes/exports",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates export jobs for one or more flow nodes in a single call. Each item specifies a node ID, the partner accounts to export to, and optional export parameters. Only question nodes are supported. One export job is created per partner account per node."
+        },
+        {
+          "info": {
+            "name": "Bulk delete flow node export jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/nodes/exports",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes all export jobs for the specified flow nodes. All jobs associated with each node are deleted."
+        },
+        {
+          "info": {
+            "name": "Bulk update flow node export job status",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/nodes/exports/status",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the status of all export jobs for the specified flow nodes. Status must be ACTIVE or PAUSED."
+        },
+        {
+          "info": {
+            "name": "Bulk get flow node export job runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/nodes/exports/runs",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              },
+              {
+                "name": "nodeIds",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of node IDs"
+              }
+            ]
+          },
+          "docs": "Returns run history for all export jobs associated with the specified flow nodes."
+        },
+        {
+          "info": {
+            "name": "Get comprehensive node details for a cleanroom flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/node-details",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ]
+          },
+          "docs": "This operation retrieves comprehensive details for all nodes in a cleanroom flow including question metadata and flow position information."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Flow Runs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Resume a Cleanroom Flow Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId/resume-flow-run",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow Run ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation resumes a Cleanroom Flow Run."
+        },
+        {
+          "info": {
+            "name": "replay a Cleanroom Flow Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId/replay-flow-run",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow Run ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation replays a Cleanroom Flow Run."
+        },
+        {
+          "info": {
+            "name": "get the status of a Cleanroom Flow Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId/status",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow Run ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches the status of a Cleanroom Flow Run."
+        },
+        {
+          "info": {
+            "name": "List Cleanroom Flow Runs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/cleanroom-flow-runs",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Case-insensitive partial search across flow run name, status, ID, and parent flow run ID"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of flow runs to return"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of flow runs to skip for pagination"
+              }
+            ]
+          },
+          "docs": "List cleanroom flow runs for a given cleanroom flow with optional search filters and pagination."
+        },
+        {
+          "info": {
+            "name": "Create a Cleanroom Flow Run",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/cleanroom-flow-runs",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates a Cleanroom Flow Run."
+        },
+        {
+          "info": {
+            "name": "Get Flow Run Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/flow-run-parameters",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ]
+          },
+          "docs": "This operation gets run parameters for a cleanroom flow"
+        },
+        {
+          "info": {
+            "name": "Preview Flow Run Parameters",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/preview-flow-run-parameters",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the expected runtime and partition parameters for each question node that would be included in a flow run, without actually creating a run. Accepts the same request shape as Create Cleanroom Flow Run. If parentFlowRunId is set on the request, it is treated as a replay scenario."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom Flow Run by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID to which the flow run belongs"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Flow Run ID to fetch a single Cleanroom Flow Run's details"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Flow Run (including metadata) by Cleanroom Flow Run ID and Clean Room ID."
+        },
+        {
+          "info": {
+            "name": "Fetch a Cleanroom Flow Run Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId/report",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID to which the flow run belongs"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Flow Run ID to fetch a single Cleanroom Flow Run's details"
+              },
+              {
+                "name": "node",
+                "value": "",
+                "type": "query",
+                "description": "Identifier of the node in the flow. You can pass either the node’s UUID (recommended), or the node’s Question Display ID–based label (for example, Q-004368). If the same question is used multiple times as different nodes in the same flow, the label is suffixed with a number (for example, Q-004368_1, Q-004368_2). In those cases, using the UUID is the safest way to avoid ambiguity."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of Cleanroom Flow Run results data returned per page - default is 500"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0"
+              }
+            ]
+          },
+          "docs": "This operation fetches a Cleanroom Flow Run Report (including metadata) by Cleanroom Flow Run ID and Clean Room ID."
+        },
+        {
+          "info": {
+            "name": "Fetch output nodes for a Cleanroom Flow Run Report",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId/output-nodes",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID to which the flow run belongs"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Flow Run ID to fetch a single Cleanroom Flow Run's details"
+              }
+            ]
+          },
+          "docs": "This operation fetches the output nodes for a cleanroom flow run. It is the canonical way to list all nodes in the run and retrieve their UUIDs (the recommended identifier). Note: The label field in this response represents the node's display name (e.g., \"Brand Awareness\") and cannot be used as a node identifier. API clients should use the returned UUID for all node-specific operations to ensure uniqueness and stability."
+        },
+        {
+          "info": {
+            "name": "Download output file for a Cleanroom Flow Run node",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flow-runs/:cleanroomFlowRunId/node/:nodeIdentifier/download/:fileName",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID to which the flow run belongs"
+              },
+              {
+                "name": "cleanroomFlowRunId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Flow Run ID"
+              },
+              {
+                "name": "nodeIdentifier",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the node in the flow. You can pass either the node’s UUID (recommended), or the node’s Question Display ID–based label (for example, Q-004368). If the same question is used multiple times as different nodes in the same flow, the label is suffixed with a number (for example, Q-004368_1, Q-004368_2). In those cases, using the UUID is the safest way to avoid ambiguity."
+              },
+              {
+                "name": "fileName",
+                "value": "",
+                "type": "path",
+                "description": "The name of the output file to download"
+              }
+            ]
+          },
+          "docs": "This operation downloads an output file for a specific node in a cleanroom flow run"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Flow Decision Configurations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get decision configuration for a cleanroom flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/decision-configurations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              },
+              {
+                "name": "nodeIdentifier",
+                "value": "",
+                "type": "query",
+                "description": "Optional node identifier (UUID or label) to fetch configuration for a specific node"
+              }
+            ]
+          },
+          "docs": "Fetches decision configuration for a cleanroom flow. If nodeIdentifier is provided, returns configuration for that specific node only. Otherwise returns all decision configurations for the flow."
+        },
+        {
+          "info": {
+            "name": "Create or update decision configuration for a cleanroom flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/decision-configurations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates or updates decision configuration for one or more nodes in a cleanroom flow. Each decision node includes conditions, retry configuration, and gated edges."
+        },
+        {
+          "info": {
+            "name": "Delete decision configuration for a cleanroom flow",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-flows/:cleanroomFlowId/decision-configurations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanroomFlowId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom Flow ID"
+              },
+              {
+                "name": "nodeIdentifier",
+                "value": "",
+                "type": "query",
+                "description": "Optional node identifier (UUID or label) to delete configuration for a specific node"
+              },
+              {
+                "name": "cleanRoomOverride",
+                "value": "",
+                "type": "query",
+                "description": "If true, delete from the CRF-scoped override tier; if false, delete from the base tier"
+              }
+            ]
+          },
+          "docs": "Deletes decision configuration for a cleanroom flow. If nodeIdentifier is provided, deletes configuration for that specific node only. Otherwise deletes all decision configurations for the flow."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Cleanroom Execution Instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/create-cleanroom-execution-instance",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates clean room execution template instance."
+        },
+        {
+          "info": {
+            "name": "Get status of clean room measurement execution instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-execution-instance/:cleanRoomMeasurementExecutionInstanceId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanRoomMeasurementExecutionInstanceId",
+                "value": "",
+                "type": "path",
+                "description": "Clean Room Measurement Execution Instance ID"
+              }
+            ]
+          },
+          "docs": "This operation gets the status of clean room measurement execution instance."
+        },
+        {
+          "info": {
+            "name": "Cancels a clean room measurement execution instance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-execution-instance/:cleanRoomMeasurementExecutionInstanceId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              },
+              {
+                "name": "cleanRoomMeasurementExecutionInstanceId",
+                "value": "",
+                "type": "path",
+                "description": "Clean Room Measurement Execution Instance ID"
+              }
+            ]
+          },
+          "docs": "This operation cancels a clean room measurement execution instance."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Exports",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Exports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/exports/jobs",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list of all the Cleanroom Exports that are available to the organization."
+        },
+        {
+          "info": {
+            "name": "Create cleanroom export job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/exports/jobs",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation creates new data export jobs"
+        },
+        {
+          "info": {
+            "name": "Fetch a list of all Cleanroom Exports",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/exports/jobs/:exportJobId/runs",
+            "params": [
+              {
+                "name": "exportJobId",
+                "value": "",
+                "type": "path",
+                "description": "Export Job ID"
+              }
+            ]
+          },
+          "docs": "This operation fetches the runs for a data export job"
+        },
+        {
+          "info": {
+            "name": "Change export job status",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.habu.com/v1/exports/jobs/:exportJobId/status",
+            "params": [
+              {
+                "name": "exportJobId",
+                "value": "",
+                "type": "path",
+                "description": "Export Job ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the job schedule status to ACTIVE or PAUSED."
+        },
+        {
+          "info": {
+            "name": "Delete a data export job",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/exports/jobs/:exportJobId",
+            "params": [
+              {
+                "name": "exportJobId",
+                "value": "",
+                "type": "path",
+                "description": "Export Job ID"
+              }
+            ]
+          },
+          "docs": "Deletes a data export job for the organization."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Cleanroom Destinations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List destinations provisioned in a cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/destinations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the cleanroom."
+              },
+              {
+                "name": "type",
+                "value": "",
+                "type": "query",
+                "description": "When provided, only destinations whose partner has this type (for example EXPORTS) are returned."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of destinations to return. Default 30; must be between 1 and 100."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number destinations to skip at the start of the list. Default is 0."
+              },
+              {
+                "name": "latestJobDays",
+                "value": "",
+                "type": "query",
+                "description": "When set, job run status summaries on each partner account only include runs from the last N days."
+              }
+            ]
+          },
+          "docs": "Lists destinations provisioned to this cleanroom. Each item includes the partner account, whether the org is owner or partner, and the activation channel status. Paginate with limit and offset (defaults 30 and 0; limit may not exceed 100). You can optionally filter by partner type."
+        },
+        {
+          "info": {
+            "name": "Provision destinations to a cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/destinations",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "This operation provisions a destination to a cleanroom"
+        },
+        {
+          "info": {
+            "name": "Deprovision a destination from a cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/destinations/:partnerAccountId",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID containing the destination"
+              },
+              {
+                "name": "partnerAccountId",
+                "value": "",
+                "type": "path",
+                "description": "Destination connection to deprovision"
+              }
+            ]
+          },
+          "docs": "Deprovisions a destination connection from a cleanroom. The destination connection must belong to the organization and must not be in use for activation."
+        },
+        {
+          "info": {
+            "name": "Approve or reject a destination provisioning request",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/destinations/:partnerAccountId/provisioning-request/review",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "Cleanroom ID containing the destination"
+              },
+              {
+                "name": "partnerAccountId",
+                "value": "",
+                "type": "path",
+                "description": "Partner account ID for the destination provisioning request"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Approve or reject a pending destination provisioning request for a single partner account in the cleanroom."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Destinations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List destination partners",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/destinations/partners"
+          },
+          "docs": "This operation fetches the list of destination partners available."
+        },
+        {
+          "info": {
+            "name": "List destination connections",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/destinations",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "The number of destination connections returned per page - default is 30, minimum is 1, maximum is 100"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "The offset - default is 0, minimum is 0"
+              }
+            ]
+          },
+          "docs": "This operation fetches a list destination connections (partner accounts) for the organisation."
+        },
+        {
+          "info": {
+            "name": "Create destination connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.habu.com/v1/destinations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a destination connection (partner account) for the organisation. requires name and partner id; credential and publicKey are optional depending on partner type."
+        },
+        {
+          "info": {
+            "name": "Update destination connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.habu.com/v1/destinations/:partnerAccountId",
+            "params": [
+              {
+                "name": "partnerAccountId",
+                "value": "",
+                "type": "path",
+                "description": "Partner Account ID for the destination connection to be updated"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing destination connection (partner account) for the organization. Partner cannot be changed; only name, credential, and publicKey may be updated."
+        },
+        {
+          "info": {
+            "name": "Delete destination connection",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.habu.com/v1/destinations/:partnerAccountId",
+            "params": [
+              {
+                "name": "partnerAccountId",
+                "value": "",
+                "type": "path",
+                "description": "Partner Account ID for the destination connection to be deleted"
+              }
+            ]
+          },
+          "docs": "Deletes a destination connection (partner account) for the organization."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Intelligence",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Habu Intelligence bindings for a Cleanroom",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/intelligence",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID"
+              }
+            ]
+          },
+          "docs": "**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**\n\nResolves all Habu Intelligence (HI) referents for a Cleanroom in one call: the Snowflake database name, the Metabase database id, the Metabase collection id, and the provisioning status. Replaces the heuristic display-id prefix matching previously needed to map a Cleanroom to its Metabase database.\nRequires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms"
+        },
+        {
+          "info": {
+            "name": "List Cleanroom Questions with HI data loaded",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/intelligence/loaded-questions",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID"
+              },
+              {
+                "name": "pageSize",
+                "value": "",
+                "type": "query",
+                "description": "The page size - default 50, max 200"
+              },
+              {
+                "name": "pageToken",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination token returned by a previous call"
+              }
+            ]
+          },
+          "docs": "**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**\n\nReturns the set of Cleanroom Questions whose results have been loaded into the Cleanroom's Habu Intelligence Snowflake database, with their Snowflake report-table names and Metabase table ids.\nRequires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key."
+        },
+        {
+          "info": {
+            "name": "Get HI bindings for a Cleanroom Question",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/cleanroom-questions/:cleanroomQuestionId/intelligence",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID"
+              },
+              {
+                "name": "cleanroomQuestionId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Question ID"
+              }
+            ]
+          },
+          "docs": "**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**\n\nResolves the Snowflake report and metadata table names and the Metabase table ids for a specific Cleanroom Question, plus its load status.\nRequires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key."
+        },
+        {
+          "info": {
+            "name": "Resolve flow outputs to HI report tables",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.habu.com/v1/cleanrooms/:cleanroomId/flows/:flowId/intelligence",
+            "params": [
+              {
+                "name": "cleanroomId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom ID"
+              },
+              {
+                "name": "flowId",
+                "value": "",
+                "type": "path",
+                "description": "The Cleanroom Flow ID"
+              },
+              {
+                "name": "flowRunId",
+                "value": "",
+                "type": "query",
+                "description": "Optional flow run ID to enrich each output with run status"
+              }
+            ]
+          },
+          "docs": "**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**\n\nFor each question output in a Cleanroom flow, returns the corresponding Snowflake report table and Metabase table id. Optional flowRunId enriches each output with its run status.\nRequires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

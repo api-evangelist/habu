@@ -76,3 +76,8 @@ candidate_tools:
 - name: health
   rest: getHealth
   description: Unauthenticated connectivity check against https://api.habu.com/v1/health.
+deployment:
+  mode: unclear
+  verified: searched
+  checked: '2026-08-12'
+  source: catalog MCP census
