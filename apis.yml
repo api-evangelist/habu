@@ -53,33 +53,725 @@ tags:
 - Marketing
 - Analytics
 apis:
-- name: Habu Clean Room API
-  description: >-
-    The Habu Clean Room API — published by LiveRamp as "External APIs for Customer
-    Integration" and still served from Habu's own api.habu.com host — lets customers
-    set up and manage clean rooms, provision data connections and datasets, invite
-    partners, author and permission analytical questions, run those questions and
-    flows, and retrieve or export the results, without going through the console UI.
-    It is a 151-operation OpenAPI 3.0.0 contract over 108 paths, secured with an
-    OAuth 2.0 client-credentials flow whose token endpoint is api.habu.com/v1/oauth/token.
+- aid: habu:habu-billable-configs-api
+  name: Habu Billable Configs API
+  description: The Billable Configs API from Habu — 2 operation(s) for billable configs.
   humanURL: https://developers.liveramp.com/clean-room-api
   baseURL: https://api.habu.com/v1/
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/habu.png
   tags:
-  - Data Clean Room
-  - Data Collaboration
-  - Privacy
-  - Analytics
-  - Advertising
+  - Billable Configs
   properties:
   - type: OpenAPI
-    url: openapi/habu-clean-room-api-openapi.yml
+    url: openapi/habu-billable-configs-api-openapi.yml
   - type: Documentation
     url: https://developers.liveramp.com/clean-room-api
   - type: APIReference
     url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
   - type: GettingStarted
-    url: https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-api
+  name: Habu Cleanroom API
+  description: The Cleanroom API from Habu — 2 operation(s) for cleanroom.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-datasets-api
+  name: Habu Cleanroom Datasets API
+  description: The Cleanroom Datasets API from Habu — 5 operation(s) for cleanroom datasets.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Datasets
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-datasets-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-destinations-api
+  name: Habu Cleanroom Destinations API
+  description: The Cleanroom Destinations API from Habu — 3 operation(s) for cleanroom destinations.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Destinations
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-destinations-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-exports-api
+  name: Habu Cleanroom Exports API
+  description: The Cleanroom Exports API from Habu — 4 operation(s) for cleanroom exports.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Exports
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-exports-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-flow-runs-api
+  name: Habu Cleanroom Flow Runs API
+  description: The Cleanroom Flow Runs API from Habu — 10 operation(s) for cleanroom flow runs.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Flow Runs
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-flow-runs-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-flows-api
+  name: Habu Cleanroom Flows API
+  description: The Cleanroom Flows API from Habu — 10 operation(s) for cleanroom flows.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Flows
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-flows-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-partners-api
+  name: Habu Cleanroom Partners API
+  description: The Cleanroom Partners API from Habu — 8 operation(s) for cleanroom partners.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Partners
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-partners-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-question-datasets-api
+  name: Habu Cleanroom Question Datasets API
+  description: >-
+    The Cleanroom Question Datasets API from Habu — 4 operation(s) for cleanroom question datasets.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Question Datasets
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-question-datasets-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-question-permissions-api
+  name: Habu Cleanroom Question Permissions API
+  description: >-
+    The Cleanroom Question Permissions API from Habu — 1 operation(s) for cleanroom question permissions.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Question Permissions
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-question-permissions-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-question-result-shares-api
+  name: Habu Cleanroom Question Result Shares API
+  description: >-
+    The Cleanroom Question Result Shares API from Habu — 1 operation(s) for cleanroom question result
+    shares.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Question Result Shares
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-question-result-shares-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-question-run-schedule-api
+  name: Habu Cleanroom Question Run Schedule API
+  description: >-
+    The Cleanroom Question Run Schedule API from Habu — 2 operation(s) for cleanroom question run schedule.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Question Run Schedule
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-question-run-schedule-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-question-runs-api
+  name: Habu Cleanroom Question Runs API
+  description: The Cleanroom Question Runs API from Habu — 10 operation(s) for cleanroom question runs.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Question Runs
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-question-runs-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-question-tags-api
+  name: Habu Cleanroom Question Tags API
+  description: The Cleanroom Question Tags API from Habu — 2 operation(s) for cleanroom question tags.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Question Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-question-tags-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-questions-api
+  name: Habu Cleanroom Questions API
+  description: The Cleanroom Questions API from Habu — 5 operation(s) for cleanroom questions.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Questions
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-questions-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-roles-api
+  name: Habu Cleanroom Roles API
+  description: The Cleanroom Roles API from Habu — 2 operation(s) for cleanroom roles.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-roles-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanroom-users-api
+  name: Habu Cleanroom Users API
+  description: The Cleanroom Users API from Habu — 3 operation(s) for cleanroom users.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanroom Users
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanroom-users-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-cleanrooms-api
+  name: Habu Cleanrooms API
+  description: The Cleanrooms API from Habu — 4 operation(s) for cleanrooms.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Cleanrooms
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-cleanrooms-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-credential-sources-api
+  name: Habu Credential Sources API
+  description: The Credential Sources API from Habu — 3 operation(s) for credential sources.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Credential Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-credential-sources-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-data-connections-api
+  name: Habu Data Connections API
+  description: The Data Connections API from Habu — 5 operation(s) for data connections.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Data Connections
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-data-connections-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-data-source-parameters-api
+  name: Habu Data Source Parameters API
+  description: The Data Source Parameters API from Habu — 1 operation(s) for data source parameters.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Data Source Parameters
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-data-source-parameters-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-data-sources-api
+  name: Habu Data Sources API
+  description: The Data Sources API from Habu — 2 operation(s) for data sources.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Data Sources
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-data-sources-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-data-types-api
+  name: Habu Data Types API
+  description: The Data Types API from Habu — 2 operation(s) for data types.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Data Types
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-data-types-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-dataconnectionviews-api
+  name: Habu Data Connection Views API
+  description: The DataConnectionViews API from Habu — 2 operation(s) for dataconnectionviews.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - DataConnectionViews
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-dataconnectionviews-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-destinations-api
+  name: Habu Destinations API
+  description: The Destinations API from Habu — 3 operation(s) for destinations.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Destinations
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-destinations-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-flow-decision-configurations-api
+  name: Habu Flow Decision Configurations API
+  description: >-
+    The Flow Decision Configurations API from Habu — 1 operation(s) for flow decision configurations.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Flow Decision Configurations
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-flow-decision-configurations-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-health-api
+  name: Habu Health API
+  description: The Health API from Habu — 1 operation(s) for health.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Health
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-health-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-import-data-types-api
+  name: Habu Import Data Types API
+  description: The Import Data Types API from Habu — 1 operation(s) for import data types.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Import Data Types
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-import-data-types-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-intelligence-api
+  name: Habu Intelligence API
+  description: The Intelligence API from Habu — 4 operation(s) for intelligence.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Intelligence
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-intelligence-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-internal-api
+  name: Habu Internal API
+  description: >-
+    For internal LiveRamp consumption. These operations are not part of the supported external customer
+    contract and may change without notice.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Internal
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-internal-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-invitations-api
+  name: Habu Invitations API
+  description: The Invitations API from Habu — 3 operation(s) for invitations.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Invitations
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-invitations-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-organization-credentials-api
+  name: Habu Organization Credentials API
+  description: >-
+    The Organization Credentials API from Habu — 2 operation(s) for organization credentials.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Organization Credentials
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-organization-credentials-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-organization-users-api
+  name: Habu Organization Users API
+  description: The Organization Users API from Habu — 1 operation(s) for organization users.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Organization Users
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-organization-users-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
+  - type: Authentication
+    url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
+  - type: RateLimits
+    url: https://developers.liveramp.com/clean-room-api/reference/api-limits
+- aid: habu:habu-questions-api
+  name: Habu Questions API
+  description: The Questions API from Habu — 3 operation(s) for questions.
+  humanURL: https://developers.liveramp.com/clean-room-api
+  baseURL: https://api.habu.com/v1/
+  tags:
+  - Questions
+  properties:
+  - type: OpenAPI
+    url: openapi/habu-questions-api-openapi.yml
+  - type: Documentation
+    url: https://developers.liveramp.com/clean-room-api
+  - type: APIReference
+    url: https://developers.liveramp.com/clean-room-api/reference/clean-room-api-endpoints
+  - type: GettingStarted
+    url: >-
+      https://developers.liveramp.com/clean-room-api/reference/python-tutorial-for-creating-and-running-questions
   - type: Authentication
     url: https://developers.liveramp.com/clean-room-api/reference/request-an-access-token
   - type: RateLimits
