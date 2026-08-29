@@ -1,0 +1,67 @@
+slug: habu
+provider: Habu
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 5
+edges:
+- tag: Cleanroom Users
+  spec_file: habu-cleanroom-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.76
+  evidence: '"Add Cleanroom User"; "Remove Cleanroom User"; "Update Cleanroom User Role"'
+  reason: Grants, revokes and re-roles user access to a collaboration workspace — identity and access
+    administration, not HR employee records.
+- tag: Cleanroom Question Runs
+  spec_file: habu-cleanroom-question-runs-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.72
+  evidence: '"Get the result data for Cleanroom Question Run"; "Get the explain plan for a SQL Cleanroom
+    Question Run"; schema QuestionRunResultData'
+  reason: Operations execute analytical queries and return result data, counts, output files and SQL explain
+    plans — analytics/BI delivery over collaborated data, not any industry-specific business process.
+- tag: Cleanroom Datasets
+  spec_file: habu-cleanroom-datasets-api-openapi.yml
+  capability_id: BC-610
+  capability_id_l1: BC-610
+  capability_name: Information & Data Management
+  confidence: 0.7
+  evidence: POST /cleanrooms/{cleanroomId}/datasets/configure 'Configure a Cleanroom Dataset by Data Connection
+    ID'; 'Fetch a list of all Identifier Types for Field Mapping'
+  reason: Registration, field mapping and partitioning of datasets made available for collaboration is
+    data asset/governance management. Kept at L1 because the surface spans governance, architecture and
+    identifier-mapping concerns.
+- tag: Cleanroom Questions
+  spec_file: habu-cleanroom-questions-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.7
+  evidence: '"Add Cleanroom Question"; "Update the compute capacity for a cleanroom question"; "Enable
+    segmentation for a Cleanroom Question"'
+  reason: A 'question' here is a configured analytic query/segmentation run against joined party data;
+    managing these definitions is analytics & BI delivery. Note the tag is not a survey or Q&A business
+    object.
+- tag: Questions
+  spec_file: habu-questions-api-openapi.yml
+  capability_id: BC-610.50
+  capability_id_l1: BC-610
+  capability_name: Analytics & BI Management
+  confidence: 0.7
+  evidence: POST /question createQuestion 'Create question'; schemas 'Measure', 'Dimension', 'QueryDetail',
+    'QuestionDetails'
+  reason: Full CRUD over 'questions' — parameterised analytical queries with measures, dimensions and
+    query details that clean-room participants run against collaborative data. This is authoring and managing
+    analytical/reporting artefacts, i.e. analytics & BI delivery.
