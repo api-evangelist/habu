@@ -1,0 +1,165 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Roles API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Roles
+paths:
+  /cleanrooms/{cleanroomId}/cleanRoomRoles:
+    get:
+      summary: Fetch a list of cleanRoom roles
+      operationId: getCleanroomRoles
+      description: This operation fetches a list of roles applicable to the given cleanroom in this organization.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the users
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Cleanroom role list fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomRoles'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Roles
+  /cleanrooms/{cleanroomId}/cleanRoomRoles/{cleanRoomRoleId}:
+    get:
+      summary: Fetch a cleanroom role by ID
+      operationId: getCleanroomRoleById
+      description: This operation fetches a Cleanroom role by ID.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the users
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanRoomRoleId
+        description: Cleanroom Role ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Cleanroom role fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomRole'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Roles
+components:
+  schemas:
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomRoles:
+      description: A list of Cleanroom Roles
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomRole'
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

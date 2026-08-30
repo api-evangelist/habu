@@ -1,0 +1,376 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Internal API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Internal
+  description: For internal LiveRamp consumption. These operations are not part of the supported external customer contract and may change without notice.
+paths:
+  /cleanrooms/{cleanroomId}/intelligence:
+    get:
+      x-internal: true
+      summary: Get Habu Intelligence bindings for a Cleanroom
+      operationId: getCleanroomIntelligence
+      description: '**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**
+
+
+        Resolves all Habu Intelligence (HI) referents for a Cleanroom in one call: the Snowflake database name, the Metabase database id, the Metabase collection id, and the provisioning status. Replaces the heuristic display-id prefix matching previously needed to map a Cleanroom to its Metabase database.
+
+        Requires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key.'
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: The Cleanroom ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: HI bindings for the Cleanroom
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomIntelligence'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Internal
+  /cleanrooms/{cleanroomId}/intelligence/loaded-questions:
+    get:
+      x-internal: true
+      summary: List Cleanroom Questions with HI data loaded
+      operationId: listLoadedIntelligenceQuestions
+      description: '**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**
+
+
+        Returns the set of Cleanroom Questions whose results have been loaded into the Cleanroom''s Habu Intelligence Snowflake database, with their Snowflake report-table names and Metabase table ids.
+
+        Requires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key.'
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: The Cleanroom ID
+        schema:
+          type: string
+        required: true
+      - name: pageSize
+        in: query
+        description: The page size - default 50, max 200
+        schema:
+          type: integer
+          default: 50
+          maximum: 200
+        required: false
+      - name: pageToken
+        in: query
+        description: Opaque pagination token returned by a previous call
+        schema:
+          type: string
+        required: false
+      responses:
+        '200':
+          description: Loaded questions page
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoadedIntelligenceQuestions'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Internal
+  /cleanrooms/{cleanroomId}/cleanroom-questions/{cleanroomQuestionId}/intelligence:
+    get:
+      x-internal: true
+      summary: Get HI bindings for a Cleanroom Question
+      operationId: getCleanroomQuestionIntelligence
+      description: '**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**
+
+
+        Resolves the Snowflake report and metadata table names and the Metabase table ids for a specific Cleanroom Question, plus its load status.
+
+        Requires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key.'
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: The Cleanroom ID
+        schema:
+          type: string
+        required: true
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: CRQ HI bindings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionIntelligence'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Internal
+  /cleanrooms/{cleanroomId}/flows/{flowId}/intelligence:
+    get:
+      x-internal: true
+      summary: Resolve flow outputs to HI report tables
+      operationId: getFlowIntelligence
+      description: '**Internal API — for internal LiveRamp consumption, not part of the supported external contract.**
+
+
+        For each question output in a Cleanroom flow, returns the corresponding Snowflake report table and Metabase table id. Optional flowRunId enriches each output with its run status.
+
+        Requires the API user to have the `HabuIntelligenceAdmin` permission in addition to `read:cleanrooms` scope on the API key.'
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: The Cleanroom ID
+        schema:
+          type: string
+        required: true
+      - name: flowId
+        in: path
+        description: The Cleanroom Flow ID
+        schema:
+          type: string
+        required: true
+      - name: flowRunId
+        in: query
+        description: Optional flow run ID to enrich each output with run status
+        schema:
+          type: string
+        required: false
+      responses:
+        '200':
+          description: Flow HI bindings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FlowIntelligence'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Internal
+components:
+  schemas:
+    FlowIntelligenceOutput:
+      type: object
+      description: One question output of a flow with its HI report-table referent
+      properties:
+        cleanRoomQuestionId:
+          type: string
+        displayId:
+          type: string
+        title:
+          type: string
+        snowflakeReportTable:
+          type: string
+        metabaseTableId:
+          type: integer
+          format: int64
+        runStatus:
+          type: string
+          description: Run status (only populated when flowRunId is provided)
+    CleanRoomIntelligence:
+      type: object
+      description: HI bindings for a Cleanroom
+      properties:
+        cleanRoomId:
+          type: string
+        displayId:
+          type: string
+        provisionStatus:
+          $ref: '#/components/schemas/HIProvisionStatus'
+        snowflakeDatabase:
+          type: string
+          description: Name of the per-Cleanroom HI Snowflake database
+        snowflakeSchema:
+          type: string
+          description: Snowflake schema (always INTELLIGENCE today)
+        metabaseDatabaseId:
+          type: integer
+          format: int64
+          description: Numeric Metabase database id
+        metabaseCollectionId:
+          type: string
+          description: Metabase collection id (stored as string upstream)
+        metabaseUrl:
+          type: string
+    CleanRoomQuestionIntelligence:
+      type: object
+      description: HI bindings for a Cleanroom Question
+      properties:
+        cleanRoomId:
+          type: string
+        cleanRoomQuestionId:
+          type: string
+        displayId:
+          type: string
+        title:
+          type: string
+          description: Cleanroom Question title (populated for list items)
+        snowflakeReportTable:
+          type: string
+          description: Snowflake table name (CRQ_xxxxx_xxxxx)
+        snowflakeMetadataTable:
+          type: string
+        metabaseDatabaseId:
+          type: integer
+          format: int64
+        metabaseReportTableId:
+          type: integer
+          format: int64
+        metabaseMetadataTableId:
+          type: integer
+          format: int64
+        loadStatus:
+          $ref: '#/components/schemas/CRQLoadStatus'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    LoadedIntelligenceQuestions:
+      type: object
+      description: Page of CRQs with HI data loaded
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomQuestionIntelligence'
+        nextPageToken:
+          type: string
+          description: Opaque next-page token; empty when no further pages
+    CRQLoadStatus:
+      type: string
+      description: Per-CRQ load state for HI Snowflake report tables
+      enum:
+      - UNSPECIFIED
+      - NOT_LOADED
+      - LOADED
+      - STALE
+      - FAILED
+    FlowIntelligence:
+      type: object
+      description: HI bindings for a Cleanroom Flow's question outputs
+      properties:
+        flowId:
+          type: string
+        flowName:
+          type: string
+        outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowIntelligenceOutput'
+    HIProvisionStatus:
+      type: string
+      description: Habu Intelligence provisioning lifecycle state for a Cleanroom
+      enum:
+      - UNSPECIFIED
+      - NOT_ENABLED
+      - PROVISIONING
+      - ENABLED
+      - FAILED
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

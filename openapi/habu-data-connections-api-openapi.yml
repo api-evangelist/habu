@@ -1,0 +1,655 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Data Connections API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Data Connections
+paths:
+  /data-connections:
+    post:
+      summary: Create Data Connection
+      operationId: createDataConnection
+      description: This operation creates a new data connection.
+      requestBody:
+        description: 'The following fields are required: name, category, credentialId, dataType.[displayName], jobParameter.[name, value]; all others are optional'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataConnectionDetails'
+      responses:
+        '200':
+          description: New data connection created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+    get:
+      summary: Fetch a list of all Data Connections
+      operationId: getAllDataConnections
+      description: This operation fetches a list of all the data connections created as part of this Customer Integration.
+      responses:
+        '200':
+          description: Data connections fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnections'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+  /data-connections/{dataConnectionId}:
+    get:
+      summary: Fetch a Data Connection by ID
+      operationId: getDataConnectionById
+      description: This operation fetches a data connection by ID.
+      parameters:
+      - name: dataConnectionId
+        in: path
+        description: Data Connection ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched the data connection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+    put:
+      summary: Update a Data Connection by ID
+      operationId: updateDataConnection
+      description: This operation updates a data connection by ID.
+      parameters:
+      - name: dataConnectionId
+        in: path
+        description: Data Connection ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: 'The following fields are required: name, category, credentialId, dataType.[displayName, displayName], jobParameter.[name, value]; all others are optional'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataConnectionDetails'
+      responses:
+        '200':
+          description: Successfully updated the data connection.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+    delete:
+      summary: Delete a Data Connection by ID
+      operationId: deleteDataConnection
+      description: This operation deletes a data connection by ID.
+      parameters:
+      - in: path
+        name: dataConnectionId
+        description: DataConnection ID to be deleted
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: DataConnection deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+  /data-connections/{dataConnectionId}/retry:
+    post:
+      summary: Retry a Data Connection Job by ID
+      operationId: retryDataConnectionJob
+      description: This operation retries a data connection job by ID.
+      parameters:
+      - name: dataConnectionId
+        in: path
+        description: Data Connection ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully submitted the retry request for the data connection ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionRetryResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+  /data-connections/{dataConnectionId}/field-configurations:
+    get:
+      summary: Fetch a list of all Field Configurations
+      operationId: getAllFieldConfigurations
+      description: This operation fetches a list of all the Field Configurations for the given Data Connection.
+      parameters:
+      - name: dataConnectionId
+        in: path
+        description: Data Connection ID associated with the Field Configurations
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Field Configurations fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldConfigurations'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+    post:
+      summary: Map Field Configurations
+      operationId: mapFieldConfigurations
+      description: This operation maps the Field Configurations for the given Data Connection.
+      parameters:
+      - in: path
+        name: dataConnectionId
+        description: Data Connection ID associated with the Field Configurations
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: 'The following fields are required: fieldName, dataType, identifierType, delimiter, isPii, isUserIdField, isExcluded; all others are optional Request GET method to fetch list of available data connection fields'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldConfigurations'
+      responses:
+        '200':
+          description: Field Configurations mapped successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FieldConfigurations'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+  /identifier-types:
+    get:
+      summary: Fetch a list of all Identifier Types for Field Mapping
+      operationId: getAllIdentifierTypes
+      description: This operation fetches a list of all the Identifier Types to select from for mapping a Field - this is applicable during the mapping step of a Data Connection.
+      responses:
+        '200':
+          description: Identifier Types fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifierTypes'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Connections
+components:
+  schemas:
+    DataConnectionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the data connection
+        name:
+          type: string
+          description: Name of the data connection
+        category:
+          type: string
+          description: Category of the data connection
+        configStatus:
+          type: string
+          description: Configuration Status of the data connection
+        runStatus:
+          type: string
+          description: Run Status of the data connection job
+        stage:
+          type: string
+          description: Stage of the data connection - ACTIVE or PAUSED
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        dataSource:
+          $ref: '#/components/schemas/DataSource'
+        dataSourceConfiguration:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobParameters'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    IdentifierType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+    DataSource:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: name of the data connection's data source
+        displayName:
+          type: string
+          description: display name of the data connection's data source
+          enum:
+          - AWS ECR Container
+          - AWS Glue Data Catalog
+          - Amazon Marketing Cloud
+          - Amazon Marketing Cloud (Ads API)
+          - Artifact Store
+          - Azure Storage
+          - CSV Catalog
+          - Client AWS S3
+          - Databricks Data Connection
+          - Databricks Delta Table Connection
+          - Docker Container
+          - Facebook Advanced Analytics
+          - Google Ad Manager Logs
+          - Google Ads Data Hub
+          - Google Cloud Authorized View
+          - Google Cloud Big Query
+          - Google Cloud Storage
+          - Google Cloud Storage(with SA)
+          - LiveRamp-Hosted AWS S3
+          - LiveRamp-Hosted Amazon Marketing Cloud
+          - LiveRamp-Hosted Google Cloud Storage
+          - LiveRamp-Hosted Snowflake
+          - LiveRamp-Hosted Javascript Tag
+          - HubSpot
+          - Iceberg Catalog
+          - LinkedIn Marketing Solution
+          - Notebooks
+          - Salesforce
+          - Snowflake
+          - Snowflake Azure Data Connection
+          - Snowflake Data Connection
+          - Snowflake GCS Data Connection
+          - Snowflake S3 Data Connection
+          - Snowflake Table
+          - 'The Trade Desk: Raw Event Data Stream (REDS)'
+          - Local Upload
+          - Publisher Synthetic Dataset Library
+        credentialSource:
+          type: string
+    PartitionFieldConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
+          type: array
+          items:
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
+    DataConnectionDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data connection
+        category:
+          type: string
+          description: Category of the data connection
+        credentialId:
+          type: string
+          description: Credential ID for the data connection
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        dataSource:
+          $ref: '#/components/schemas/DataSource'
+        dataSourceConfiguration:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobParameters'
+    FieldConfiguration:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: The Data Connection ID associated with this Field Configuration
+        id:
+          type: string
+          description: Unique ID for the Field
+        fieldIndex:
+          type: integer
+        fieldName:
+          type: string
+          description: Name of the Field
+        fieldLabel:
+          type: string
+          description: Display Name of the Field
+        dataType:
+          type: string
+          enum:
+          - BOOLEAN
+          - DATE
+          - DECIMAL
+          - DOUBLE
+          - INTEGER
+          - LONG
+          - STRING
+          - TEXT
+          - TIMESTAMP
+          - UNKNOWN
+          description: Data type of the field
+        identifierType:
+          type: string
+          enum:
+          - ''
+          - 1P or 3P Cookie
+          - Customer First Party Identifier
+          - Hashed Emails
+          - HouseHold ID
+          - Email MD5 Hashed
+          - Mobile Device Identifier
+          - Person (or People) Identifier
+          - RampID
+          - Raw Email
+          - Email SHA1 Hashed
+          - Email SHA256 Hashed
+          - Unique Identifier
+          - City
+          - State
+          - Country
+          - Postal Code
+          - Street Address
+          - Address Line 1
+          - Address Line 2
+          - Name
+          - First Name
+          - Middle Name
+          - Last Name
+          - TV Device ID
+          - IP Address
+          - phone
+          - Hashed Customer ID
+          description: unique user identifier type
+        delimiter:
+          type: string
+          enum:
+          - ''
+          - Semicolon
+          - Tab
+          - Comma
+          - Pipe
+          description: character or sequence of characters that separates data into separate fields
+        isPii:
+          type: boolean
+          default: false
+        isUserIdField:
+          type: boolean
+          default: false
+        isExcluded:
+          type: boolean
+          default: false
+        isPartitionColumn:
+          type: boolean
+          default: false
+          description: Indicates whether this field is a partition column
+        partitionFieldConfig:
+          $ref: '#/components/schemas/PartitionFieldConfig'
+    DataConnectionRetryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    IdentifierTypes:
+      description: A list of Identifier Types
+      type: array
+      items:
+        $ref: '#/components/schemas/IdentifierType'
+    JobParameters:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        value:
+          type: string
+    DataConnections:
+      description: A list of Data Connections
+      type: array
+      items:
+        $ref: '#/components/schemas/DataConnectionResponse'
+    DataType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+          enum:
+          - Ad Engagement
+          - Ad Exposure
+          - Ad Logs
+          - 'Amazon Marketing Cloud: Event-Level Ad Campaign Data'
+          - Binary Data
+          - CRM Data
+          - Campaign Data
+          - Campaign Mapping Data
+          - Code Container
+          - Conversion Events
+          - Databricks Container
+          - Databricks Notebook
+          - 'Facebook: Advanced Analytics Data'
+          - Generic
+          - 'Google Ads Data Hub: Event-Level Ad Campaign Data'
+          - Google Cloud Big Query
+          - Identity Graph
+          - JAR
+          - LinkedIn Marketing Solutions Config Data
+          - Machine Learning Model
+          - Member Profile
+          - Metadata
+          - Model Training
+          - Offline Conversions
+          - Page Data
+          - Service Container
+          - 'The Trade Desk: Raw Event Data Stream (REDS) Feed'
+          - 'The Trade Desk: Raw Event Data Stream (REDS) Metadata'
+          - Transaction Data
+          - User Data
+          - User-Segment Map
+          - WHEEL
+    FieldConfigurations:
+      description: A list of Field Configurations
+      type: array
+      items:
+        $ref: '#/components/schemas/FieldConfiguration'
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

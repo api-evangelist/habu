@@ -1,0 +1,386 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Question Datasets API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Question Datasets
+paths:
+  /cleanrooms/{cleanroomId}/stakeholders:
+    get:
+      summary: Fetch a list of stakeholders for this cleanroom
+      operationId: getCleanroomStakeholders
+      description: This operation fetches a list of stakeholders for this Cleanroom that need datasets assigned while managing datasets for Cleanroom Question.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Stakeholders returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomStakeholders'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Datasets
+  /cleanroom-questions/{cleanroomQuestionId}/data-type-options:
+    get:
+      summary: Fetch a list of data type options for this cleanroom question
+      operationId: getCleanroomQuestionDataTypeOptions
+      description: This operation fetches a list of DataTypeOptions for this Cleanroom Question.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      - name: dataType
+        in: query
+        description: Data Type
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Question Data Type Options returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionDataTypeOptions'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Datasets
+  /cleanroom-questions/{cleanroomQuestionId}/datasets-ownership:
+    post:
+      summary: Assign Cleanroom Question Datasets Ownership
+      operationId: assignCleanroomQuestionDatasetsOwnership
+      description: This operation assigns ownership to a Cleanroom Question Datasets.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: Cleanroom Question ID associated with the datasets
+        required: true
+        schema:
+          type: string
+      - name: AssignCleanroomQuestionDatasetRequests
+        in: query
+        description: request body to assign cleanroom question dataset ownership
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignCleanroomQuestionDatasetRequest'
+      responses:
+        '200':
+          description: Cleanroom Question Datasets ownership assigned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionDatasets'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Datasets
+  /cleanroom-questions/{cleanroomQuestionId}/datasets:
+    post:
+      summary: Configure Cleanroom Question Datasets
+      operationId: configureCleanroomQuestionDatasets
+      description: This operation configures and assigns Datasets to a Cleanroom Question.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: Cleanroom Question ID associated with the datasets
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: 'The following fields are required: datasetId, macro, field.[name, value]; all others are optional. Clean-room owner must assign dataset ownership first'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoomQuestionDatasets'
+      responses:
+        '200':
+          description: Cleanroom Question Datasets configured and assigned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionDatasets'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Datasets
+    get:
+      summary: Fetch a list of all Cleanroom Question Datasets
+      operationId: getAllCleanroomQuestionDatasets
+      description: This operation fetches a list of all Cleanroom Question Datasets.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: Cleanroom Question ID associated with the datasets
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Question Datasets fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionDatasets'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Datasets
+components:
+  schemas:
+    DatasetParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Dataset Parameter Name
+        value:
+          type: string
+          description: Dataset Parameter Value
+        type:
+          type: string
+          description: Dataset Parameter Type
+    CleanRoomQuestionDataset:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom Question Dataset ID
+        dataTypeDisplayName:
+          type: string
+          description: Data Type display name
+        ownership:
+          type: string
+        status:
+          type: string
+        datasetId:
+          type: string
+          description: Dataset Identifier
+        datasetName:
+          type: string
+          description: Dataset Name
+        dataTypeName:
+          type: string
+          description: DataType name
+        questionDataTypeId:
+          type: string
+          description: DataType ID
+        dataConnectionId:
+          type: string
+          description: Data Connection ID
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetParameter'
+          description: Dataset Parameters
+        dataSourceId:
+          type: string
+          description: Data Source ID
+        organizationId:
+          type: string
+          description: Organization ID which this cleanroom question dataset belongs to
+        organizationName:
+          type: string
+          description: Organization Name which this cleanroom question dataset belongs to
+        macro:
+          type: string
+          description: macro
+        assignedAt:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetField'
+          description: Dataset Fields
+    CleanRoomStakeholder:
+      type: object
+      properties:
+        organizationId:
+          type: string
+        organizationName:
+          type: string
+        ownership:
+          type: string
+    DatasetField:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: Dataset ID
+        id:
+          type: string
+          description: Dataset Field ID
+        name:
+          type: string
+          description: Dataset Field Name
+        value:
+          type: string
+          description: Dataset Field Value
+        type:
+          type: string
+          description: Dataset Field Type
+    CleanRoomStakeholders:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomStakeholder'
+      description: List of Cleanroom Stakeholders
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomQuestionDatasets:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionDataset'
+      description: List of Cleanroom Question Datasets
+    AssignCleanroomQuestionDatasetRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: ID of Organization ID to take ownership
+        macro:
+          type: string
+          description: name of Question Data Type
+    QuestionDataTypeOptions:
+      type: array
+      items:
+        $ref: '#/components/schemas/QuestionDataTypeOption'
+      description: List of Cleanroom Question Data Type Options
+    QuestionDataTypeOption:
+      type: object
+      properties:
+        dataTypeName:
+          type: string
+        datasetOptions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

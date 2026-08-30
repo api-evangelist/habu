@@ -1,0 +1,190 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Data Types API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Data Types
+paths:
+  /data-sources/{dataSourceId}/data-types:
+    get:
+      summary: Fetch a list of Data Types
+      operationId: getAllDataTypes
+      description: This operation fetches a list of all the Data Types for a Data Source ID.
+      parameters:
+      - name: dataSourceId
+        in: path
+        description: Data Source ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Data Types fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataTypes'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Types
+  /data-sources/data-types/{dataTypeId}:
+    get:
+      summary: Fetch a Data Type by ID
+      operationId: getDataTypeById
+      description: This operation fetches a Data Type by ID.
+      parameters:
+      - name: dataTypeId
+        in: path
+        description: Data Type ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched the Data Type.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataType'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Types
+components:
+  responses:
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  schemas:
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    DataType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+          enum:
+          - Ad Engagement
+          - Ad Exposure
+          - Ad Logs
+          - 'Amazon Marketing Cloud: Event-Level Ad Campaign Data'
+          - Binary Data
+          - CRM Data
+          - Campaign Data
+          - Campaign Mapping Data
+          - Code Container
+          - Conversion Events
+          - Databricks Container
+          - Databricks Notebook
+          - 'Facebook: Advanced Analytics Data'
+          - Generic
+          - 'Google Ads Data Hub: Event-Level Ad Campaign Data'
+          - Google Cloud Big Query
+          - Identity Graph
+          - JAR
+          - LinkedIn Marketing Solutions Config Data
+          - Machine Learning Model
+          - Member Profile
+          - Metadata
+          - Model Training
+          - Offline Conversions
+          - Page Data
+          - Service Container
+          - 'The Trade Desk: Raw Event Data Stream (REDS) Feed'
+          - 'The Trade Desk: Raw Event Data Stream (REDS) Metadata'
+          - Transaction Data
+          - User Data
+          - User-Segment Map
+          - WHEEL
+    DataTypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataType'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

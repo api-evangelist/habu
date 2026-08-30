@@ -1,0 +1,505 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Questions API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Questions
+paths:
+  /question/{questionID}:
+    get:
+      summary: Fetch question details
+      operationId: getQuestionDetails
+      description: This operation fetches the details of a question by the question ID.
+      parameters:
+      - name: questionID
+        in: path
+        description: The question ID to fetch a single Question's details
+        schema:
+          type: string
+        required: true
+      - name: cleanRoomID
+        in: query
+        description: The cleanroom ID for where the question is
+        schema:
+          type: string
+        required: false
+      - name: version
+        in: query
+        description: The version of the question
+        schema:
+          type: integer
+        required: false
+      responses:
+        '200':
+          description: Successfully fetched question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Questions
+    delete:
+      summary: Delete question
+      operationId: deleteQuestion
+      description: This operation deletes a question given its ID
+      parameters:
+      - name: questionID
+        in: path
+        description: The question ID to fetch a single Question's details
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteQuestionResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DeleteQuestionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Questions
+    put:
+      summary: Update question
+      operationId: updateQuestion
+      description: This operation updates a question.
+      parameters:
+      - name: questionID
+        in: path
+        description: The question ID of the question to be updated
+        schema:
+          type: string
+        required: true
+      - name: cleanRoomID
+        in: query
+        description: The cleanroom ID for where the question is
+        schema:
+          type: string
+        required: false
+      requestBody:
+        description: Question details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          description: Successfully updated a question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionUpdateResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Questions
+  /question:
+    post:
+      summary: Create question
+      operationId: createQuestion
+      description: This operation creates a question.
+      parameters:
+      - name: cleanRoomID
+        in: query
+        description: The cleanroom ID for where the question is
+        schema:
+          type: string
+        required: false
+      requestBody:
+        description: Question details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          description: Successfully created a question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionCreationResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionCreationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Questions
+  /question/{questionID}/data-types:
+    get:
+      summary: Fetch question data types
+      operationId: getQuestionDataTypes
+      description: This operation fetches the question types by the question ID.
+      parameters:
+      - name: questionID
+        in: path
+        description: The question ID to fetch a question data types
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched question data types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionDataType'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionDataType'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Questions
+components:
+  schemas:
+    QuestionImportDataType:
+      type: string
+      enum:
+      - CodeContainer
+      - Transaction
+      - Metadata
+      - PageData
+      - AdExposure
+      - ServiceContainer
+      - DatabricksNotebook
+      - TTDREDSFeed
+      - UserData
+      - MLModel
+      - ConversionEvents
+      - TrainModel
+      - AdLogs
+      - MemberProfile
+      - AADataFeed
+      - TTDREDSMetadata
+      - Conversion
+      - BinaryData
+      - SparkCodeContainer
+      - DatabricksContainer
+      - AdEngagement
+      - OfflineConversions
+      - UserSegmentMap
+      - LinkedInMarketingSolutionsConfigData
+      - GoogleCloudBigQuery
+      - IDENTITY_GRAPH
+      - AdsDataFeed
+      - CRM
+      - Generic
+      - AMCAdsDataFeed
+      - Campaign
+      - CampaignMapping
+      - WHEEL
+    DeleteQuestionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was deleted successfully
+    QuestionDataType:
+      description: Details about the data types used in the question
+      type: object
+      properties:
+        id:
+          type: string
+        macro:
+          type: string
+        datasetID:
+          type: string
+        importDataType:
+          $ref: '#/components/schemas/QuestionImportDataType'
+        dataSetTypeFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSetTypeField'
+    Parameter:
+      description: A parameter used within the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        displayName:
+          type: string
+          description: Parameter Display Name
+        description:
+          type: string
+          description: Parameter Description
+        exampleValue:
+          type: string
+          description: Parameter Example Value
+        format:
+          type: string
+          description: Parameter Format
+        isSynced:
+          type: boolean
+          description: Parameter Sync Status
+    QuestionCreationResponse:
+      description: Model containing the response for a question creation request
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was created successfully
+        message:
+          type: string
+          description: Message indicating what went wrong if the question was not created successfully
+        questionID:
+          type: string
+          description: The ID of the created question
+    QuestionUpdateResponse:
+      description: Model containing the response for a question update request
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was created updated
+        message:
+          type: string
+          description: Message indicating what went wrong if the question was not created successfully
+        question:
+          $ref: '#/components/schemas/QuestionDetails'
+    Measure:
+      description: Metrics associated with the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        isIdentity:
+          type: boolean
+        noise:
+          type: boolean
+    DataSetTypeField:
+      description: Fields associated with a specific data type
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    Question:
+      description: Model containing the Question details
+      type: object
+      properties:
+        questionDetails:
+          $ref: '#/components/schemas/QuestionDetails'
+        id:
+          type: string
+        cleanRoomID:
+          type: string
+        organizationID:
+          type: string
+        settings:
+          $ref: '#/components/schemas/CreateQuestionSettings'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    Dimension:
+      description: Dimensions used within the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    QuestionDetails:
+      description: Detailed information about the question
+      type: object
+      properties:
+        title:
+          type: string
+        displayId:
+          type: string
+        category:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        version:
+          type: integer
+        hasDateParameters:
+          type: boolean
+        hasDateFilter:
+          type: boolean
+        isAnalytics:
+          type: boolean
+        isUserListQuestion:
+          type: boolean
+        isCleanComputeQuestion:
+          type: boolean
+        outputFormat:
+          type: string
+        visualization:
+          type: string
+        hasMultipleOutputs:
+          type: boolean
+        queryDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/QueryDetail'
+        dataTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDataType'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+        measures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Measure'
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dimension'
+        userListOutputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserListOutput'
+    UserListOutput:
+      description: Output for user lists associated with the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    CleanRoomTypeRequest:
+      type: string
+      enum:
+      - Hybrid
+      - Snowflake
+      - Databricks
+      - Google
+      - AWS
+      - Facebook
+      - AMC
+      - ADH
+      - LinkedIn
+      - HabuConfidentialComputing
+    QueryDetail:
+      description: A single query detail within the question
+      type: object
+      properties:
+        query:
+          type: string
+        cleanRoomType:
+          $ref: '#/components/schemas/CleanRoomTypeRequest'
+        queryLanguage:
+          type: string
+    CreateQuestionSettings:
+      description: Settings for how the create question api will behave
+      type: object
+      properties:
+        queryValidation:
+          type: boolean
+          description: If true, the query will be validated before being saved
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

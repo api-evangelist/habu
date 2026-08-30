@@ -1,0 +1,566 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Questions API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Questions
+paths:
+  /cleanrooms/{cleanroomId}/cleanroom-questions:
+    post:
+      summary: Add Cleanroom Question
+      operationId: addCleanroomQuestion
+      description: This operation adds a question to an existing cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the Cleanroom Question
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: questionId
+        description: Question ID
+        required: true
+        schema:
+          type: string
+      - in: query
+        name: isEditable
+        description: Whether the resultant Cleanroom Question can be edited further
+        schema:
+          type: boolean
+          default: true
+        required: false
+      responses:
+        '200':
+          description: Cleanroom Question created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+    get:
+      summary: Fetch a list of all Cleanroom Questions for a Cleanroom
+      operationId: getAllCleanroomQuestions
+      description: This operation fetches a list of all the Cleanroom Questions that are tied to a Cleanroom.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: The cleanroom ID to fetch all the underlying Cleanroom Questions
+        schema:
+          type: string
+        required: true
+      - name: startDate
+        in: query
+        description: A filter applied on the CreatedOn field for a Cleanroom Question that marks as the beginning of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd
+        schema:
+          type: string
+          format: date
+          example: 2024-01-01
+      - name: endDate
+        in: query
+        description: A filter applied on the CreatedOn field for a Cleanroom Question that marks as the end of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd
+        schema:
+          type: string
+          format: date
+          example: 2024-01-01
+      - name: limit
+        in: query
+        description: The number of Cleanroom Questions returned per page - default is 500
+        schema:
+          type: integer
+          default: 500
+      - name: offset
+        in: query
+        description: The offset - default is 0
+        schema:
+          type: integer
+          default: 0
+      - name: questionType
+        in: query
+        description: List or Analytical
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestions'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestions'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+  /cleanroom-questions/{cleanroomQuestionId}:
+    get:
+      summary: Fetch a Cleanroom Question by ID
+      operationId: getCleanroomQuestionById
+      description: This operation fetches a Cleanroom Question by ID.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID to fetch a single Cleanroom Question's details
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestion'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestion'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+    delete:
+      summary: Delete Cleanroom Question
+      operationId: deleteCleanroomQuestion
+      description: This operation deletes an existing cleanroom question.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: Cleanroom Question ID to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully deleted the cleanroom question.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+  /cleanroom-questions/{cleanroomQuestionId}/compute-capacity:
+    patch:
+      summary: Update the compute capacity for a cleanroom question
+      operationId: updateCleanroomQuestionComputeCapacity
+      description: This operation updates the compute capacity for a cleanroom question. This is currently only supported for Snowflake and Hybrid Cleanrooms
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: ID of the cleanroom question
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCleanroomQuestionComputeCapacityRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UpdateCleanroomQuestionComputeCapacityRequest'
+      responses:
+        '200':
+          description: Cleanroom Question created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCleanroomQuestionComputeCapacityResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+  /cleanrooms/{cleanroomId}/questions/{questionId}:
+    get:
+      summary: Get Cleanroom Question by Cleanroom ID and Question ID
+      operationId: getCleanroomQuestion
+      description: This operation fetches a Cleanroom Question for a given Cleanroom ID and Question ID.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the Cleanroom Question
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: questionId
+        description: Question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Question fetched successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Cleanroom question ID
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+  /cleanroom-questions/{cleanroomQuestionId}/segmentation:
+    post:
+      summary: Enable segmentation for a Cleanroom Question
+      operationId: enableCleanroomQuestionSegmentation
+      description: This operation enables segmentation for a Cleanroom Question.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID for which segmentation is being enabled
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentationRequest'
+      responses:
+        '200':
+          description: Segmentation enabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+    put:
+      summary: Update segmentation for a Cleanroom Question
+      operationId: updateCleanroomQuestionSegmentation
+      description: This operation updates segmentation for a Cleanroom Question.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID for which segmentation is being updated
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SegmentationRequest'
+      responses:
+        '200':
+          description: Segmentation updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentationResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Questions
+components:
+  schemas:
+    CleanRoomQuestionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom question ID
+        cleanRoomId:
+          type: string
+          description: Cleanroom ID
+        ownerOrganizationId:
+          type: string
+          description: OrganizationID that brought the question into the clean room
+        questionId:
+          type: string
+          description: Question ID
+        title:
+          type: string
+          description: Title of the Question
+        category:
+          type: string
+          description: Category of the Question
+        stage:
+          type: string
+          description: Stage of the Cleanroom Question
+        status:
+          type: string
+        latestRun:
+          $ref: '#/components/schemas/CleanRoomQuestionRun'
+        datasetCount:
+          type: integer
+          description: Count of required datasets for this Question
+        runCount:
+          type: integer
+          description: Count of Report Runs
+        isEditable:
+          type: boolean
+          description: Is Editable
+        questionStatus:
+          type: string
+        questionVersion:
+          type: integer
+          description: Question Version
+        displayId:
+          type: string
+          description: display ID
+        description:
+          type: string
+          description: Description of the Question
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    SegmentationResponse:
+      description: Response when segmentation is enabled or updated successfully
+      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
+      properties:
+        assetId:
+          type: string
+          description: The created or updated asset ID
+          example: 5f3e2b1a-90ab-4cde-8fgh-1234567890ab
+        success:
+          type: boolean
+          description: Indicates whether the operation succeeded
+          example: true
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomQuestion:
+      description: Model containing the Cleanroom Question details
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayId:
+          type: string
+        questionType:
+          type: string
+        category:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+        status:
+          type: string
+        dataTypes:
+          type: object
+          additionalProperties:
+            type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        dimension:
+          type: object
+          additionalProperties:
+            type: string
+        metrics:
+          type: object
+          additionalProperties:
+            type: string
+        cleanroomId:
+          type: string
+        ownerOrganizationId:
+          type: string
+        customerQueryTemplate:
+          type: string
+        questionId:
+          type: string
+    CleanRoomQuestions:
+      description: A list of Cleanroom Questions and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestion'
+    UpdateCleanroomQuestionComputeCapacityRequest:
+      type: object
+      properties:
+        computeCapacity:
+          $ref: '#/components/schemas/CleanroomQuestionComputeCapacity'
+          description: The new warehouse size for the cleanroom question
+    CleanRoomQuestionRun:
+      type: object
+      properties:
+        runId:
+          type: string
+          description: Run ID
+        status:
+          type: string
+        startTimestamp:
+          type: string
+          format: date-time
+          description: Start Timestamp of the Run
+        endTimestamp:
+          type: string
+          format: date-time
+          description: End Timestamp of the Run
+    UpdateCleanroomQuestionComputeCapacityResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the warehouse size was updated successfully
+    CleanroomQuestionComputeCapacity:
+      type: string
+      description: possible compute capacities for cleanroom questions. This can be set for Hybrid, LinkedIn, Snowflake and Habu Confidential Compute. Snowflake cleanroom questions can only be DEFAULT or LARGE.
+      enum:
+      - DEFAULT
+      - MEDIUM
+      - LARGE
+      - XLARGE
+    SegmentationRequest:
+      description: Request body for enabling or updating segmentation for a Cleanroom Question
+      required:
+      - assetDisplayName
+      - rampID
+      properties:
+        assetDisplayName:
+          type: string
+          description: Display name for the asset
+          example: CRQ-065269-Feb2
+        rampID:
+          type: string
+          description: Ramp ID type
+          example: NAME
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

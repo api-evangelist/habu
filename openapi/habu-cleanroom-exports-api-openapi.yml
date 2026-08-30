@@ -1,0 +1,595 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Exports API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Exports
+paths:
+  /cleanrooms/{cleanroomId}/exports/jobs:
+    get:
+      summary: Fetch a list of all Cleanroom Exports
+      operationId: getAllDataExportJobs
+      description: This operation fetches a list of all the Cleanroom Exports that are available to the organization.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Exports fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataExportJobs'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Exports
+    post:
+      summary: Create cleanroom export job
+      operationId: createDataExportJobs
+      description: This operation creates new data export jobs
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Export Jobs details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDataExportJobRequest'
+      responses:
+        '200':
+          description: Cleanroom Exports fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDataExportJobResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Exports
+  /exports/jobs/{exportJobId}/runs:
+    get:
+      summary: Fetch a list of all Cleanroom Exports
+      operationId: getDataExportJobRuns
+      description: This operation fetches the runs for a data export job
+      parameters:
+      - name: exportJobId
+        in: path
+        description: Export Job ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Export Job runs fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListDataExportJobRunsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Exports
+  /exports/jobs/{exportJobId}/status:
+    patch:
+      summary: Change export job status
+      operationId: changeJobStatus
+      description: Sets the job schedule status to ACTIVE or PAUSED.
+      parameters:
+      - name: exportJobId
+        in: path
+        description: Export Job ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Target status for the job
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeJobStatusRequest'
+      responses:
+        '200':
+          description: Job status updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangeJobStatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Exports
+  /exports/jobs/{exportJobId}:
+    delete:
+      summary: Delete a data export job
+      operationId: deleteDataExportJob
+      description: Deletes a data export job for the organization.
+      parameters:
+      - name: exportJobId
+        in: path
+        description: Export Job ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Data export job deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Exports
+components:
+  schemas:
+    JobRunStatus:
+      type: string
+      enum:
+      - UNKNOWN_JOB_RUN_STATUS
+      - QUEUED
+      - PROCESSING
+      - COMPLETE
+      - FAILED
+      - PARTIALLY_FAILED
+      - THRESHOLD_WARNING
+      - NO_NEW_USERS
+    JobRunType:
+      type: string
+      enum:
+      - UNKNOWN_JOB_RUN_TYPE
+      - FULL_REFRESH
+      - INCREMENTAL
+    PartnerConfig:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        index:
+          type: integer
+          format: int32
+        type:
+          type: string
+        encrypted:
+          type: boolean
+    PicanmixType:
+      type: string
+      enum:
+      - UNKNOWN_PICANMIX_TYPE
+      - USER_LIST
+      - OFFLINE_CONVERSIONS
+      - EXPORTS
+      - QUESTION_USER_LIST
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    PrimageCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+    ChangeJobStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    ExportJobRunByDate:
+      type: object
+      properties:
+        date:
+          type: string
+        organization:
+          type: string
+        jobRuns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobRun'
+    PrimageOrganizationCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrimageCredential'
+    CreateDataExportJobResponse:
+      type: array
+      items:
+        type: string
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    ExportJobParameter:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    JobCount:
+      type: object
+      properties:
+        jobType:
+          type: string
+        count:
+          type: integer
+          format: int32
+          minimum: 0
+    ChangeJobStatusRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          description: Target job status (ACTIVE or PAUSED).
+    CreateDataExportJobRequest:
+      type: object
+      properties:
+        cleanroomQuestionId:
+          type: string
+        partnerAccountIds:
+          type: array
+          items:
+            type: string
+        exportParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobParameter'
+        cleanroomDatasetId:
+          type: string
+    PartnerAccount:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        partner:
+          $ref: '#/components/schemas/Partner'
+        credential:
+          $ref: '#/components/schemas/PrimageOrganizationCredential'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        jobCount:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCount'
+        latestJobRunStatusCount:
+          $ref: '#/components/schemas/LatestJobRunStatusCount'
+        configStatus:
+          $ref: '#/components/schemas/ConfigStatus'
+        errorMessage:
+          type: string
+        publicKey:
+          type: string
+    LatestJobRunStatusCount:
+      type: object
+      properties:
+        numSuccess:
+          type: integer
+          format: int32
+          minimum: 0
+        numProcessing:
+          type: integer
+          format: int32
+          minimum: 0
+        numThresholdWarning:
+          type: integer
+          format: int32
+          minimum: 0
+        numPartiallyFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        numFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        numQueued:
+          type: integer
+          format: int32
+          minimum: 0
+    DataExportJobs:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataExportJob'
+    ExportJobRun:
+      type: object
+      properties:
+        id:
+          type: string
+        jobId:
+          type: string
+        status:
+          $ref: '#/components/schemas/JobRunStatus'
+        submitTime:
+          type: string
+          format: date-time
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+        totalRecords:
+          type: integer
+        consentedRecords:
+          type: integer
+        cumulativeRecords:
+          type: integer
+        sourceJobRunID:
+          type: string
+        jobRunType:
+          $ref: '#/components/schemas/JobRunType'
+        details:
+          $ref: '#/components/schemas/JobDetails'
+        errorMessage:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    Partner:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        logoUrl:
+          type: string
+        credentialSourceName:
+          type: string
+        partnerConfigArray:
+          $ref: '#/components/schemas/PartnerConfigs'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        type:
+          $ref: '#/components/schemas/PicanmixType'
+        credentialSources:
+          type: array
+          items:
+            type: string
+        partnerConfigMap:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PartnerConfigs'
+    DataOutJobStatus:
+      type: string
+      enum:
+      - UNKNOWN_JOB_STATUS
+      - ACTIVE
+      - PAUSED
+    JobDetailParameter:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+    JobDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        jobDetailParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobDetailParameter'
+    PartnerConfigs:
+      type: array
+      items:
+        $ref: '#/components/schemas/PartnerConfig'
+    ListDataExportJobRunsResponse:
+      type: object
+      properties:
+        organization:
+          type: string
+        question:
+          type: string
+        jobRunsByDate:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobRunByDate'
+        exportDetailParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobParameter'
+    DataExportJob:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        dataExportJobType:
+          type: string
+        status:
+          $ref: '#/components/schemas/DataOutJobStatus'
+        partnerAccount:
+          $ref: '#/components/schemas/PartnerAccount'
+        jobType:
+          $ref: '#/components/schemas/PicanmixType'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        questionID:
+          type: string
+        questionName:
+          type: string
+        questionDisplayName:
+          type: string
+        jobLastRunTime:
+          type: string
+          format: date-time
+        partnerAccountCrChannelStatus:
+          type: string
+    ConfigStatus:
+      type: string
+      enum:
+      - UNKNOWN_CONFIG_STATUS
+      - CONFIG_PENDING
+      - CONFIG_CONFIGURED
+      - CONFIG_FAILED
+      - CONFIG_AVAILABLE
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

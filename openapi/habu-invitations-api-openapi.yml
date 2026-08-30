@@ -1,0 +1,288 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Invitations API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Invitations
+paths:
+  /cleanrooms/{cleanroomId}/invitations:
+    get:
+      summary: List Cleanroom Partner Invitations For a Cleanroom Inviter
+      operationId: listPartnerInvitationsForInviter
+      description: This operation lists a invitation list for a CleanRoom Inviter.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID to see invitations
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Fetched Cleanroom Partner invitations successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Invitations
+    delete:
+      summary: Cancel Cleanroom Partner Invitation
+      operationId: cancelPartnerInvitationByEmail
+      description: This operation cancels a invitation for a CleanRoom Inviter.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID of inviter's clean-room
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: partnerEmail
+        description: the email for the partner whose invitation is getting canceled
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Canceled Cleanroom Partner invitation successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Invitations
+  /cleanrooms/{cleanroomId}/invitations/{invitationId}:
+    delete:
+      summary: Cancel Cleanroom Partner Invitation
+      operationId: cancelPartnerInvitationById
+      description: This operation cancels a invitation for a CleanRoom Inviter.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID of inviter's clean-room
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: invitationId
+        description: the ID of the invitation getting canceled
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Canceled Cleanroom Partner invitation successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Invitations
+  /cleanrooms/{cleanroomId}/partners:
+    post:
+      summary: Add Cleanroom Partner
+      operationId: addCleanroomPartner
+      description: This operation adds a new partner to an existing cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the partner
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCleanRoomPartnerRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/AddCleanRoomPartnerRequest'
+      responses:
+        '200':
+          description: Cleanroom Partner invitation sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Invitations
+components:
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  schemas:
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    AddCleanRoomPartnerRequest:
+      type: object
+      properties:
+        partnerAdminEmail:
+          type: string
+          description: Cleanroom Partner Admin's Email
+        invitationNote:
+          type: string
+          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
+    InviteStatus:
+      type: string
+      enum:
+      - PENDING
+      - ACCEPTED
+      - DECLINED
+      - INVITE_STATUS_UNKNOWN
+      - REQUEST_SENT_ADMIN
+      - IN_PROGRESS
+      - DECLINED_BY_ADMIN
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    InvitationDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Invitation detail ID
+        organizationId:
+          type: string
+          description: Inviter's organization ID
+        partnerOrganizationId:
+          type: string
+          description: Invitee's organization. This will be filled when invitee choose organization to link cleanroom.
+        cleanRoomId:
+          type: string
+          description: Inviter's cleanroom ID
+        invitationNote:
+          type: string
+          description: Invitation note
+        partnerAdminEmail:
+          type: string
+          description: Invitee's email
+        InvitorEmail:
+          type: string
+          description: Inviter's email
+        Status:
+          $ref: '#/components/schemas/InviteStatus'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

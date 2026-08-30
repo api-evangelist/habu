@@ -1,0 +1,240 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Billable Configs API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Billable Configs
+paths:
+  /billable-configs:
+    get:
+      summary: Get billable config
+      operationId: getBillableConfig
+      description: Fetches the billable config for a given source ID and source type. Absence of a config row means the source inherits billability from the hierarchy above it. See unhygienix billing-status documentation for resolution order.
+      parameters:
+      - name: sourceId
+        in: query
+        description: Identifier of the billable source (e.g. clean room ID, question run ID)
+        required: true
+        schema:
+          type: string
+      - name: sourceType
+        in: query
+        description: Type of billable source
+        required: true
+        schema:
+          $ref: '#/components/schemas/BillableSourceType'
+      - name: compositeSourceId
+        in: query
+        description: Optional; not used by any source type exposed on the external API
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Billable config fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBillableConfigResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Billable Configs
+    post:
+      summary: Upsert billable config
+      operationId: upsertBillableConfig
+      description: 'Creates or updates a billable config for the given source. Use after creating a question run or flow run to opt out of billing (`value: "false"`). Leaving billing enabled requires no row — the hierarchy above applies.'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertBillableConfigRequest'
+      responses:
+        '200':
+          description: Billable config upserted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertBillableConfigResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Billable Configs
+  /billable-configs/{billableConfigId}:
+    delete:
+      summary: Delete billable config
+      operationId: deleteBillableConfig
+      description: Deletes the billable config by its config ID (from a prior GET or upsert response). Returns 404 if no config with that ID was deleted. To resolve sourceId/sourceType to a config ID, call GET /billable-configs first.
+      parameters:
+      - name: billableConfigId
+        in: path
+        description: Billable config primary key ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Billable config deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteBillableConfigResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Billable Configs
+components:
+  schemas:
+    UpsertBillableConfigResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        billableConfigId:
+          type: string
+    GetBillableConfigResponse:
+      type: object
+      properties:
+        config:
+          $ref: '#/components/schemas/BillableConfig'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    BillableConfig:
+      type: object
+      description: Billable configuration for a source entity
+      required:
+      - sourceId
+      - sourceType
+      properties:
+        id:
+          type: string
+        sourceId:
+          type: string
+        sourceType:
+          $ref: '#/components/schemas/BillableSourceType'
+        value:
+          type: string
+          description: Billable flag as string ("true" or "false")
+        compositeSourceId:
+          type: string
+    DeleteBillableConfigResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    UpsertBillableConfigRequest:
+      type: object
+      required:
+      - config
+      properties:
+        config:
+          $ref: '#/components/schemas/BillableConfig'
+    BillableSourceType:
+      type: string
+      description: Type of entity a billable config applies to
+      enum:
+      - BILLABLE_UNKNOWN
+      - BILLABLE_RUN
+      - BILLABLE_FLOW_RUN
+      - BILLABLE_QUESTION
+      - BILLABLE_FLOW
+      - BILLABLE_CR
+      - BILLABLE_OWNER
+      - BILLABLE_PARTNER
+      - BILLABLE_CRQ
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

@@ -1,0 +1,301 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom
+paths:
+  /cleanrooms/{cleanroomId}/create-cleanroom-execution-instance:
+    post:
+      summary: Create Cleanroom Execution Instance
+      operationId: createCleanRoomExecutionTemplateInstance
+      description: This operation creates clean room execution template instance.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoomExecutionInstanceInput'
+      responses:
+        '200':
+          description: Successfully created measurement report.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasurementExecutionTemplateResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/MeasurementExecutionTemplateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom
+  /cleanrooms/{cleanroomId}/cleanroom-execution-instance/{cleanRoomMeasurementExecutionInstanceId}:
+    get:
+      summary: Get status of clean room measurement execution instance
+      operationId: getCleanRoomMeasurementExecutionInstance
+      description: This operation gets the status of clean room measurement execution instance.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      - name: cleanRoomMeasurementExecutionInstanceId
+        in: path
+        description: Clean Room Measurement Execution Instance ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully got the status clean room measurement execution instance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomMeasurementExecutionInstanceStatusResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomMeasurementExecutionInstanceStatusResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom
+    post:
+      summary: Cancels a clean room measurement execution instance
+      operationId: cancelCleanRoomMeasurementExecutionInstance
+      description: This operation cancels a clean room measurement execution instance.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      - name: cleanRoomMeasurementExecutionInstanceId
+        in: path
+        description: Clean Room Measurement Execution Instance ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully got the status clean room measurement execution instance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom
+components:
+  schemas:
+    MeasurementExecutionTemplateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        cleanRoomExecutionInstanceId:
+          type: string
+        cleanRoomExecutionTemplateId:
+          type: string
+    BfmtJoinColumns:
+      description: Detailed information about the Bfmt Join Columns
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    CleanRoomMeasurementExecutionInstanceStatusResponse:
+      type: object
+      properties:
+        Id:
+          type: string
+        status:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        name:
+          type: string
+        detailedStatusReport:
+          type: string
+        cleanRoomExecutionTemplateID:
+          type: string
+        outputs:
+          $ref: '#/components/schemas/ExecutionInstanceOutputs'
+    Datasets:
+      description: Detailed information about the datasets
+      type: object
+      properties:
+        datasetType:
+          type: string
+        subType:
+          type: string
+        datasetId:
+          type: string
+        macro:
+          type: string
+        partitionValues:
+          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+        bfmtJoinColumns:
+          type: array
+          items:
+            $ref: '#/components/schemas/BfmtJoinColumns'
+    CleanRoomExecutionInstanceInput:
+      type: object
+      properties:
+        executionInstanceName:
+          type: string
+        cleanRoomExecutionTemplateId:
+          type: string
+        codeVersion:
+          type: string
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Datasets'
+        modelsToRun:
+          type: array
+          items:
+            type: string
+        outputType:
+          type: string
+        runtimeParameters:
+          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    ExecutionInstanceOutputs:
+      description: Clean Room Measurement Execution Instance Outputs
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Category of the output
+          status:
+            type: string
+            description: Status of the specific run
+          message:
+            type: string
+            description: Detailed error message if any
+          href:
+            type: string
+            description: The api to be invoked to get output details
+          method:
+            type: string
+            description: Http method
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanroomQuestionRunPartitionParameters:
+      description: A list of Cleanroom Question Run Partition Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameter'
+    CleanroomQuestionRunPartitionParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of Cleanroom Question Run Partition Parameter
+        value:
+          type: string
+          description: Value of Cleanroom Question Run Partition Parameter
+        dataType:
+          type: string
+          description: Data Type of Cleanroom Question Run Partition Parameter
+  responses:
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

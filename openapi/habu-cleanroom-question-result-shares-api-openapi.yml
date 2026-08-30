@@ -1,0 +1,181 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Question Result Shares API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Question Result Shares
+paths:
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-result-shares:
+    get:
+      summary: Get the possible sharing options for the result of a Cleanroom Question
+      operationId: getCleanroomQuestionResultShares
+      description: This operation fetches a the possible sharing options for the result of a Cleanroom Question.
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Result Shares
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionResultShares'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionResultShares'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Result Shares
+    put:
+      summary: Upsert clean room question result shares
+      operationId: upsertCleanRoomQuestionResultShares
+      description: This operation shares the results of a cleanroom question.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID for which result share is being shared
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertCleanRoomQuestionResultSharesApiInput'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UpsertCleanRoomQuestionResultSharesApiInput'
+      responses:
+        '200':
+          description: Successfully upserted Cleanroom Question Result Shares
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertCleanRoomQuestionResultShareResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UpsertCleanRoomQuestionResultShareResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Result Shares
+components:
+  schemas:
+    UpsertCleanRoomQuestionResultShareResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanRoomQuestionResultShare:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom Question Result Share ID
+        PartnerID:
+          type: string
+          description: Partner ID
+        PostRunQueryID:
+          type: string
+          description: Post Run Query ID
+    UpsertCleanRoomQuestionResultSharesApiInput:
+      description: A list of Cleanroom Result Shares
+      type: array
+      items:
+        $ref: '#/components/schemas/UpsertCleanRoomQuestionResultShares'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomQuestionResultShares:
+      description: A list of Cleanroom Result Shares
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionResultShare'
+    UpsertCleanRoomQuestionResultShares:
+      type: object
+      properties:
+        PartnerID:
+          type: string
+          description: Partner ID
+        PostRunQueryID:
+          type: string
+          description: Post Run Query ID
+  responses:
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

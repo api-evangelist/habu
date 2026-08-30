@@ -1,0 +1,696 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanrooms API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanrooms
+paths:
+  /cleanrooms:
+    post:
+      summary: Create Cleanroom
+      operationId: createCleanroom
+      description: This operation creates a new Cleanroom.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoomRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CleanRoomRequest'
+      responses:
+        '200':
+          description: Cleanroom created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ResourceConflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+    get:
+      summary: Fetch a list of all Cleanrooms
+      operationId: getAllCleanrooms
+      description: This operation fetches a list of all the Cleanrooms that are created for the Customer Integration.
+      parameters:
+      - name: limit
+        in: query
+        description: The number of Cleanrooms returned per page - default is 500
+        schema:
+          type: integer
+          default: 500
+      - name: offset
+        in: query
+        description: The offset - default is 0
+        schema:
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRooms'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRooms'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+  /cleanrooms/{cleanroomId}:
+    get:
+      summary: Fetch a Cleanroom by ID
+      operationId: getCleanroomById
+      description: This operation fetches a Cleanroom by ID.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: The cleanroom ID to fetch a single Cleanroom's details
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+    put:
+      summary: Update Cleanroom
+      operationId: updateCleanroom
+      description: This operation updates an existing cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID to be updated
+        schema:
+          type: string
+        required: true
+      requestBody:
+        description: Cleanroom details to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoomRequest'
+      responses:
+        '200':
+          description: Cleanroom updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+    delete:
+      summary: Delete Cleanroom
+      operationId: deleteCleanroom
+      description: This operation deletes an existing cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID to be deleted
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Cleanroom deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+  /cleanrooms/cleanroom-types:
+    get:
+      summary: Fetch all Cleanroom Types
+      operationId: getCleanroomTypes
+      description: This operation fetches all the available Cleanroom Types.
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Types
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomTypes'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomTypes'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+  /cleanrooms/{cleanroomId}/assets:
+    get:
+      summary: Get comprehensive asset details for cleanroom operations
+      operationId: getCleanroomAssetDetails
+      description: This operation fetches comprehensive asset details including questions, datasets, compute capacity options, field types, and stakeholders for cleanroom operations.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom asset details returned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanroomAssetDetails'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanrooms
+components:
+  schemas:
+    CleanRoomStakeholder:
+      type: object
+      properties:
+        organizationId:
+          type: string
+        organizationName:
+          type: string
+        ownership:
+          type: string
+    DatasetMetadata:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        organizationName:
+          type: string
+        dataImportType:
+          type: string
+        macro:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetDatasetField'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanRoomParameterRequest:
+      type: object
+      required:
+      - CLOUD
+      - REGION
+      properties:
+        REGION:
+          type: string
+          enum:
+          - REGION_EU
+          - REGION_US
+          - REGION_APAC
+          - REGION_AFRICA
+          - REGION_UAE
+        SUB_REGION:
+          type: string
+          enum:
+          - SUB_REGION_EAST1
+          - SUB_REGION_WEST1
+          - SUB_REGION_NORTH1
+          - SUB_REGION_SOUTH1
+          - SUB_REGION_CENTRAL1
+          - SUB_REGION_NORTHEAST1
+          - SUB_REGION_SOUTHEAST1
+          - SUB_REGION_ME_CENTRAL1
+          - SUB_REGION_EU_WEST4
+          - SUB_REGION_EAST2
+        CLOUD:
+          type: string
+          enum:
+          - CLOUD_AWS
+          - CLOUD_GCP
+          - CLOUD_AZURE
+        ENABLE_EXPORT, ENABLE_VIEW_QUERY, ENABLE_HABU_INTELLIGENCE, ENABLE_PAIR, ENABLE_OPJA:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          description: Each of these values take a true or false, please separate them for example ENABLE_EXPORT = true, ENABLE_VIEW_QUERY = true
+      additionalProperties:
+        type: string
+        enum:
+        - DATA_DECIBEL
+        - CROWD_SIZE
+    ComputeCapacityOption:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    QuestionUserListOutput:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        isEncrypt:
+          type: boolean
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    CleanRoomType:
+      description: Model containing Cleanroom Type
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        listQuestionSupport:
+          type: boolean
+        analyticalQuestionSupport:
+          type: boolean
+        wallGarden:
+          type: boolean
+    QuestionParameter:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        index:
+          type: integer
+        parameterType:
+          type: string
+    AssetDatasetField:
+      type: object
+      properties:
+        ID:
+          type: string
+        fieldName:
+          type: string
+        dataType:
+          type: string
+        isFilterable:
+          type: boolean
+        isUserIDField:
+          type: boolean
+        isPii:
+          type: boolean
+        isExcluded:
+          type: boolean
+        fieldLabel:
+          type: string
+    CleanRooms:
+      description: A list of Cleanrooms and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoom'
+    QuestionMetric:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        computed:
+          type: boolean
+    QuestionDataTypeField:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        format:
+          type: string
+        description:
+          type: string
+    QuestionDimension:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        filterable:
+          type: boolean
+        plottable:
+          type: boolean
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    AssetQuestionDataType:
+      type: object
+      properties:
+        ID:
+          type: string
+        macro:
+          type: string
+        description:
+          type: string
+        importDataType:
+          type: string
+        optional:
+          type: boolean
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDataTypeField'
+    CleanRoomRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the Cleanroom
+        description:
+          type: string
+          description: Description of the Cleanroom
+        startAt:
+          type: string
+          description: Start Date for the cleanroom, use format yyyy-mm-dd
+        endAt:
+          type: string
+          description: End Date for the cleanroom, use format yyyy-mm-dd
+        type:
+          $ref: '#/components/schemas/CleanRoomTypeRequest'
+        parameters:
+          $ref: '#/components/schemas/CleanRoomParameterRequest'
+      required:
+      - organizationId
+      - name
+      - startAt
+      - type
+    FieldTypeEnum:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+    QuestionMetadata:
+      type: object
+      properties:
+        ID:
+          type: string
+        displayID:
+          type: string
+        title:
+          type: string
+        category:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+        hasDateFilter:
+          type: boolean
+        hasDateParameters:
+          type: boolean
+        hasMultipleOutputs:
+          type: boolean
+        isAggregate:
+          type: boolean
+        isUserListQuestion:
+          type: boolean
+        defaultComputeCapacity:
+          type: string
+        dimensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDimension'
+        metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionMetric'
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionParameter'
+        dataTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetQuestionDataType'
+        userListOutputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionUserListOutput'
+    CleanRoom:
+      description: Model containing the Cleanroom details
+      properties:
+        id:
+          type: string
+        displayId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        ownerOrganization:
+          type: string
+        partners:
+          type: array
+          items:
+            type: string
+        startAt:
+          type: string
+        endAt:
+          type: string
+        questionsCount:
+          type: integer
+        status:
+          type: string
+        cleanRoomParameters:
+          type: object
+          additionalProperties:
+            type: string
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        cleanRoomTypeId:
+          type: string
+    CleanRoomTypeRequest:
+      type: string
+      enum:
+      - Hybrid
+      - Snowflake
+      - Databricks
+      - Google
+      - AWS
+      - Facebook
+      - AMC
+      - ADH
+      - LinkedIn
+      - HabuConfidentialComputing
+    CleanroomAssetDetails:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionMetadata'
+          description: Available questions for flow creation
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetMetadata'
+          description: Available datasets for assignment
+        computeCapacityOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComputeCapacityOption'
+          description: Available compute capacity options
+        fieldTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldTypeEnum'
+          description: Field type enumerations
+        stakeholders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomStakeholder'
+          description: Clean room stakeholder information
+    CleanRoomTypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomType'
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    ResourceConflict:
+      description: Conflict with the current state of the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

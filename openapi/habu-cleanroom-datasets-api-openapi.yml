@@ -1,0 +1,572 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Datasets API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Datasets
+paths:
+  /cleanrooms/{cleanroomId}/datasets:
+    get:
+      summary: Fetch a list of all Cleanroom Datasets
+      operationId: getCleanroomDatasets
+      description: This operation fetches a list of all the Datasets that can be assigned or configured for a Cleanroom.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID associated with the datasets
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Datasets fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomDatasets'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Datasets
+  /cleanrooms/{cleanroomId}/datasets/{datasetId}:
+    get:
+      summary: Get a Cleanroom Dataset by ID
+      operationId: getCleanroomDatasetById
+      description: This operation gets a Cleanroom Dataset by ID.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID associated with the dataset
+        required: true
+        schema:
+          type: string
+      - name: datasetId
+        in: path
+        description: Dataset ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Cleanroom Dataset fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomDataset'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Datasets
+    put:
+      summary: Update a Cleanroom Dataset by ID
+      operationId: updateCleanroomDatasetById
+      description: This operation updates the field mappings and field filters for a Cleanroom Dataset.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID associated with the dataset
+        required: true
+        schema:
+          type: string
+      - name: datasetId
+        in: path
+        description: Dataset ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Cleanroom Dataset Details
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoomDatasetUpdateRequest'
+      responses:
+        '200':
+          description: Cleanroom Dataset updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomDataset'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Datasets
+  /cleanrooms/{cleanroomId}/datasets/configure:
+    post:
+      summary: Configure a Cleanroom Dataset by Data Connection ID
+      operationId: configureCleanroomDataset
+      description: This operation configures a Cleanroom Dataset based on Data Connection ID.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID associated with the dataset
+        required: true
+        schema:
+          type: string
+      - name: dataConnectionId
+        in: query
+        description: Data Connection ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigureCleanRoomDatasetRequest'
+      responses:
+        '200':
+          description: Cleanroom Dataset configured successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomDataset'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Datasets
+  /cleanrooms/{cleanroomId}/datasets/partner-assignment:
+    post:
+      summary: Configure whether a partner can assign a Cleanroom Dataset
+      operationId: updateCleanroomDatasetPartnerAssignment
+      description: This operation configure whether a partner can assign a Cleanroom Dataset
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID associated with the dataset
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCleanroomDatasetPartnerAssignmentRequest'
+      responses:
+        '200':
+          description: Cleanroom Dataset partner assignment updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateCleanroomDatasetPartnerAssignmentResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Datasets
+  /identifier-types:
+    get:
+      summary: Fetch a list of all Identifier Types for Field Mapping
+      operationId: getAllIdentifierTypes
+      description: This operation fetches a list of all the Identifier Types to select from for mapping a Field - this is applicable during the mapping step of a Data Connection.
+      responses:
+        '200':
+          description: Identifier Types fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdentifierTypes'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Datasets
+components:
+  schemas:
+    DatasetParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Dataset Parameter Name
+        value:
+          type: string
+          description: Dataset Parameter Value
+        type:
+          type: string
+          description: Dataset Parameter Type
+    DatasetField:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: Dataset ID
+        id:
+          type: string
+          description: Dataset Field ID
+        name:
+          type: string
+          description: Dataset Field Name
+        value:
+          type: string
+          description: Dataset Field Value
+        type:
+          type: string
+          description: Dataset Field Type
+    DatasetFieldMappings:
+      description: A list of Dataset Field Mappings
+      type: array
+      items:
+        $ref: '#/components/schemas/DatasetFieldMapping'
+    CleanRoomDataset:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationName:
+          type: string
+          readOnly: true
+          description: Name of the organization that owns this dataset
+        dataConnectionType:
+          type: string
+        dataConnectionId:
+          type: string
+        stage:
+          type: string
+        configurationStatus:
+          type: string
+        datasetFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetField'
+        datasetFieldMappings:
+          $ref: '#/components/schemas/DatasetFieldMappings'
+        datasetFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetFilter'
+        datasetParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetParameter'
+        partitionParameters:
+          $ref: '#/components/schemas/DatasetPartitionParameters'
+        isView:
+          type: boolean
+          description: Whether this dataset is a view
+        partnerCanAssign:
+          type: boolean
+    DatasetPartitionParameterGroup:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: Data connection (import job) ID
+        dataConnectionName:
+          type: string
+          description: Data connection name
+        dataConnectionMacro:
+          type: string
+          description: Macro of the underlying data connection (set for view datasets)
+        partitionFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetPartitionField'
+    IdentifierType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+    UpdateCleanroomDatasetPartnerAssignmentParameters:
+      type: object
+      properties:
+        datasetId:
+          type: string
+        partnerCanAssign:
+          type: boolean
+    PartitionFieldConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
+          type: array
+          items:
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
+    UpdateCleanroomDatasetPartnerAssignmentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    DatasetFilter:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: Dataset ID
+        id:
+          type: string
+          description: Dataset Filter ID
+        datasetFieldName:
+          type: string
+          description: Dataset Field Name
+        datasetFieldType:
+          type: string
+          description: Dataset Field Type
+        operator:
+          type: string
+          description: Operator to be applied on the Dataset Field
+          enum:
+          - ''
+          - EQUALS
+          - NOT_EQUALS
+          - IN
+          - NOT_IN
+        values:
+          type: array
+          items:
+            type: string
+          description: Values to filter the Dataset Field on
+    ConfigureCleanRoomDatasetRequest:
+      type: object
+      properties:
+        rampIDConsent:
+          type: boolean
+          default: false
+          description: Consent to the use of RampID as a join key in questions (https://storage.googleapis.com/lr-tech-docs-resources/Files/LiveRamp%20RampID%20Data%20Protection%20Attestation.pdf)
+    DatasetPartitionField:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          description: Raw partition column name from the data connection
+        dataType:
+          type: string
+          description: Partition column data type
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetPartitionParameter'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomDatasets:
+      description: A list of Cleanroom Datasets
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomDataset'
+    DatasetPartitionParameters:
+      type: object
+      description: Partition parameters discoverable when this dataset is assigned to a question
+      properties:
+        isView:
+          type: boolean
+          description: Whether this dataset is a view
+        partitionGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetPartitionParameterGroup'
+    IdentifierTypes:
+      description: A list of Identifier Types
+      type: array
+      items:
+        $ref: '#/components/schemas/IdentifierType'
+    DatasetFieldMapping:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: The Data Connection ID associated with this Field Configuration
+        id:
+          type: string
+          description: Unique ID for the Field
+        fieldIndex:
+          type: integer
+        fieldName:
+          type: string
+          description: Name of the Field
+        fieldLabel:
+          type: string
+          description: Display Name of the Field
+        dataType:
+          type: string
+        delimiter:
+          type: string
+        isPii:
+          type: boolean
+          default: false
+        isUserIdField:
+          type: boolean
+          default: false
+        isExcluded:
+          type: boolean
+          default: false
+        rename:
+          type: string
+        transformation:
+          type: string
+          description: Transformation formula for calculated fields
+        isPartitionColumn:
+          type: boolean
+          default: false
+          readOnly: true
+          description: Indicates whether this field is a partition column
+        partitionFieldConfig:
+          $ref: '#/components/schemas/PartitionFieldConfig'
+    DatasetPartitionParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Full parameter name including view macro prefix and date expansion suffixes
+        dataType:
+          type: string
+          description: Parameter data type
+        partitionFieldConfig:
+          $ref: '#/components/schemas/PartitionFieldConfig'
+    UpdateCleanroomDatasetPartnerAssignmentRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/UpdateCleanroomDatasetPartnerAssignmentParameters'
+    CleanRoomDatasetUpdateRequest:
+      type: object
+      description: 'The following fields are required: datasetFieldMapping.[fieldName, isExcluded, rename], datasetFilter.[datasetFieldName , operator, values]; all others are optional'
+      properties:
+        datasetFieldMappings:
+          $ref: '#/components/schemas/DatasetFieldMappings'
+        datasetFilters:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetFilter'
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

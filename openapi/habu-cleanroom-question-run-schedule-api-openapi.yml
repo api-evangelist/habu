@@ -1,0 +1,418 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Question Run Schedule API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Question Run Schedule
+paths:
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-run-schedules/{cleanroomQuestionRunScheduleId}:
+    get:
+      summary: Get a Cleanroom Question Run Schedule by ID
+      operationId: getCleanroomQuestionRunScheduleById
+      description: This operation fetches a the a Cleanroom Question Run Schedule by ID.
+      parameters:
+      - in: path
+        name: cleanroomQuestionRunScheduleId
+        description: Cleanroom Question Run Schedule ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run Schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Run Schedule
+    delete:
+      summary: delete a Cleanroom Question Run Schedule by ID
+      operationId: deleteCleanroomQuestionRunScheduleById
+      description: This operation deletes a Cleanroom Question Run Schedule by ID.
+      parameters:
+      - in: path
+        name: cleanroomQuestionRunScheduleId
+        description: Cleanroom Question Run Schedule ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully deleted Cleanroom Question Run Schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCleanroomQuestionRunScheduleResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DeleteCleanroomQuestionRunScheduleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Run Schedule
+    patch:
+      summary: Update a run schedule for a cleanroom question
+      operationId: patchCleanroomQuestionRunScheduleById
+      description: This operation modifies a run schedule for a cleanroom question
+      parameters:
+      - in: path
+        name: cleanroomQuestionRunScheduleId
+        description: Cleanroom Question Run Schedule ID
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleInput'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleInput'
+      responses:
+        '200':
+          description: Successfully updated a Cleanroom Question Run Schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Run Schedule
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-run-schedules:
+    get:
+      summary: Get all Cleanroom Question Run Schedules for a Cleanroom Question
+      operationId: getCleanroomQuestionRunSchedules
+      description: This operation fetches all run schedules for a cleanroom question
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run Schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAllRunSchedulesForCleanroomQuestionResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GetAllRunSchedulesForCleanroomQuestionResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Run Schedule
+    post:
+      summary: Create a new run schedule for a cleanroom question
+      operationId: createCleanroomQuestionRunSchedule
+      description: This operation creates a new run schedule for a cleanroom question
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleInput'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleInput'
+      responses:
+        '200':
+          description: Successfully created a Cleanroom Question Run Schedule
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CreateCleanroomQuestionRunScheduleResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Run Schedule
+components:
+  schemas:
+    CleanroomQuestionRunScheduleDateParameterType:
+      type: string
+      enum:
+      - RELATIVE
+      - ABSOLUTE
+    CleanroomQuestionRunScheduleParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of Cleanroom Question Run Schedule Parameter
+        value:
+          type: string
+          description: Value of Cleanroom Question Run Schedule Parameter
+        dataType:
+          type: string
+          description: Data Type of Cleanroom Question Run Schedule Parameter.
+        parameterType:
+          $ref: '#/components/schemas/CleanroomQuestionRunParameterType'
+        dateQualifier:
+          $ref: '#/components/schemas/DateQualifier'
+        dateType:
+          $ref: '#/components/schemas/CleanroomQuestionRunScheduleDateParameterType'
+    DeleteCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanroomQuestionRunScheduleParameters:
+      description: A list of Cleanroom Question Run Schedule Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameter'
+    RepeatFrequency:
+      type: string
+      enum:
+      - FREQUENCY_UNKNOWN
+      - DAILY
+      - WEEKLY
+      - MONTHLY
+    DaysOfWeek:
+      type: string
+      enum:
+      - DAY_OF_WEEK_UNKNOWN
+      - SUN
+      - MON
+      - TUE
+      - WED
+      - THU
+      - FRI
+      - SAT
+    GetCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        ownerId:
+          type: string
+        parameters:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/ScheduleQuestionParameters'
+        startDateTime:
+          type: string
+          format: date-time
+        endDateTime:
+          type: string
+          format: date-time
+        active:
+          type: boolean
+        repeatFrequency:
+          $ref: '#/components/schemas/RepeatFrequency'
+        createdBy:
+          type: string
+        modifiedBy:
+          type: string
+        createdDate:
+          type: string
+          format: date-time
+        modifiedDate:
+          type: string
+          format: date-time
+        daysOfWeek:
+          type: array
+          items:
+            $ref: '#/components/schemas/DaysOfWeek'
+        repeatDayofMonth:
+          type: array
+          items:
+            type: integer
+            format: int64
+        displayId:
+          type: string
+    DateQualifier:
+      type: string
+      enum:
+      - DAYS
+      - MONTHS
+    ScheduleQuestionParameters:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        qualifier:
+          $ref: '#/components/schemas/DateQualifier'
+        type:
+          type: string
+        isStatic:
+          type: boolean
+        parameterType:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanroomQuestionRunParameterType:
+      type: string
+      enum:
+      - PARTITION_PARAMETER
+      - RUN_PARAMETER
+    GetAllRunSchedulesForCleanroomQuestionResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
+    CreateCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    CreateCleanroomQuestionRunScheduleInput:
+      type: object
+      properties:
+        parameters:
+          $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameters'
+        daysOfWeek:
+          type: array
+          items:
+            $ref: '#/components/schemas/DaysOfWeek'
+        repeatDayofMonth:
+          type: array
+          items:
+            type: integer
+        startSchedule:
+          type: string
+        name:
+          type: string
+        repeatFrequency:
+          $ref: '#/components/schemas/RepeatFrequency'
+        endSchedule:
+          type: string
+  responses:
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

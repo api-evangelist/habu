@@ -1,0 +1,192 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Data Sources API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Data Sources
+paths:
+  /data-sources:
+    get:
+      summary: Fetch a list of all Data Sources
+      operationId: getAllDataSources
+      description: This operation fetches a list of all the Data Sources that are available to create a new Data Connection for this Customer Integration.
+      responses:
+        '200':
+          description: Data Sources fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSources'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Sources
+  /data-sources/{dataSourceId}:
+    get:
+      summary: Fetch a Data Source by ID
+      operationId: getDataSourceById
+      description: This operation fetches a Data Source by ID.
+      parameters:
+      - name: dataSourceId
+        in: path
+        description: Data Source ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched the Data Source.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataSource'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Data Sources
+components:
+  schemas:
+    DataSource:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: name of the data connection's data source
+        displayName:
+          type: string
+          description: display name of the data connection's data source
+          enum:
+          - AWS ECR Container
+          - AWS Glue Data Catalog
+          - Amazon Marketing Cloud
+          - Amazon Marketing Cloud (Ads API)
+          - Artifact Store
+          - Azure Storage
+          - CSV Catalog
+          - Client AWS S3
+          - Databricks Data Connection
+          - Databricks Delta Table Connection
+          - Docker Container
+          - Facebook Advanced Analytics
+          - Google Ad Manager Logs
+          - Google Ads Data Hub
+          - Google Cloud Authorized View
+          - Google Cloud Big Query
+          - Google Cloud Storage
+          - Google Cloud Storage(with SA)
+          - LiveRamp-Hosted AWS S3
+          - LiveRamp-Hosted Amazon Marketing Cloud
+          - LiveRamp-Hosted Google Cloud Storage
+          - LiveRamp-Hosted Snowflake
+          - LiveRamp-Hosted Javascript Tag
+          - HubSpot
+          - Iceberg Catalog
+          - LinkedIn Marketing Solution
+          - Notebooks
+          - Salesforce
+          - Snowflake
+          - Snowflake Azure Data Connection
+          - Snowflake Data Connection
+          - Snowflake GCS Data Connection
+          - Snowflake S3 Data Connection
+          - Snowflake Table
+          - 'The Trade Desk: Raw Event Data Stream (REDS)'
+          - Local Upload
+          - Publisher Synthetic Dataset Library
+        credentialSource:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    DataSources:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataSource'
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

@@ -1,0 +1,513 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Destinations API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Destinations
+paths:
+  /cleanrooms/{cleanroomId}/destinations:
+    get:
+      summary: List destinations provisioned in a cleanroom
+      operationId: listCleanroomDestinations
+      description: Lists destinations provisioned to this cleanroom. Each item includes the partner account, whether the org is owner or partner, and the activation channel status. Paginate with limit and offset (defaults 30 and 0; limit may not exceed 100). You can optionally filter by partner type.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Identifier of the cleanroom.
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: When provided, only destinations whose partner has this type (for example EXPORTS) are returned.
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Number of destinations to return. Default 30; must be between 1 and 100.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 100
+          default: 30
+      - name: offset
+        in: query
+        description: Number destinations to skip at the start of the list. Default is 0.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+          default: 0
+      - name: latestJobDays
+        in: query
+        description: When set, job run status summaries on each partner account only include runs from the last N days.
+        required: false
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+      responses:
+        '200':
+          description: Cleanroom destinations fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCleanroomDestinationsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Destinations
+    post:
+      summary: Provision destinations to a cleanroom
+      operationId: provisionCleanroomDestinations
+      description: This operation provisions a destination to a cleanroom
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Request object to provision destinations to a cleanroom
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisionCleanroomDestinationRequest'
+      responses:
+        '200':
+          description: Cleanroom Destination Provisioned Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProvisionCleanroomDestinationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Destinations
+  /cleanrooms/{cleanroomId}/destinations/{partnerAccountId}:
+    delete:
+      summary: Deprovision a destination from a cleanroom
+      operationId: deprovisionCleanroomDestination
+      description: Deprovisions a destination connection from a cleanroom. The destination connection must belong to the organization and must not be in use for activation.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID containing the destination
+        required: true
+        schema:
+          type: string
+      - name: partnerAccountId
+        in: path
+        description: Destination connection to deprovision
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Destination deprovisioned from cleanroom successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Destinations
+  /cleanrooms/{cleanroomId}/destinations/{partnerAccountId}/provisioning-request/review:
+    post:
+      summary: Approve or reject a destination provisioning request
+      operationId: reviewDestinationProvisioningRequest
+      description: Approve or reject a pending destination provisioning request for a single partner account in the cleanroom.
+      parameters:
+      - name: cleanroomId
+        in: path
+        description: Cleanroom ID containing the destination
+        required: true
+        schema:
+          type: string
+      - name: partnerAccountId
+        in: path
+        description: Partner account ID for the destination provisioning request
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Approve or reject the provisioning request
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReviewDestinationProvisioningRequest'
+      responses:
+        '200':
+          description: Destination provisioning request reviewed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReviewDestinationProvisioningResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Destinations
+components:
+  schemas:
+    PartnerConfig:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        index:
+          type: integer
+          format: int32
+        type:
+          type: string
+        encrypted:
+          type: boolean
+    PicanmixType:
+      type: string
+      enum:
+      - UNKNOWN_PICANMIX_TYPE
+      - USER_LIST
+      - OFFLINE_CONVERSIONS
+      - EXPORTS
+      - QUESTION_USER_LIST
+    ReviewDestinationProvisioningResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: true if the provisioning request decision was applied successfully.
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanroomProvisionedDestination:
+      type: object
+      properties:
+        partnerAccount:
+          $ref: '#/components/schemas/PartnerAccount'
+        ownership:
+          type: string
+          description: OWNER when the destination belongs to the cleanroom owner organization; PARTNER otherwise.
+          enum:
+          - OWNER
+          - PARTNER
+        channelStatus:
+          type: string
+          description: Provisioning Status of the this destination in the cleanroom like 'ACTIVE_CHANNEL', 'PENDING_CHANNEL'.
+        isUsedForActivation:
+          type: boolean
+          description: Whether this partner account is tied to activation in this cleanroom.
+    PrimageCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+    ActivationChannelProvision:
+      type: object
+      properties:
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        cleanroomId:
+          type: string
+        partnerAccountId:
+          type: string
+        channelStatus:
+          type: string
+    PrimageOrganizationCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrimageCredential'
+    ListCleanroomDestinationsResponse:
+      type: object
+      properties:
+        partnerAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanroomProvisionedDestination'
+        total:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    ProvisionCleanroomDestinationRequest:
+      type: object
+      properties:
+        destinations:
+          type: array
+          items:
+            type: string
+    JobCount:
+      type: object
+      properties:
+        jobType:
+          type: string
+        count:
+          type: integer
+          format: int32
+          minimum: 0
+    PartnerAccount:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        partner:
+          $ref: '#/components/schemas/Partner'
+        credential:
+          $ref: '#/components/schemas/PrimageOrganizationCredential'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        jobCount:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCount'
+        latestJobRunStatusCount:
+          $ref: '#/components/schemas/LatestJobRunStatusCount'
+        configStatus:
+          $ref: '#/components/schemas/ConfigStatus'
+        errorMessage:
+          type: string
+        publicKey:
+          type: string
+    LatestJobRunStatusCount:
+      type: object
+      properties:
+        numSuccess:
+          type: integer
+          format: int32
+          minimum: 0
+        numProcessing:
+          type: integer
+          format: int32
+          minimum: 0
+        numThresholdWarning:
+          type: integer
+          format: int32
+          minimum: 0
+        numPartiallyFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        numFailed:
+          type: integer
+          format: int32
+          minimum: 0
+        numQueued:
+          type: integer
+          format: int32
+          minimum: 0
+    ProvisionCleanroomDestinationResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ActivationChannelProvision'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    ReviewDestinationProvisioningRequest:
+      type: object
+      required:
+      - decision
+      properties:
+        decision:
+          type: string
+          description: Decision to approve or reject the destination provisioning request.
+          enum:
+          - APPROVE
+          - REJECT
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    Partner:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        logoUrl:
+          type: string
+        credentialSourceName:
+          type: string
+        partnerConfigArray:
+          $ref: '#/components/schemas/PartnerConfigs'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        type:
+          $ref: '#/components/schemas/PicanmixType'
+        credentialSources:
+          type: array
+          items:
+            type: string
+        partnerConfigMap:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/PartnerConfigs'
+    PartnerConfigs:
+      type: array
+      items:
+        $ref: '#/components/schemas/PartnerConfig'
+    ConfigStatus:
+      type: string
+      enum:
+      - UNKNOWN_CONFIG_STATUS
+      - CONFIG_PENDING
+      - CONFIG_CONFIGURED
+      - CONFIG_FAILED
+      - CONFIG_AVAILABLE
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

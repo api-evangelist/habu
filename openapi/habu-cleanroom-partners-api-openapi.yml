@@ -1,0 +1,647 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Partners API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Partners
+paths:
+  /cleanrooms/{cleanroomId}/invitations:
+    get:
+      summary: List Cleanroom Partner Invitations For a Cleanroom Inviter
+      operationId: listPartnerInvitationsForInviter
+      description: This operation lists a invitation list for a CleanRoom Inviter.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID to see invitations
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Fetched Cleanroom Partner invitations successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+    delete:
+      summary: Cancel Cleanroom Partner Invitation
+      operationId: cancelPartnerInvitationByEmail
+      description: This operation cancels a invitation for a CleanRoom Inviter.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID of inviter's clean-room
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: partnerEmail
+        description: the email for the partner whose invitation is getting canceled
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Canceled Cleanroom Partner invitation successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/invitations/{invitationId}:
+    delete:
+      summary: Cancel Cleanroom Partner Invitation
+      operationId: cancelPartnerInvitationById
+      description: This operation cancels a invitation for a CleanRoom Inviter.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID of inviter's clean-room
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: invitationId
+        description: the ID of the invitation getting canceled
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Canceled Cleanroom Partner invitation successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/partners:
+    post:
+      summary: Add Cleanroom Partner
+      operationId: addCleanroomPartner
+      description: This operation adds a new partner to an existing cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the partner
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCleanRoomPartnerRequest'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/AddCleanRoomPartnerRequest'
+      responses:
+        '200':
+          description: Cleanroom Partner invitation sent successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvitationDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+    get:
+      summary: Fetch a list of all Cleanroom Partners
+      operationId: getAllCleanroomPartners
+      description: This operation fetches a list of all the Cleanroom partners in a cleanroom and their respective users.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the partners
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: A list of Cleanroom Partners fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomPartners'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/partners/{cleanroomPartnerId}:
+    get:
+      summary: Fetch a Cleanroom Partner by Partner ID
+      operationId: getCleanroomPartnerById
+      description: This operation fetches a Cleanroom Partner by Partner ID.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with this partner
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomPartnerId
+        description: Cleanroom Partner ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Cleanroom Partner fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomPartnerResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+    delete:
+      summary: Delete Cleanroom Partner
+      operationId: deleteCleanroomPartner
+      description: This operation deletes an existing partner from a cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with this partner
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomPartnerId
+        description: Cleanroom Partner ID to be removed
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Clean Room Partner removed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/partners/{cleanroomPartnerId}/cleanRoomRoles:
+    get:
+      summary: Get Cleanroom Partner Roles in Cleanroom
+      operationId: getCleanroomPartnerRoles
+      description: This operation fetches the Cleanroom partner roles in a cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with this user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomPartnerId
+        description: Cleanroom Partner ID associated with this user
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Clean Room Partner roles fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomRoles'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/partners/{cleanroomPartnerId}/cleanRoomRoles/{cleanRoomRoleId}:
+    get:
+      summary: Get Cleanroom Partner Role by ID
+      operationId: getCleanroomPartnerRoleByID
+      description: This operation fetches the Cleanroom partner role by Id.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with this user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomPartnerId
+        description: Cleanroom Partner ID
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanRoomRoleId
+        description: Cleanroom Partner Role ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Clean Room Partner role fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomRole'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/partners/{cleanroomPartnerId}/users/{cleanroomUserId}:
+    delete:
+      summary: Remove Cleanroom Partner User
+      operationId: deleteCleanroomPartnerUser
+      description: This operation removes an existing partner user from a cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with this user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomPartnerId
+        description: Cleanroom Partner ID associated with this user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomUserId
+        description: Cleanroom User ID to be removed
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Partner user removed from the cleanroom successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+  /cleanrooms/{cleanroomId}/partners/{cleanroomPartnerId}/users/{cleanroomUserId}/cleanRoomRoles/{cleanRoomRoleId}:
+    put:
+      summary: Update a partner cleanroom user role
+      operationId: updateCleanroomPartnerUserRole
+      description: This operation updates a partner cleanroom user role except Administrator and Partner Administrator Role.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the users
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomPartnerId
+        description: Cleanroom Partner ID
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomUserId
+        description: Cleanroom User ID
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanRoomRoleId
+        description: Cleanroom User Role ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Partner cleanroom user role updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Partners
+components:
+  schemas:
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    AddCleanRoomPartnerRequest:
+      type: object
+      properties:
+        partnerAdminEmail:
+          type: string
+          description: Cleanroom Partner Admin's Email
+        invitationNote:
+          type: string
+          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    InvitationDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Invitation detail ID
+        organizationId:
+          type: string
+          description: Inviter's organization ID
+        partnerOrganizationId:
+          type: string
+          description: Invitee's organization. This will be filled when invitee choose organization to link cleanroom.
+        cleanRoomId:
+          type: string
+          description: Inviter's cleanroom ID
+        invitationNote:
+          type: string
+          description: Invitation note
+        partnerAdminEmail:
+          type: string
+          description: Invitee's email
+        InvitorEmail:
+          type: string
+          description: Inviter's email
+        Status:
+          $ref: '#/components/schemas/InviteStatus'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+    CleanRoomPartners:
+      description: A list of Cleanroom Partners and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomPartnerResponse'
+    InviteStatus:
+      type: string
+      enum:
+      - PENDING
+      - ACCEPTED
+      - DECLINED
+      - INVITE_STATUS_UNKNOWN
+      - REQUEST_SENT_ADMIN
+      - IN_PROGRESS
+      - DECLINED_BY_ADMIN
+    CleanRoomPartnerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom Partner ID
+        partnerOrganizationId:
+          type: string
+          description: Cleanroom Partner Organization ID
+        name:
+          type: string
+          description: Partner Organization name
+        userCount:
+          type: integer
+          description: CleanRoom User count
+        cleanRoomUsers:
+          $ref: '#/components/schemas/CleanRoomUsers'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomRoles:
+      description: A list of Cleanroom Roles
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomRole'
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    CleanRoomUsers:
+      description: A list of Cleanroom Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomUser'
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+        name:
+          type: string
+          description: Name of the user
+        email:
+          type: string
+    CleanRoomUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom User ID
+        cleanRoomId:
+          type: string
+          description: Cleanroom ID
+        user:
+          $ref: '#/components/schemas/User'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        role:
+          $ref: '#/components/schemas/CleanRoomRole'
+  responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

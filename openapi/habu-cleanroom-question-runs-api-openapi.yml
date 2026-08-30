@@ -1,0 +1,779 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Question Runs API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Question Runs
+paths:
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-runs:
+    get:
+      summary: Fetch a list of all Cleanroom Question Runs for a Cleanroom Question
+      operationId: getAllCleanroomQuestionRuns
+      description: This operation fetches a list of all the Cleanroom Question Runs (including metadata) for a given Cleanroom Question. The Customer can optionally use the status parameter to filter the list of Cleanroom Question Runs.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID to fetch all the associated Cleanroom Question Runs
+        schema:
+          type: string
+        required: true
+      - name: status
+        in: query
+        description: The status of the Cleanroom Question Run
+        schema:
+          type: string
+          enum:
+          - QUEUED
+          - RUNNING
+          - COMPLETED
+          - FAILED
+          - PARTNER_QUEUED
+          - PARTNER_RUNNING
+          - PARTNER_COMPLETED
+          - PARTNER_FAILED
+          - ERROR
+          - PENDING_RETRY
+        required: false
+      - name: startDate
+        in: query
+        description: A filter applied on the SubmitAt field for a Cleanroom Question Run that marks as the beginning of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd
+        schema:
+          type: string
+          format: date
+          example: 2024-01-01
+      - name: endDate
+        in: query
+        description: A filter applied on the SubmitAt field for a Cleanroom Question Run that marks as the end of the range of dates. Default is empty - meaning no filter applied. The format is yyyy-MM-dd
+        schema:
+          type: string
+          format: date
+          example: 2024-01-01
+      - name: limit
+        in: query
+        description: The number of Cleanroom Question Runs returned per page - default is 30 and maximum is 100
+        schema:
+          type: integer
+          default: 30
+          maximum: 100
+      - name: offset
+        in: query
+        description: The offset - default is 0
+        schema:
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionRunsMetadata'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionRunsMetadata'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-questions/{cleanroomQuestionId}/create-run:
+    post:
+      summary: Create a Cleanroom Question Run for a Cleanroom Question
+      operationId: createCleanroomQuestionRun
+      description: This operation facilitates creation of a Cleanroom Question Run for a given Cleanroom Question. The Cleanroom Question must be in the READY state before a run can be created. If datasets have not yet been configured, use the `configureCleanroomQuestionDatasets` operation (`POST /cleanroom-questions/{cleanroomQuestionId}/datasets`) first.
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: The Cleanroom Question ID for which the Cleanroom Question Run is being created
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRunCreateParameters'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/QuestionRunCreateParameters'
+      responses:
+        '200':
+          description: Successfully created Cleanroom Question Run
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionRunMetadata'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionRunMetadata'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}:
+    get:
+      summary: Fetch a Cleanroom Question Run by ID
+      operationId: getCleanroomQuestionRunById
+      description: This operation fetches a Cleanroom Question Run (including metadata) by Cleanroom Question Run ID.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID to fetch a single Cleanroom Question Run's details
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionRunMetadata'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionRunMetadata'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+    put:
+      summary: Update Question Run Status
+      operationId: updateCleanroomQuestionRunStatus
+      description: This operation lets the Customer share an update on the status of an in-progress Cleanroom Question Run with Habu. It also lets them send the status and details for a completed/failed Cleanroom Question Run to Habu.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID for which the update request is being sent
+        schema:
+          type: string
+        required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRunStatus'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/QuestionRunStatus'
+      responses:
+        '200':
+          $ref: '#/components/responses/QuestionRunStatusUpdate'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+    delete:
+      summary: Delete Cleanroom Question Run
+      operationId: deleteCleanroomQuestionRun
+      description: This operation lets the Customer delete a Cleanroom Question Run by ID.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Cleanroom Question Run deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/data:
+    get:
+      summary: Get the result data for Cleanroom Question Run
+      operationId: getCleanroomQuestionRunData
+      description: This operation is to get the result data for the Cleanroom Question Run.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID corresponding to this run
+        schema:
+          type: string
+        required: true
+      - name: limit
+        in: query
+        description: The number of Cleanroom Question Run results data returned per page - default is 500
+        schema:
+          type: integer
+          default: 500
+      - name: offset
+        in: query
+        description: The offset - default is 0
+        schema:
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run Result Data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionRunResultData'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/QuestionRunResultData'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/download/{fileName}:
+    get:
+      summary: Get the output file for Cleanroom Question Run
+      operationId: getCleanroomQuestionRunOutputFile
+      description: This operation is to get the output file for the Cleanroom Question Run.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID corresponding to this run
+        schema:
+          type: string
+        required: true
+      - name: fileName
+        in: path
+        description: Output File Name
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run Output File
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/data/count:
+    get:
+      summary: Get the count of result data for Cleanroom Question Run
+      operationId: getCleanroomQuestionRunDataCount
+      description: This operation is to get the count of result data for the Cleanroom Question Run.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID corresponding to this run
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched count of result data
+          content:
+            application/json:
+              schema:
+                type: integer
+            application/xml:
+              schema:
+                type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/audit:
+    get:
+      summary: Get audit details for Cleanroom Question Run
+      operationId: getCleanroomQuestionRunAudit
+      description: This operation is to get the audit details for the Cleanroom Question Run.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID corresponding to this run
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Run Audit Details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanroomQuestionRunAuditDetails'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanroomQuestionRunAuditDetails'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/activation-summary:
+    get:
+      summary: Fetch the Activation Summary for a Cleanroom question run
+      operationId: getCleanroomQuestionRunActivationSummaries
+      description: This operation fetches a list the Activation Summary for a Cleanroom question run
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID to fetch the associated Activation Summary
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Activation Summary
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanroomQuestionRunActivationSummary'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanroomQuestionRunActivationSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/partition-parameters:
+    get:
+      summary: Fetch the Partition Parameters for a Cleanroom question run
+      operationId: getCleanroomQuestionRunPartitionParameters
+      description: This operation fetches a list of the partition parameters for a Cleanroom question run
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID to fetch the associated partition parameters
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Partition Parameteres
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+  /cleanroom-question-runs/{cleanroomQuestionRunId}/explain-plan:
+    get:
+      summary: Get the explain plan for a SQL Cleanroom Question Run
+      operationId: getCleanroomQuestionRunExplainPlan
+      description: This operation returns the execution plan (explain plan) for the specified Cleanroom Question Run. This operation applies only to Cleanroom Questions of type SQL; it is not supported for other question types.
+      parameters:
+      - name: cleanroomQuestionRunId
+        in: path
+        description: The Cleanroom Question Run ID to fetch the explain plan for
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Returns explain plan details when successful (success=true). When the optimizer reports a business failure, returns HTTP 200 with success=false and errorMessage populated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetExplainPlanResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GetExplainPlanResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Runs
+components:
+  schemas:
+    CleanroomQuestionRunActivationSummary:
+      description: Model containing the Cleanroom Question Run Activation Summary
+      properties:
+        cleanroomQuestionRunId:
+          type: string
+        cleanroomQuestionRunName:
+          type: string
+        activationSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivationSummary'
+    QuestionRunResultData:
+      description: Model containing the Cleanroom Question Run Result Data
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunTableMetadata'
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunTableStats'
+        count:
+          type: integer
+        multipleOutputs:
+          type: array
+          items:
+            type: string
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    GetExplainPlanResponse:
+      type: object
+      description: Response containing the execution plan for a SQL cleanroom question run
+      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
+      properties:
+        success:
+          type: boolean
+          description: Whether the explain plan retrieval was successful
+        explainPlan:
+          type: string
+          description: When success is true, the execution plan details. When success is false, this field should be omitted or null.
+        errorMessage:
+          type: string
+          description: When success is false, details explaining why the explain plan could not be retrieved.
+      required:
+      - success
+    RunTableStats:
+      type: object
+      additionalProperties:
+        type: string
+    CleanroomQuestionRunPartitionParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of Cleanroom Question Run Partition Parameter
+        value:
+          type: string
+          description: Value of Cleanroom Question Run Partition Parameter
+        dataType:
+          type: string
+          description: Data Type of Cleanroom Question Run Partition Parameter
+    CleanroomQuestionRunAuditDetails:
+      description: Model containing the Cleanroom Question Run Audit Details
+      properties:
+        cleanroomQuestionRunId:
+          type: string
+        auditDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditDetails'
+    ActivationSummary:
+      properties:
+        activationPartner:
+          type: string
+        activationChannel:
+          type: string
+        segmentCode:
+          type: string
+        identityType:
+          type: string
+        lastProcessed:
+          type: string
+          format: date-time
+        recordsSent:
+          type: integer
+        status:
+          type: string
+    QuestionRunCreateParameters:
+      description: Model containing the Cleanroom Question Run parameters for a Create Run request
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        parameters:
+          type: object
+          description: Key-value pairs for question parameters
+          additionalProperties:
+            type: string
+          example:
+            param1: Value1
+            param2: Value2
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    RunTableMetadata:
+      type: object
+      properties:
+        fieldName:
+          type: string
+        dataType:
+          type: string
+        columnName:
+          type: string
+    AuditDetails:
+      properties:
+        eventTime:
+          type: string
+          format: date-time
+        eventType:
+          type: string
+        message:
+          type: string
+        details:
+          additionalProperties:
+            type: object
+    CleanroomQuestionRunPartitionParameters:
+      description: A list of Cleanroom Question Run Partition Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameter'
+    QuestionRunsMetadata:
+      description: A list of Cleanroom Question Runs and their Metadata
+      type: array
+      items:
+        $ref: '#/components/schemas/QuestionRunMetadata'
+    QuestionRunMetadata:
+      description: Model containing the Cleanroom Question Run Metadata
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        status:
+          type: string
+        submittedAt:
+          type: string
+          format: date-time
+        executedAt:
+          type: string
+          format: date-time
+        completedAt:
+          type: string
+          format: date-time
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            parameter1: Value1
+            parameter2: Value2
+        partitionParameters:
+          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+        runMetadata:
+          type: object
+          properties:
+            dataOutLocation:
+              type: string
+            datasetParameters:
+              type: array
+              items:
+                properties:
+                  dataSetId:
+                    type: string
+                  dataSetName:
+                    type: string
+                  dataInLocation:
+                    type: string
+                  hashedColumns:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                    - column1
+                    - column2
+                    - column3
+            saltKey:
+              type: string
+        failureReason:
+          type: string
+        isRetryable:
+          type: boolean
+        runMessage:
+          type: string
+        questionVersion:
+          type: integer
+    QuestionRunStatus:
+      description: Model containing the Cleanroom Question Run status details
+      required:
+      - id
+      - status
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        postRunDetails:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            detail1: Value1
+            detail2: Value2
+  responses:
+    PreconditionFailed:
+      description: Precondition Failed - a required precondition for the request has not been met
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    QuestionRunStatusUpdate:
+      description: Successfully sent the updated Cleanroom Question Run status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

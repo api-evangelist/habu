@@ -1,0 +1,195 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Question Permissions API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Question Permissions
+paths:
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-permissions:
+    post:
+      summary: Configure the permissions for a Cleanroom Question
+      operationId: configureCleanRoomQuestionPermissions
+      description: This operation configures cleanroom question permissions
+      parameters:
+      - name: cleanroomQuestionId
+        in: path
+        description: Cleanroom Question ID for which permissions need to be updated
+        required: true
+        schema:
+          type: string
+      - name: cleanroomQuestionPermissions
+        in: query
+        description: List of Updated Cleanroom Question Permissions
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCleanRoomQuestionPermissionsRequest'
+      responses:
+        '200':
+          description: Cleanroom Question Datasets configured and assigned successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionPermissionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Permissions
+    get:
+      summary: Get the permissions for a Cleanroom Question
+      operationId: getCleanroomQuestionPermissions
+      description: This operation fetches the existing permissions for a Cleanroom Question.
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Result Shares
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionPermissionsResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionPermissionsResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Permissions
+components:
+  schemas:
+    CleanRoomQuestionPermissionsUpdateInput:
+      type: object
+      properties:
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
+    UpdateCleanRoomQuestionPermissionsRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissionsUpdateInput'
+      description: Array of Cleanroom Question Permission Updates
+    QuestionAccess:
+      type: string
+      enum:
+      - UNKNOWN_ACCESS
+      - QUESTION_OWNER_ONLY
+      - ALL_CLEAN_ROOM_PARTNERS
+    CleanRoomQuestionPermissionsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
+      description: Array of Cleanroom Question Permissions
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    QuestionPermission:
+      type: string
+      enum:
+      - UNKNOWN_PERMISSION
+      - VIEW_CODE
+      - EDIT
+      - CLONE
+      - RUN
+      - IN_PROGRESS
+      - VIEW_RESULTS
+      - DELETE
+    CleanRoomQuestionPermissions:
+      type: object
+      properties:
+        id:
+          type: string
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

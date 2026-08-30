@@ -1,0 +1,370 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Users API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Users
+paths:
+  /cleanrooms/{cleanroomId}/users:
+    post:
+      summary: Add Cleanroom User
+      operationId: addCleanroomUser
+      description: This operation adds a new user to an existing cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the user
+        schema:
+          type: string
+        required: true
+      requestBody:
+        description: 'The following fields are required: email, role; all others are optional'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCleanRoomUserRequest'
+      responses:
+        '200':
+          description: User added to the cleanroom successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/ResourceConflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Users
+    get:
+      summary: Fetch a list of Cleanroom Users
+      operationId: getCleanroomUsers
+      description: This operation fetches a list of the Cleanroom users in a cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the users
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: cleanroomUserEmail
+        description: Email for a particular cleanroom user
+        schema:
+          type: string
+        required: false
+      responses:
+        '200':
+          description: Cleanroom User list fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomUsers'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Users
+  /cleanrooms/{cleanroomId}/users/{cleanroomUserId}:
+    get:
+      summary: Fetch a Cleanroom User by ID
+      operationId: getCleanroomUserById
+      description: This operation fetches a Cleanroom user by ID.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomUserId
+        description: Cleanroom User ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: User fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Users
+    delete:
+      summary: Remove Cleanroom User
+      operationId: deleteCleanroomUser
+      description: This operation removes an existing user from a cleanroom.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomUserId
+        description: Cleanroom User ID to be removed
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: User removed from the cleanroom successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Users
+  /cleanrooms/{cleanroomId}/users/{cleanroomUserId}/cleanRoomRoles/{cleanRoomRoleId}:
+    put:
+      summary: Update Cleanroom User Role
+      operationId: updateCleanroomUserRole
+      description: This operation updates cleanroom user role.
+      parameters:
+      - in: path
+        name: cleanroomId
+        description: Cleanroom ID associated with the user
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanroomUserId
+        description: Cleanroom User ID
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: cleanRoomRoleId
+        description: Cleanroom User Role ID
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          description: Cleanroom role updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Users
+components:
+  schemas:
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+        name:
+          type: string
+          description: Name of the user
+        email:
+          type: string
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    CleanRoomUsers:
+      description: A list of Cleanroom Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomUser'
+    AddCleanRoomUserRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: (deprecated) id of the user in the organization
+        roleId:
+          type: string
+          description: (deprecated) id of Role that you want to assign the user
+        email:
+          type: string
+          description: email of the user in the organization
+        role:
+          type: string
+          description: Role that you want to assign the user
+    CleanRoomUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom User ID
+        cleanRoomId:
+          type: string
+          description: Cleanroom ID
+        user:
+          $ref: '#/components/schemas/User'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        role:
+          $ref: '#/components/schemas/CleanRoomRole'
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    ResourceConflict:
+      description: Conflict with the current state of the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

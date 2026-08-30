@@ -1,0 +1,231 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Cleanroom Question Tags API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: Cleanroom Question Tags
+paths:
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-tags:
+    get:
+      summary: Get the tags for a Cleanroom Question
+      operationId: getCleanroomQuestionTags
+      description: This operation fetches a the tags for a Cleanroom Question.
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Tags
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionTags'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CleanRoomQuestionTags'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Tags
+  /cleanroom-questions/{cleanroomQuestionId}/cleanroom-question-parameters:
+    get:
+      summary: Get the parameters for a Cleanroom Question
+      operationId: getCleanroomQuestionParameters
+      description: This operation fetches a the parameters for a Cleanroom Question.
+      parameters:
+      - in: path
+        name: cleanroomQuestionId
+        description: Cleanroom Question ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Cleanroom Question Parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetCleanRoomQuestionParametersResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GetCleanRoomQuestionParametersResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - Cleanroom Question Tags
+components:
+  schemas:
+    GetCleanRoomQuestionParametersResponse:
+      type: object
+      properties:
+        name:
+          type: string
+        displayId:
+          type: string
+        parameters:
+          $ref: '#/components/schemas/CleanroomQuestionParameters'
+    CleanRoomQuestionTags:
+      description: A list of Cleanroom Question Tags
+      type: array
+      items:
+        type: string
+    CleanroomQuestionParameters:
+      description: A list of Cleanroom Question Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionParameter'
+    CleanroomQuestionParameter:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: Cleanroom Question Parameter Name
+        Index:
+          type: integer
+          description: Cleanroom Question Parameter Index
+        DataType:
+          type: string
+          description: Cleanroom Question Parameter Data Type
+        ParameterType:
+          type: string
+          description: Cleanroom Question Parameter Type
+        DisplayName:
+          type: string
+          description: Cleanroom Question Parameter Display Name
+        Description:
+          type: string
+          description: Cleanroom Question Parameter Description
+        ExampleValue:
+          type: string
+          description: Cleanroom Question Parameter Example Value
+        Format:
+          type: string
+          description: Cleanroom Question Parameter Format
+        IsSynced:
+          type: boolean
+          description: Cleanroom Question Parameter Sync Status
+        HasConstraint:
+          type: boolean
+          description: Cleanroom Question Parameter Has Constraint
+        ConstraintType:
+          $ref: '#/components/schemas/ValueConstraintType'
+        AllowedValues:
+          type: array
+          items:
+            type: string
+          description: Cleanroom Question Parameter Allowed Values
+        DefaultValue:
+          type: string
+          description: Cleanroom Question Parameter Default Value
+        partitionFieldConfig:
+          $ref: '#/components/schemas/PartitionFieldConfig'
+    PartitionFieldConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
+          type: array
+          items:
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    ValueConstraintType:
+      type: string
+      description: Type of value constraint applied to a parameter
+      enum:
+      - ENFORCED_LIST
+      - DEFAULT_VALUE
+  responses:
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}

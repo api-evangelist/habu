@@ -1,0 +1,534 @@
+openapi: 3.2.0
+info:
+  version: v1.0.0
+  title: External APIs for Customer Integration Data Connection Views API
+  description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
+  contact:
+    name: LiveRamp (previously Habu)
+    url: https://liveramp.com/
+    email: platform_admin@habu.com
+servers:
+- description: External APIs for Customer Integration
+  url: https://api.habu.com/v1/
+security:
+- application: []
+tags:
+- name: DataConnectionViews
+paths:
+  /data-connection-views:
+    post:
+      summary: Create a Data Connection View
+      operationId: createDataConnectionView
+      description: This operation creates a new data connection view from a SQL query and source data connections.
+      requestBody:
+        description: 'The following fields are required: name, query, dataConnections.[dataConnectionId, macro], fields.[name, type]'
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataConnectionViewDetails'
+      responses:
+        '201':
+          description: Data connection view created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionViewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - DataConnectionViews
+    get:
+      summary: Fetch a list of all Data Connection Views
+      operationId: getAllDataConnectionViews
+      description: This operation fetches a paginated list of data connection views for the organization.
+      parameters:
+      - name: stage
+        in: query
+        description: Filter views by stage
+        required: false
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Filter views by status
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: The number of data connection views returned per page - default is 30, minimum is 1, maximum is 100
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 30
+      - name: offset
+        in: query
+        description: The offset - default is 0, minimum is 0
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      responses:
+        '200':
+          description: Data connection views fetched successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionViews'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - DataConnectionViews
+  /data-connection-views/{viewId}:
+    get:
+      summary: Fetch a Data Connection View by ID
+      operationId: getDataConnectionViewById
+      description: This operation fetches a data connection view by ID.
+      parameters:
+      - name: viewId
+        in: path
+        description: Data Connection View ID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched the data connection view.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionViewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - DataConnectionViews
+    put:
+      summary: Update a Data Connection View by ID
+      operationId: updateDataConnectionView
+      description: This operation updates a data connection view by ID.
+      parameters:
+      - name: viewId
+        in: path
+        description: Data Connection View ID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: All fields are optional. Omitted fields retain their existing values.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataConnectionViewUpdateDetails'
+      responses:
+        '200':
+          description: Successfully updated the data connection view.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataConnectionViewResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - DataConnectionViews
+    delete:
+      summary: Delete a Data Connection View by ID
+      operationId: deleteDataConnectionView
+      description: This operation deletes a data connection view by ID.
+      parameters:
+      - name: viewId
+        in: path
+        description: Data Connection View ID to be deleted
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Data connection view deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+      tags:
+      - DataConnectionViews
+components:
+  schemas:
+    DataConnectionViewResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the data connection view
+        name:
+          type: string
+          description: Name of the data connection view
+        query:
+          type: string
+          description: SQL query for the data connection view
+        version:
+          type: string
+          description: Version of the data connection view
+        stage:
+          type: string
+          description: Stage of the data connection view
+        sourceId:
+          type: string
+          description: ID of the data source associated with the view
+        status:
+          type: string
+          description: Status of the data connection view
+        importDataTypeId:
+          type: string
+          description: ID of the import data type associated with the view
+        dataConnections:
+          type: array
+          description: Source data connections referenced by the view
+          items:
+            $ref: '#/components/schemas/DataConnectionViewSource'
+        fields:
+          type: array
+          description: Output fields defined for the view
+          items:
+            $ref: '#/components/schemas/DataConnectionViewField'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+    FieldConfiguration:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: The Data Connection ID associated with this Field Configuration
+        id:
+          type: string
+          description: Unique ID for the Field
+        fieldIndex:
+          type: integer
+        fieldName:
+          type: string
+          description: Name of the Field
+        fieldLabel:
+          type: string
+          description: Display Name of the Field
+        dataType:
+          type: string
+          enum:
+          - BOOLEAN
+          - DATE
+          - DECIMAL
+          - DOUBLE
+          - INTEGER
+          - LONG
+          - STRING
+          - TEXT
+          - TIMESTAMP
+          - UNKNOWN
+          description: Data type of the field
+        identifierType:
+          type: string
+          enum:
+          - ''
+          - 1P or 3P Cookie
+          - Customer First Party Identifier
+          - Hashed Emails
+          - HouseHold ID
+          - Email MD5 Hashed
+          - Mobile Device Identifier
+          - Person (or People) Identifier
+          - RampID
+          - Raw Email
+          - Email SHA1 Hashed
+          - Email SHA256 Hashed
+          - Unique Identifier
+          - City
+          - State
+          - Country
+          - Postal Code
+          - Street Address
+          - Address Line 1
+          - Address Line 2
+          - Name
+          - First Name
+          - Middle Name
+          - Last Name
+          - TV Device ID
+          - IP Address
+          - phone
+          - Hashed Customer ID
+          description: unique user identifier type
+        delimiter:
+          type: string
+          enum:
+          - ''
+          - Semicolon
+          - Tab
+          - Comma
+          - Pipe
+          description: character or sequence of characters that separates data into separate fields
+        isPii:
+          type: boolean
+          default: false
+        isUserIdField:
+          type: boolean
+          default: false
+        isExcluded:
+          type: boolean
+          default: false
+        isPartitionColumn:
+          type: boolean
+          default: false
+          description: Indicates whether this field is a partition column
+        partitionFieldConfig:
+          $ref: '#/components/schemas/PartitionFieldConfig'
+    DataConnectionViewField:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the output field
+        type:
+          type: string
+          description: Data type of the output field
+    DataConnectionViewDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data connection view
+        query:
+          type: string
+          description: SQL query for the data connection view
+        dataConnections:
+          type: array
+          description: Source data connections referenced by the view query
+          items:
+            $ref: '#/components/schemas/DataConnectionViewSourceInput'
+      required:
+      - name
+      - query
+      - dataConnections
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    PartitionFieldConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
+          type: array
+          items:
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
+    DataConnectionViewUpdateDetails:
+      type: object
+      description: Fields to update on a data connection view. Omitted fields retain their existing values.
+      properties:
+        name:
+          type: string
+          description: Name of the data connection view
+        query:
+          type: string
+          description: SQL query for the data connection view
+        dataConnections:
+          type: array
+          description: Source data connections referenced by the view query
+          items:
+            $ref: '#/components/schemas/DataConnectionViewSourceInput'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    DataConnectionViewSource:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: ID of the source data connection
+        dataConnectionName:
+          type: string
+          description: Name of the source data connection
+        macro:
+          type: string
+          description: Macro alias for the source data connection in the view query
+        dataSourceId:
+          type: string
+          description: ID of the data source for the source data connection
+        fieldConfigurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldConfiguration'
+    DataConnectionViewSourceInput:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: ID of the source data connection
+        macro:
+          type: string
+          description: Macro alias for the source data connection in the view query
+      required:
+      - dataConnectionId
+      - macro
+    DataConnectionViews:
+      description: Paginated list of Data Connection Views
+      type: object
+      properties:
+        dataConnectionViews:
+          type: array
+          description: Data connection views for the current page
+          items:
+            $ref: '#/components/schemas/DataConnectionViewResponse'
+        limit:
+          type: integer
+          description: The number of data connection views returned per page
+        offset:
+          type: integer
+          description: The offset used for pagination
+        hasMore:
+          type: boolean
+          description: Whether there are more data connection views beyond this page
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  securitySchemes:
+    application:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: https://api.habu.com/v1/oauth/token
+          scopes: {}
