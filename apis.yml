@@ -92,7 +92,7 @@ apis:
   humanURL: https://developers.liveramp.com/clean-room-api
   baseURL: https://api.habu.com/v1/
   tags:
-  - Clean Room
+  - Cleanroom
   tags_raw:
   - Cleanroom
   properties:
