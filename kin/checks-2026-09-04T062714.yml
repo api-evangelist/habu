@@ -1,21 +1,25 @@
 ---
 kin_checks:
   slug: habu
-  schema_version: 0.17.2
-  scored_at: '2026-09-01'
-  run_ts: 2026-09-01T063623
+  schema_version: 0.18.2
+  scored_at: '2026-09-04'
+  run_ts: 2026-09-04T062714
   note: Actionable checks only (missed + partial). earned/na are every other check
-    in rubric/scoring-0.17.2.yml; counts below let you verify that.
+    in rubric/scoring-0.18.2.yml; counts below let you verify that.
   counts:
-    total: 130
-    earned: 45
-    partial: 11
+    total: 132
+    earned: 44
+    partial: 12
     missed: 50
-    na: 24
+    na: 26
   checks:
   - id: maintainer_present
     status: missed
   - id: multiple_apis
+    status: missed
+  - id: human_url_per_api
+    status: missed
+  - id: base_url_per_api
     status: missed
   - id: well_known_published
     status: missed
@@ -27,8 +31,6 @@ kin_checks:
   - id: openapi_3_1
     status: missed
     detail: 0 of 34 openapi documents pass
-  - id: servers_resolvable
-    status: missed
   - id: examples_present
     status: missed
   - id: oauth_scopes_enumerated
@@ -100,8 +102,6 @@ kin_checks:
     status: missed
   - id: agentic_access
     status: missed
-  - id: reversibility_documented
-    status: missed
   - id: idempotency
     status: missed
   - id: openapi_examples
@@ -144,6 +144,10 @@ kin_checks:
     status: partial
     earned: 2.5
     detail: pointer liveness 0.5
+  - id: reversibility_documented
+    status: partial
+    earned: 2.4
+    detail: 'grade: documented'
   - id: mcp_server
     status: partial
     earned: 4.8

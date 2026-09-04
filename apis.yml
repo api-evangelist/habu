@@ -13,14 +13,20 @@ deliveryModel:
   method: derived
 accessModel:
   pricing: unknown
-  onboarding: unknown
+  onboarding: approval
   trial: false
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
+  label: Requires approval
+  confidence: medium
+  source:
+  - plans
+  - authentication
+  - scopes
+  - rate-limits
+  - security
+  - {url: 'https://habu.com', status: 301, note: 'declared website redirects to https://liveramp.com/ — a different registrable domain (habu.com -> liveramp.com), possible rename or acquisition (probed 2026-09-03, roadmap#169)'}
+  generated: '2026-09-03'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/habu.png
 name: Habu
