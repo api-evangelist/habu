@@ -441,6 +441,8 @@ apis:
   humanURL: https://developers.liveramp.com/clean-room-api
   baseURL: https://api.habu.com/v1/
   tags:
+  - Cleanroom
+  tags_raw:
   - Cleanrooms
   properties:
   - type: OpenAPI
@@ -588,6 +590,8 @@ apis:
   humanURL: https://developers.liveramp.com/clean-room-api
   baseURL: https://api.habu.com/v1/
   tags:
+  - Destination
+  tags_raw:
   - Destinations
   properties:
   - type: OpenAPI
