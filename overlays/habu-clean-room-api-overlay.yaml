@@ -2,7 +2,7 @@ overlay: 1.0.0
 info:
   title: API Evangelist enhancements — Habu Clean Room API
   version: 1.0.0
-  description: Overlay of the API Evangelist enrichment findings onto the published Habu Clean Room OpenAPI.
+  x-description: Overlay of the API Evangelist enrichment findings onto the published Habu Clean Room OpenAPI.
     It adds provenance, the runtime semantics the contract omits (rate limits on run creation, the token-issuance
     ceiling, the request-id header, the richer live error envelope) and stability annotations on the Internal
     tag. Applies to openapi/habu-clean-room-api-openapi.yml; the original is never mutated.

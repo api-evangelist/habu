@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Partners API
+  title: External APIs for Customer Integration Cleanroom Partners…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -436,20 +436,44 @@ paths:
       - Cleanroom Partners
 components:
   schemas:
-    DeleteResponse:
+    CleanRoomUser:
       type: object
       properties:
-        success:
-          type: boolean
-    AddCleanRoomPartnerRequest:
+        id:
+          type: string
+          description: Cleanroom User ID
+        cleanRoomId:
+          type: string
+          description: Cleanroom ID
+        user:
+          $ref: '#/components/schemas/User'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        role:
+          $ref: '#/components/schemas/CleanRoomRole'
+    User:
       type: object
       properties:
-        partnerAdminEmail:
+        id:
           type: string
-          description: Cleanroom Partner Admin's Email
-        invitationNote:
+          description: User ID
+        name:
           type: string
-          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
+          description: Name of the user
+        email:
+          type: string
+    CleanRoomUsers:
+      description: A list of Cleanroom Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomUser'
+    CleanRoomPartners:
+      description: A list of Cleanroom Partners and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomPartnerResponse'
     TimeAudit:
       type: object
       properties:
@@ -465,6 +489,66 @@ components:
           type: string
           format: date-time
           description: Timestamp for when the object was deleted (if applicable)
+    InviteStatus:
+      type: string
+      enum:
+      - PENDING
+      - ACCEPTED
+      - DECLINED
+      - INVITE_STATUS_UNKNOWN
+      - REQUEST_SENT_ADMIN
+      - IN_PROGRESS
+      - DECLINED_BY_ADMIN
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    AddCleanRoomPartnerRequest:
+      type: object
+      properties:
+        partnerAdminEmail:
+          type: string
+          description: Cleanroom Partner Admin's Email
+        invitationNote:
+          type: string
+          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
+    CleanRoomPartnerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom Partner ID
+        partnerOrganizationId:
+          type: string
+          description: Cleanroom Partner Organization ID
+        name:
+          type: string
+          description: Partner Organization name
+        userCount:
+          type: integer
+          description: CleanRoom User count
+        cleanRoomUsers:
+          $ref: '#/components/schemas/CleanRoomUsers'
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
     InvitationDetail:
       type: object
       properties:
@@ -493,67 +577,6 @@ components:
           $ref: '#/components/schemas/InviteStatus'
         timeAudit:
           $ref: '#/components/schemas/TimeAudit'
-    CleanRoomPartners:
-      description: A list of Cleanroom Partners and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomPartnerResponse'
-    InviteStatus:
-      type: string
-      enum:
-      - PENDING
-      - ACCEPTED
-      - DECLINED
-      - INVITE_STATUS_UNKNOWN
-      - REQUEST_SENT_ADMIN
-      - IN_PROGRESS
-      - DECLINED_BY_ADMIN
-    CleanRoomPartnerResponse:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Cleanroom Partner ID
-        partnerOrganizationId:
-          type: string
-          description: Cleanroom Partner Organization ID
-        name:
-          type: string
-          description: Partner Organization name
-        userCount:
-          type: integer
-          description: CleanRoom User count
-        cleanRoomUsers:
-          $ref: '#/components/schemas/CleanRoomUsers'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanRoomRoles:
-      description: A list of Cleanroom Roles
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomRole'
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
-    CleanRoomUsers:
-      description: A list of Cleanroom Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomUser'
     CleanRoomRole:
       properties:
         id:
@@ -564,34 +587,11 @@ components:
           type: string
         organizationId:
           type: string
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          description: User ID
-        name:
-          type: string
-          description: Name of the user
-        email:
-          type: string
-    CleanRoomUser:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Cleanroom User ID
-        cleanRoomId:
-          type: string
-          description: Cleanroom ID
-        user:
-          $ref: '#/components/schemas/User'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        role:
-          $ref: '#/components/schemas/CleanRoomRole'
+    CleanRoomRoles:
+      description: A list of Cleanroom Roles
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomRole'
   responses:
     BadRequest:
       description: Bad Request - Incorrect syntax or request

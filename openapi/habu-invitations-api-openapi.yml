@@ -160,6 +160,79 @@ paths:
       tags:
       - Invitations
 components:
+  schemas:
+    InviteStatus:
+      type: string
+      enum:
+      - PENDING
+      - ACCEPTED
+      - DECLINED
+      - INVITE_STATUS_UNKNOWN
+      - REQUEST_SENT_ADMIN
+      - IN_PROGRESS
+      - DECLINED_BY_ADMIN
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    AddCleanRoomPartnerRequest:
+      type: object
+      properties:
+        partnerAdminEmail:
+          type: string
+          description: Cleanroom Partner Admin's Email
+        invitationNote:
+          type: string
+          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    InvitationDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Invitation detail ID
+        organizationId:
+          type: string
+          description: Inviter's organization ID
+        partnerOrganizationId:
+          type: string
+          description: Invitee's organization. This will be filled when invitee choose organization to link cleanroom.
+        cleanRoomId:
+          type: string
+          description: Inviter's cleanroom ID
+        invitationNote:
+          type: string
+          description: Invitation note
+        partnerAdminEmail:
+          type: string
+          description: Invitee's email
+        InvitorEmail:
+          type: string
+          description: Inviter's email
+        Status:
+          $ref: '#/components/schemas/InviteStatus'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
   responses:
     Forbidden:
       description: This action is not allowed
@@ -206,79 +279,6 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-  schemas:
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
-    AddCleanRoomPartnerRequest:
-      type: object
-      properties:
-        partnerAdminEmail:
-          type: string
-          description: Cleanroom Partner Admin's Email
-        invitationNote:
-          type: string
-          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
-    InviteStatus:
-      type: string
-      enum:
-      - PENDING
-      - ACCEPTED
-      - DECLINED
-      - INVITE_STATUS_UNKNOWN
-      - REQUEST_SENT_ADMIN
-      - IN_PROGRESS
-      - DECLINED_BY_ADMIN
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    InvitationDetail:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Invitation detail ID
-        organizationId:
-          type: string
-          description: Inviter's organization ID
-        partnerOrganizationId:
-          type: string
-          description: Invitee's organization. This will be filled when invitee choose organization to link cleanroom.
-        cleanRoomId:
-          type: string
-          description: Inviter's cleanroom ID
-        invitationNote:
-          type: string
-          description: Invitation note
-        partnerAdminEmail:
-          type: string
-          description: Invitee's email
-        InvitorEmail:
-          type: string
-          description: Inviter's email
-        Status:
-          $ref: '#/components/schemas/InviteStatus'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
   securitySchemes:
     application:
       type: oauth2

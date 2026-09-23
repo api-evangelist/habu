@@ -127,15 +127,6 @@ paths:
       - Cleanroom
 components:
   schemas:
-    MeasurementExecutionTemplateResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        cleanRoomExecutionInstanceId:
-          type: string
-        cleanRoomExecutionTemplateId:
-          type: string
     BfmtJoinColumns:
       description: Detailed information about the Bfmt Join Columns
       type: object
@@ -144,69 +135,6 @@ components:
           type: string
         value:
           type: string
-    CleanRoomMeasurementExecutionInstanceStatusResponse:
-      type: object
-      properties:
-        Id:
-          type: string
-        status:
-          type: string
-        startTime:
-          type: string
-        endTime:
-          type: string
-        name:
-          type: string
-        detailedStatusReport:
-          type: string
-        cleanRoomExecutionTemplateID:
-          type: string
-        outputs:
-          $ref: '#/components/schemas/ExecutionInstanceOutputs'
-    Datasets:
-      description: Detailed information about the datasets
-      type: object
-      properties:
-        datasetType:
-          type: string
-        subType:
-          type: string
-        datasetId:
-          type: string
-        macro:
-          type: string
-        partitionValues:
-          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
-        bfmtJoinColumns:
-          type: array
-          items:
-            $ref: '#/components/schemas/BfmtJoinColumns'
-    CleanRoomExecutionInstanceInput:
-      type: object
-      properties:
-        executionInstanceName:
-          type: string
-        cleanRoomExecutionTemplateId:
-          type: string
-        codeVersion:
-          type: string
-        datasets:
-          type: array
-          items:
-            $ref: '#/components/schemas/Datasets'
-        modelsToRun:
-          type: array
-          items:
-            type: string
-        outputType:
-          type: string
-        runtimeParameters:
-          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
     ExecutionInstanceOutputs:
       description: Clean Room Measurement Execution Instance Outputs
       type: array
@@ -238,11 +166,6 @@ components:
       required:
       - code
       - message
-    CleanroomQuestionRunPartitionParameters:
-      description: A list of Cleanroom Question Run Partition Parameters
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameter'
     CleanroomQuestionRunPartitionParameter:
       type: object
       properties:
@@ -255,6 +178,83 @@ components:
         dataType:
           type: string
           description: Data Type of Cleanroom Question Run Partition Parameter
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanRoomExecutionInstanceInput:
+      type: object
+      properties:
+        executionInstanceName:
+          type: string
+        cleanRoomExecutionTemplateId:
+          type: string
+        codeVersion:
+          type: string
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Datasets'
+        modelsToRun:
+          type: array
+          items:
+            type: string
+        outputType:
+          type: string
+        runtimeParameters:
+          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+    Datasets:
+      description: Detailed information about the datasets
+      type: object
+      properties:
+        datasetType:
+          type: string
+        subType:
+          type: string
+        datasetId:
+          type: string
+        macro:
+          type: string
+        partitionValues:
+          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+        bfmtJoinColumns:
+          type: array
+          items:
+            $ref: '#/components/schemas/BfmtJoinColumns'
+    MeasurementExecutionTemplateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        cleanRoomExecutionInstanceId:
+          type: string
+        cleanRoomExecutionTemplateId:
+          type: string
+    CleanroomQuestionRunPartitionParameters:
+      description: A list of Cleanroom Question Run Partition Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameter'
+    CleanRoomMeasurementExecutionInstanceStatusResponse:
+      type: object
+      properties:
+        Id:
+          type: string
+        status:
+          type: string
+        startTime:
+          type: string
+        endTime:
+          type: string
+        name:
+          type: string
+        detailedStatusReport:
+          type: string
+        cleanRoomExecutionTemplateID:
+          type: string
+        outputs:
+          $ref: '#/components/schemas/ExecutionInstanceOutputs'
   responses:
     Unauthorized:
       description: Authorization information was missing or invalid

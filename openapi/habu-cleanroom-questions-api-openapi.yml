@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Questions API
+  title: External APIs for Customer Integration Cleanroom Questions…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -339,6 +339,119 @@ paths:
       - Cleanroom Questions
 components:
   schemas:
+    CleanRoomQuestion:
+      description: Model containing the Cleanroom Question details
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayId:
+          type: string
+        questionType:
+          type: string
+        category:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+        status:
+          type: string
+        dataTypes:
+          type: object
+          additionalProperties:
+            type: string
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+        dimension:
+          type: object
+          additionalProperties:
+            type: string
+        metrics:
+          type: object
+          additionalProperties:
+            type: string
+        cleanroomId:
+          type: string
+        ownerOrganizationId:
+          type: string
+        customerQueryTemplate:
+          type: string
+        questionId:
+          type: string
+    SegmentationRequest:
+      description: Request body for enabling or updating segmentation for a Cleanroom Question
+      required:
+      - assetDisplayName
+      - rampID
+      properties:
+        assetDisplayName:
+          type: string
+          description: Display name for the asset
+          example: CRQ-065269-Feb2
+        rampID:
+          type: string
+          description: Ramp ID type
+          example: NAME
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanRoomQuestionRun:
+      type: object
+      properties:
+        runId:
+          type: string
+          description: Run ID
+        status:
+          type: string
+        startTimestamp:
+          type: string
+          format: date-time
+          description: Start Timestamp of the Run
+        endTimestamp:
+          type: string
+          format: date-time
+          description: End Timestamp of the Run
+    CleanroomQuestionComputeCapacity:
+      type: string
+      description: possible compute capacities for cleanroom questions. This can be set for Hybrid, LinkedIn, Snowflake and Habu Confidential Compute. Snowflake cleanroom questions can only be DEFAULT or LARGE.
+      enum:
+      - DEFAULT
+      - MEDIUM
+      - LARGE
+      - XLARGE
+    UpdateCleanroomQuestionComputeCapacityRequest:
+      type: object
+      properties:
+        computeCapacity:
+          $ref: '#/components/schemas/CleanroomQuestionComputeCapacity'
+          description: The new warehouse size for the cleanroom question
+    SegmentationResponse:
+      description: Response when segmentation is enabled or updated successfully
+      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
+      properties:
+        assetId:
+          type: string
+          description: The created or updated asset ID
+          example: 5f3e2b1a-90ab-4cde-8fgh-1234567890ab
+        success:
+          type: boolean
+          description: Indicates whether the operation succeeded
+          example: true
     CleanRoomQuestionResponse:
       type: object
       properties:
@@ -387,130 +500,17 @@ components:
         description:
           type: string
           description: Description of the Question
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    SegmentationResponse:
-      description: Response when segmentation is enabled or updated successfully
-      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
-      properties:
-        assetId:
-          type: string
-          description: The created or updated asset ID
-          example: 5f3e2b1a-90ab-4cde-8fgh-1234567890ab
-        success:
-          type: boolean
-          description: Indicates whether the operation succeeded
-          example: true
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanRoomQuestion:
-      description: Model containing the Cleanroom Question details
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayId:
-          type: string
-        questionType:
-          type: string
-        category:
-          type: string
-        createdOn:
-          type: string
-          format: date-time
-        status:
-          type: string
-        dataTypes:
-          type: object
-          additionalProperties:
-            type: string
-        parameters:
-          type: object
-          additionalProperties:
-            type: string
-        dimension:
-          type: object
-          additionalProperties:
-            type: string
-        metrics:
-          type: object
-          additionalProperties:
-            type: string
-        cleanroomId:
-          type: string
-        ownerOrganizationId:
-          type: string
-        customerQueryTemplate:
-          type: string
-        questionId:
-          type: string
-    CleanRoomQuestions:
-      description: A list of Cleanroom Questions and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestion'
-    UpdateCleanroomQuestionComputeCapacityRequest:
-      type: object
-      properties:
-        computeCapacity:
-          $ref: '#/components/schemas/CleanroomQuestionComputeCapacity'
-          description: The new warehouse size for the cleanroom question
-    CleanRoomQuestionRun:
-      type: object
-      properties:
-        runId:
-          type: string
-          description: Run ID
-        status:
-          type: string
-        startTimestamp:
-          type: string
-          format: date-time
-          description: Start Timestamp of the Run
-        endTimestamp:
-          type: string
-          format: date-time
-          description: End Timestamp of the Run
     UpdateCleanroomQuestionComputeCapacityResponse:
       type: object
       properties:
         success:
           type: boolean
           description: Indicates if the warehouse size was updated successfully
-    CleanroomQuestionComputeCapacity:
-      type: string
-      description: possible compute capacities for cleanroom questions. This can be set for Hybrid, LinkedIn, Snowflake and Habu Confidential Compute. Snowflake cleanroom questions can only be DEFAULT or LARGE.
-      enum:
-      - DEFAULT
-      - MEDIUM
-      - LARGE
-      - XLARGE
-    SegmentationRequest:
-      description: Request body for enabling or updating segmentation for a Cleanroom Question
-      required:
-      - assetDisplayName
-      - rampID
-      properties:
-        assetDisplayName:
-          type: string
-          description: Display name for the asset
-          example: CRQ-065269-Feb2
-        rampID:
-          type: string
-          description: Ramp ID type
-          example: NAME
+    CleanRoomQuestions:
+      description: A list of Cleanroom Questions and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestion'
   responses:
     Forbidden:
       description: This action is not allowed

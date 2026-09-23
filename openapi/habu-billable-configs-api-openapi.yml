@@ -120,15 +120,15 @@ paths:
       - Billable Configs
 components:
   schemas:
-    UpsertBillableConfigResponse:
+    DeleteBillableConfigResponse:
       type: object
       properties:
         success:
           type: boolean
-        billableConfigId:
-          type: string
-    GetBillableConfigResponse:
+    UpsertBillableConfigRequest:
       type: object
+      required:
+      - config
       properties:
         config:
           $ref: '#/components/schemas/BillableConfig'
@@ -142,6 +142,31 @@ components:
       required:
       - code
       - message
+    GetBillableConfigResponse:
+      type: object
+      properties:
+        config:
+          $ref: '#/components/schemas/BillableConfig'
+    BillableSourceType:
+      type: string
+      description: Type of entity a billable config applies to
+      enum:
+      - BILLABLE_UNKNOWN
+      - BILLABLE_RUN
+      - BILLABLE_FLOW_RUN
+      - BILLABLE_QUESTION
+      - BILLABLE_FLOW
+      - BILLABLE_CR
+      - BILLABLE_OWNER
+      - BILLABLE_PARTNER
+      - BILLABLE_CRQ
+    UpsertBillableConfigResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        billableConfigId:
+          type: string
     BillableConfig:
       type: object
       description: Billable configuration for a source entity
@@ -160,31 +185,6 @@ components:
           description: Billable flag as string ("true" or "false")
         compositeSourceId:
           type: string
-    DeleteBillableConfigResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    UpsertBillableConfigRequest:
-      type: object
-      required:
-      - config
-      properties:
-        config:
-          $ref: '#/components/schemas/BillableConfig'
-    BillableSourceType:
-      type: string
-      description: Type of entity a billable config applies to
-      enum:
-      - BILLABLE_UNKNOWN
-      - BILLABLE_RUN
-      - BILLABLE_FLOW_RUN
-      - BILLABLE_QUESTION
-      - BILLABLE_FLOW
-      - BILLABLE_CR
-      - BILLABLE_OWNER
-      - BILLABLE_PARTNER
-      - BILLABLE_CRQ
   responses:
     Forbidden:
       description: This action is not allowed

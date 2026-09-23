@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Question Result Shares API
+  title: External APIs for Customer Integration Cleanroom Question…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -89,11 +89,25 @@ paths:
       - Cleanroom Question Result Shares
 components:
   schemas:
-    UpsertCleanRoomQuestionResultShareResponse:
+    ReturnObject:
       type: object
       properties:
-        success:
-          type: boolean
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    UpsertCleanRoomQuestionResultShares:
+      type: object
+      properties:
+        PartnerID:
+          type: string
+          description: Partner ID
+        PostRunQueryID:
+          type: string
+          description: Post Run Query ID
     CleanRoomQuestionResultShare:
       type: object
       properties:
@@ -106,47 +120,24 @@ components:
         PostRunQueryID:
           type: string
           description: Post Run Query ID
+    UpsertCleanRoomQuestionResultShareResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
     UpsertCleanRoomQuestionResultSharesApiInput:
       description: A list of Cleanroom Result Shares
       type: array
       items:
         $ref: '#/components/schemas/UpsertCleanRoomQuestionResultShares'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
     CleanRoomQuestionResultShares:
       description: A list of Cleanroom Result Shares
       type: array
       items:
         $ref: '#/components/schemas/CleanRoomQuestionResultShare'
-    UpsertCleanRoomQuestionResultShares:
-      type: object
-      properties:
-        PartnerID:
-          type: string
-          description: Partner ID
-        PostRunQueryID:
-          type: string
-          description: Post Run Query ID
   responses:
     Unauthorized:
       description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
       content:
         application/json:
           schema:
@@ -165,6 +156,15 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     BadRequest:
       description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
       content:
         application/json:
           schema:

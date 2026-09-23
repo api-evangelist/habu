@@ -207,64 +207,27 @@ paths:
       - Questions
 components:
   schemas:
-    QuestionImportDataType:
-      type: string
-      enum:
-      - CodeContainer
-      - Transaction
-      - Metadata
-      - PageData
-      - AdExposure
-      - ServiceContainer
-      - DatabricksNotebook
-      - TTDREDSFeed
-      - UserData
-      - MLModel
-      - ConversionEvents
-      - TrainModel
-      - AdLogs
-      - MemberProfile
-      - AADataFeed
-      - TTDREDSMetadata
-      - Conversion
-      - BinaryData
-      - SparkCodeContainer
-      - DatabricksContainer
-      - AdEngagement
-      - OfflineConversions
-      - UserSegmentMap
-      - LinkedInMarketingSolutionsConfigData
-      - GoogleCloudBigQuery
-      - IDENTITY_GRAPH
-      - AdsDataFeed
-      - CRM
-      - Generic
-      - AMCAdsDataFeed
-      - Campaign
-      - CampaignMapping
-      - WHEEL
-    DeleteQuestionResponse:
+    QueryDetail:
+      description: A single query detail within the question
       type: object
+      properties:
+        query:
+          type: string
+        cleanRoomType:
+          $ref: '#/components/schemas/CleanRoomTypeRequest'
+        queryLanguage:
+          type: string
+    QuestionUpdateResponse:
+      description: Model containing the response for a question update request
       properties:
         success:
           type: boolean
-          description: Indicates if the question was deleted successfully
-    QuestionDataType:
-      description: Details about the data types used in the question
-      type: object
-      properties:
-        id:
+          description: Indicates if the question was created updated
+        message:
           type: string
-        macro:
-          type: string
-        datasetID:
-          type: string
-        importDataType:
-          $ref: '#/components/schemas/QuestionImportDataType'
-        dataSetTypeFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataSetTypeField'
+          description: Message indicating what went wrong if the question was not created successfully
+        question:
+          $ref: '#/components/schemas/QuestionDetails'
     Parameter:
       description: A parameter used within the question
       type: object
@@ -288,81 +251,6 @@ components:
         isSynced:
           type: boolean
           description: Parameter Sync Status
-    QuestionCreationResponse:
-      description: Model containing the response for a question creation request
-      properties:
-        success:
-          type: boolean
-          description: Indicates if the question was created successfully
-        message:
-          type: string
-          description: Message indicating what went wrong if the question was not created successfully
-        questionID:
-          type: string
-          description: The ID of the created question
-    QuestionUpdateResponse:
-      description: Model containing the response for a question update request
-      properties:
-        success:
-          type: boolean
-          description: Indicates if the question was created updated
-        message:
-          type: string
-          description: Message indicating what went wrong if the question was not created successfully
-        question:
-          $ref: '#/components/schemas/QuestionDetails'
-    Measure:
-      description: Metrics associated with the question
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-        isIdentity:
-          type: boolean
-        noise:
-          type: boolean
-    DataSetTypeField:
-      description: Fields associated with a specific data type
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-    Question:
-      description: Model containing the Question details
-      type: object
-      properties:
-        questionDetails:
-          $ref: '#/components/schemas/QuestionDetails'
-        id:
-          type: string
-        cleanRoomID:
-          type: string
-        organizationID:
-          type: string
-        settings:
-          $ref: '#/components/schemas/CreateQuestionSettings'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    Dimension:
-      description: Dimensions used within the question
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
     QuestionDetails:
       description: Detailed information about the question
       type: object
@@ -421,8 +309,16 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserListOutput'
-    UserListOutput:
-      description: Output for user lists associated with the question
+    DataSetTypeField:
+      description: Fields associated with a specific data type
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    Dimension:
+      description: Dimensions used within the question
       type: object
       properties:
         name:
@@ -442,16 +338,6 @@ components:
       - ADH
       - LinkedIn
       - HabuConfidentialComputing
-    QueryDetail:
-      description: A single query detail within the question
-      type: object
-      properties:
-        query:
-          type: string
-        cleanRoomType:
-          $ref: '#/components/schemas/CleanRoomTypeRequest'
-        queryLanguage:
-          type: string
     CreateQuestionSettings:
       description: Settings for how the create question api will behave
       type: object
@@ -459,6 +345,120 @@ components:
         queryValidation:
           type: boolean
           description: If true, the query will be validated before being saved
+    Measure:
+      description: Metrics associated with the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        isIdentity:
+          type: boolean
+        noise:
+          type: boolean
+    UserListOutput:
+      description: Output for user lists associated with the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    QuestionCreationResponse:
+      description: Model containing the response for a question creation request
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was created successfully
+        message:
+          type: string
+          description: Message indicating what went wrong if the question was not created successfully
+        questionID:
+          type: string
+          description: The ID of the created question
+    Question:
+      description: Model containing the Question details
+      type: object
+      properties:
+        questionDetails:
+          $ref: '#/components/schemas/QuestionDetails'
+        id:
+          type: string
+        cleanRoomID:
+          type: string
+        organizationID:
+          type: string
+        settings:
+          $ref: '#/components/schemas/CreateQuestionSettings'
+    QuestionImportDataType:
+      type: string
+      enum:
+      - CodeContainer
+      - Transaction
+      - Metadata
+      - PageData
+      - AdExposure
+      - ServiceContainer
+      - DatabricksNotebook
+      - TTDREDSFeed
+      - UserData
+      - MLModel
+      - ConversionEvents
+      - TrainModel
+      - AdLogs
+      - MemberProfile
+      - AADataFeed
+      - TTDREDSMetadata
+      - Conversion
+      - BinaryData
+      - SparkCodeContainer
+      - DatabricksContainer
+      - AdEngagement
+      - OfflineConversions
+      - UserSegmentMap
+      - LinkedInMarketingSolutionsConfigData
+      - GoogleCloudBigQuery
+      - IDENTITY_GRAPH
+      - AdsDataFeed
+      - CRM
+      - Generic
+      - AMCAdsDataFeed
+      - Campaign
+      - CampaignMapping
+      - WHEEL
+    QuestionDataType:
+      description: Details about the data types used in the question
+      type: object
+      properties:
+        id:
+          type: string
+        macro:
+          type: string
+        datasetID:
+          type: string
+        importDataType:
+          $ref: '#/components/schemas/QuestionImportDataType'
+        dataSetTypeFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSetTypeField'
+    DeleteQuestionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was deleted successfully
   responses:
     BadRequest:
       description: Bad Request - Incorrect syntax or request

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Question Permissions API
+  title: External APIs for Customer Integration Cleanroom Question…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -87,29 +87,21 @@ paths:
       - Cleanroom Question Permissions
 components:
   schemas:
-    CleanRoomQuestionPermissionsUpdateInput:
-      type: object
-      properties:
-        permission:
-          $ref: '#/components/schemas/QuestionPermission'
-        access:
-          $ref: '#/components/schemas/QuestionAccess'
-    UpdateCleanRoomQuestionPermissionsRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionPermissionsUpdateInput'
-      description: Array of Cleanroom Question Permission Updates
     QuestionAccess:
       type: string
       enum:
       - UNKNOWN_ACCESS
       - QUESTION_OWNER_ONLY
       - ALL_CLEAN_ROOM_PARTNERS
-    CleanRoomQuestionPermissionsResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
-      description: Array of Cleanroom Question Permissions
+    CleanRoomQuestionPermissions:
+      type: object
+      properties:
+        id:
+          type: string
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
     ReturnObject:
       type: object
       properties:
@@ -120,6 +112,13 @@ components:
       required:
       - code
       - message
+    CleanRoomQuestionPermissionsUpdateInput:
+      type: object
+      properties:
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
     QuestionPermission:
       type: string
       enum:
@@ -131,27 +130,19 @@ components:
       - IN_PROGRESS
       - VIEW_RESULTS
       - DELETE
-    CleanRoomQuestionPermissions:
-      type: object
-      properties:
-        id:
-          type: string
-        permission:
-          $ref: '#/components/schemas/QuestionPermission'
-        access:
-          $ref: '#/components/schemas/QuestionAccess'
+    CleanRoomQuestionPermissionsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
+      description: Array of Cleanroom Question Permissions
+    UpdateCleanRoomQuestionPermissionsRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissionsUpdateInput'
+      description: Array of Cleanroom Question Permission Updates
   responses:
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:
@@ -179,6 +170,15 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     BadRequest:
       description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

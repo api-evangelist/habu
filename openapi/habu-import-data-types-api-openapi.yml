@@ -39,10 +39,6 @@ paths:
       - Import Data Types
 components:
   schemas:
-    ImportDataTypes:
-      type: array
-      items:
-        $ref: '#/components/schemas/ImportDataType'
     ImportDataType:
       type: object
       properties:
@@ -62,6 +58,10 @@ components:
       required:
       - code
       - message
+    ImportDataTypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/ImportDataType'
   responses:
     Unauthorized:
       description: Authorization information was missing or invalid

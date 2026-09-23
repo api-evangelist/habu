@@ -528,41 +528,105 @@ paths:
       - Cleanroom Flows
 components:
   schemas:
-    JobRunStatus:
-      type: string
-      enum:
-      - UNKNOWN_JOB_RUN_STATUS
-      - QUEUED
-      - PROCESSING
-      - COMPLETE
-      - FAILED
-      - PARTIALLY_FAILED
-      - THRESHOLD_WARNING
-      - NO_NEW_USERS
-    JobRunType:
-      type: string
-      enum:
-      - UNKNOWN_JOB_RUN_TYPE
-      - FULL_REFRESH
-      - INCREMENTAL
-    NodeExportJobList:
+    JobDetailParameter:
       type: object
       properties:
-        nodeId:
+        label:
           type: string
-        jobs:
+        value:
+          type: string
+    JobDetails:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        jobDetailParameters:
           type: array
           items:
-            $ref: '#/components/schemas/FlowNodeExportJob'
-    BulkNodeDeleteRequest:
+            $ref: '#/components/schemas/JobDetailParameter'
+    NestedUserAudit:
+      type: object
+      properties:
+        createdByUser:
+          $ref: '#/components/schemas/UserRefInfo'
+        updatedByUser:
+          $ref: '#/components/schemas/UserRefInfo'
+    QuestionUserListOutput:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        isEncrypt:
+          type: boolean
+    AssignFlowDatasetsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Success indicator
+        message:
+          type: string
+          description: Status message
+        assignedDatasets:
+          type: array
+          description: Assigned datasets with resolved information
+          items:
+            $ref: '#/components/schemas/AssignedDatasetResult'
+    AssetQuestionDataType:
+      type: object
+      properties:
+        ID:
+          type: string
+        macro:
+          type: string
+        description:
+          type: string
+        importDataType:
+          type: string
+        optional:
+          type: boolean
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionDataTypeField'
+    BulkNodeStatusRequest:
       type: object
       required:
       - nodeIds
+      - status
       properties:
         nodeIds:
           type: array
           items:
             type: string
+        status:
+          type: string
+          description: Target status for all jobs under these nodes (ACTIVE or PAUSED).
+    ListCleanroomFlowsResponse:
+      type: object
+      properties:
+        cleanRoomFlows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListItemCleanroomFlow'
+        count:
+          type: integer
+          format: int32
+    UserRefInfo:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
     GetDatasetOrganizationsResponse:
       type: object
       properties:
@@ -577,285 +641,6 @@ components:
           description: Dataset organization information
           items:
             $ref: '#/components/schemas/DatasetOrganizationInfo'
-    CleanroomFlowNodeDetails:
-      type: object
-      properties:
-        nodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowNodeMetadata'
-          description: Detailed information for all nodes in the flow
-    FlowNodeExportJob:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-          description: Display name of the export job.
-        status:
-          type: string
-          description: Job status (ACTIVE or PAUSED).
-        channelStatus:
-          type: string
-          description: Health status of the export channel.
-        partnerAccountId:
-          type: string
-        partnerAccountName:
-          type: string
-          description: Display name of the partner account.
-        createdAt:
-          type: string
-          format: date-time
-        lastRunTime:
-          type: string
-          format: date-time
-          description: Timestamp of the last execution of this export job.
-        exportParameters:
-          type: array
-          description: Export parameters configured for this job (e.g. S3 path, format).
-          items:
-            $ref: '#/components/schemas/ExportJobParameter'
-    CreateFlowResponse:
-      type: object
-      properties:
-        flowID:
-          type: string
-          description: The ID of the created flow
-        success:
-          type: boolean
-          description: Whether the flow creation was successful
-        message:
-          type: string
-          description: Additional information about the flow creation
-    NestedUserAudit:
-      type: object
-      properties:
-        createdByUser:
-          $ref: '#/components/schemas/UserRefInfo'
-        updatedByUser:
-          $ref: '#/components/schemas/UserRefInfo'
-    APINode:
-      type: object
-      required:
-      - nodeIdentifier
-      properties:
-        nodeIdentifier:
-          type: string
-          description: Unique identifier for the node within the flow.
-        edges:
-          type: array
-          description: Edges connecting this node to other nodes with dataset mappings
-          items:
-            $ref: '#/components/schemas/APIEdge'
-        settings:
-          $ref: '#/components/schemas/NodeSettings'
-        tags:
-          type: string
-          description: Comma-separated list of branch tags for the node
-    QuestionUserListOutput:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-        isEncrypt:
-          type: boolean
-    ListCleanroomFlowsResponse:
-      type: object
-      properties:
-        cleanRoomFlows:
-          type: array
-          items:
-            $ref: '#/components/schemas/ListItemCleanroomFlow'
-        count:
-          type: integer
-          format: int32
-    ListCleanroomFlowsRequest:
-      type: object
-      properties:
-        filters:
-          type: array
-          items:
-            type: object
-        sortBy:
-          type: object
-          additionalProperties: true
-        limit:
-          type: integer
-          format: int32
-          default: 0
-        offset:
-          type: integer
-          format: int32
-          default: 0
-        search:
-          type: string
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
-    CreateFlowRequest:
-      type: object
-      required:
-      - flowName
-      - nodes
-      properties:
-        flowName:
-          type: string
-          description: The name of the flow.
-        description:
-          type: string
-          description: A description of the flow.
-        nodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/APINode'
-        createNewVersion:
-          type: boolean
-          description: Whether to create a new version of the flow
-          default: false
-        versionMessage:
-          type: string
-          description: Version description provided by user
-    NodeDatasetAssignment:
-      type: object
-      properties:
-        nodeIdentifier:
-          type: string
-          description: Node display ID or name
-        datasets:
-          type: array
-          description: Dataset assignments for this node
-          items:
-            $ref: '#/components/schemas/DatasetAssignment'
-    ExportJobParameter:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
-    NodeDeleteResult:
-      type: object
-      properties:
-        nodeId:
-          type: string
-        deletedJobIds:
-          type: array
-          items:
-            type: string
-    QuestionParameter:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        index:
-          type: integer
-        parameterType:
-          type: string
-    UserRefInfo:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        email:
-          type: string
-    NodeExportRequest:
-      type: object
-      required:
-      - nodeId
-      - partnerAccountIds
-      properties:
-        nodeId:
-          type: string
-          description: The node UUID or display label to create exports for.
-        partnerAccountIds:
-          type: array
-          items:
-            type: string
-          description: Partner account IDs to export to. One job is created per partner account.
-        exportParameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExportJobParameter'
-          description: Optional export parameters (e.g. S3_EXPORT_PATH, GCS_EXPORT_PATH).
-    BulkNodeStatusRequest:
-      type: object
-      required:
-      - nodeIds
-      - status
-      properties:
-        nodeIds:
-          type: array
-          items:
-            type: string
-        status:
-          type: string
-          description: Target status for all jobs under these nodes (ACTIVE or PAUSED).
-    QuestionMetric:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        computed:
-          type: boolean
-    QuestionDataTypeField:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-        format:
-          type: string
-        description:
-          type: string
-    QuestionDimension:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        filterable:
-          type: boolean
-        plottable:
-          type: boolean
     DatasetOwnership:
       type: string
       enum:
@@ -894,13 +679,64 @@ components:
           $ref: '#/components/schemas/JobDetails'
         errorMessage:
           type: string
-    NodeStatusResult:
+    NodeJobRunsList:
       type: object
       properties:
         nodeId:
           type: string
-        success:
-          type: boolean
+        jobRuns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobRun'
+    AssignedDatasetResult:
+      type: object
+      properties:
+        nodeIdentifier:
+          type: string
+          description: Node display ID
+        datasetName:
+          type: string
+          description: Dataset name that was assigned
+        datasetID:
+          type: string
+          description: Dataset ID (resolved)
+        organizationName:
+          type: string
+          description: Organization name from request
+        ownership:
+          $ref: '#/components/schemas/DatasetOwnership'
+          description: Resolved ownership (OWNER, PARTNER)
+        datasetMacro:
+          type: string
+          description: Dataset macro/type
+        status:
+          type: string
+          description: Assignment status
+    GetDatasetOrganizationsRequest:
+      type: object
+      required:
+      - datasetIdentifiers
+      properties:
+        datasetIdentifiers:
+          type: array
+          description: List of dataset identifiers (UUIDs or names)
+          items:
+            type: string
+    JobRunType:
+      type: string
+      enum:
+      - UNKNOWN_JOB_RUN_TYPE
+      - FULL_REFRESH
+      - INCREMENTAL
+    NodeDeleteResult:
+      type: object
+      properties:
+        nodeId:
+          type: string
+        deletedJobIds:
+          type: array
+          items:
+            type: string
     NodeSettings:
       type: object
       properties:
@@ -912,145 +748,35 @@ components:
           items:
             type: string
           description: List of organization IDs that have access to this node.
-    FieldMapping:
+    ListCleanroomFlowsRequest:
       type: object
       properties:
-        questionFieldName:
+        filters:
+          type: array
+          items:
+            type: object
+        sortBy:
+          type: object
+          additionalProperties: true
+        limit:
+          type: integer
+          format: int32
+          default: 0
+        offset:
+          type: integer
+          format: int32
+          default: 0
+        search:
           type: string
-          description: Question field name in the node
-        datasetFieldName:
-          type: string
-          description: Dataset field name to map to
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    NodeJobRunsList:
+    NodeExportJobList:
       type: object
       properties:
         nodeId:
           type: string
-        jobRuns:
+        jobs:
           type: array
           items:
-            $ref: '#/components/schemas/ExportJobRun'
-    AssetQuestionDataType:
-      type: object
-      properties:
-        ID:
-          type: string
-        macro:
-          type: string
-        description:
-          type: string
-        importDataType:
-          type: string
-        optional:
-          type: boolean
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionDataTypeField'
-    APIFieldMapping:
-      type: object
-      required:
-      - datasetFieldName
-      - parentFieldName
-      properties:
-        datasetFieldName:
-          type: string
-          description: The field name in the dataset
-        parentFieldName:
-          type: string
-          description: The field name from the parent node
-    DatasetOrganizationInfo:
-      type: object
-      properties:
-        requestedIdentifier:
-          type: string
-          description: Dataset identifier from request (UUID or name)
-        datasetID:
-          type: string
-          description: Dataset ID (resolved UUID)
-        datasetName:
-          type: string
-          description: Dataset name
-        organizationID:
-          type: string
-          description: Organization ID that owns the dataset
-        organizationName:
-          type: string
-          description: Organization name that owns the dataset
-        found:
-          type: boolean
-          description: Whether the dataset was found
-        errorMessage:
-          type: string
-          description: Error message if not found or inaccessible
-    JobDetailParameter:
-      type: object
-      properties:
-        label:
-          type: string
-        value:
-          type: string
-    GetCleanroomFlowResponse:
-      type: object
-      description: Response object containing the cleanroom flow details
-      properties:
-        cleanRoomFlow:
-          $ref: '#/components/schemas/ListItemCleanroomFlow'
-    JobDetails:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        jobDetailParameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobDetailParameter'
-    APIEdge:
-      type: object
-      required:
-      - datasetMacro
-      - parentID
-      properties:
-        datasetMacro:
-          type: string
-          description: The dataset macro/type identifier
-        parentID:
-          type: string
-          description: The nodeIdentifier of the parent node
-        fieldMappings:
-          type: array
-          description: Field mappings between parent and current node
-          items:
-            $ref: '#/components/schemas/APIFieldMapping'
-    DatasetAssignment:
-      type: object
-      properties:
-        datasetName:
-          type: string
-          description: Dataset name (will be resolved to ID)
-        datasetMacro:
-          type: string
-          description: Dataset macro/type
-        organizationName:
-          type: string
-          description: Organization name from stakeholders list (will be resolved to ownership)
-        fieldMappings:
-          type: array
-          description: Field mappings using field names
-          items:
-            $ref: '#/components/schemas/FieldMapping'
+            $ref: '#/components/schemas/FlowNodeExportJob'
     ListItemFlow:
       type: object
       properties:
@@ -1081,53 +807,30 @@ components:
         version:
           type: integer
           format: int32
-    ListItemCleanroomFlow:
+    NodeStatusResult:
       type: object
       properties:
-        ID:
+        nodeId:
           type: string
-        displayID:
-          type: string
-        cleanRoomID:
-          type: string
-        flowID:
-          type: string
-        status:
-          type: string
-        stage:
-          type: string
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/NestedUserAudit'
-        flow:
-          $ref: '#/components/schemas/ListItemFlow'
-        runCount:
-          type: integer
-          format: int32
-        CryptoKeyID:
-          type: string
-        flowVersion:
-          type: integer
-          format: int32
-        isProvisioned:
+        success:
           type: boolean
-        billableConfigID:
-          type: string
-        isBillable:
-          type: boolean
-        ownerOrganizationID:
-          type: string
-    GetDatasetOrganizationsRequest:
+    APIEdge:
       type: object
       required:
-      - datasetIdentifiers
+      - datasetMacro
+      - parentID
       properties:
-        datasetIdentifiers:
+        datasetMacro:
+          type: string
+          description: The dataset macro/type identifier
+        parentID:
+          type: string
+          description: The nodeIdentifier of the parent node
+        fieldMappings:
           type: array
-          description: List of dataset identifiers (UUIDs or names)
+          description: Field mappings between parent and current node
           items:
-            type: string
+            $ref: '#/components/schemas/APIFieldMapping'
     AssignFlowDatasetsRequest:
       type: object
       required:
@@ -1138,20 +841,74 @@ components:
           description: Dataset assignments for each node
           items:
             $ref: '#/components/schemas/NodeDatasetAssignment'
-    AssignFlowDatasetsResponse:
+    NodeDatasetAssignment:
       type: object
       properties:
-        success:
-          type: boolean
-          description: Success indicator
-        message:
+        nodeIdentifier:
           type: string
-          description: Status message
-        assignedDatasets:
+          description: Node display ID or name
+        datasets:
           type: array
-          description: Assigned datasets with resolved information
+          description: Dataset assignments for this node
           items:
-            $ref: '#/components/schemas/AssignedDatasetResult'
+            $ref: '#/components/schemas/DatasetAssignment'
+    NodeExportRequest:
+      type: object
+      required:
+      - nodeId
+      - partnerAccountIds
+      properties:
+        nodeId:
+          type: string
+          description: The node UUID or display label to create exports for.
+        partnerAccountIds:
+          type: array
+          items:
+            type: string
+          description: Partner account IDs to export to. One job is created per partner account.
+        exportParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobParameter'
+          description: Optional export parameters (e.g. S3_EXPORT_PATH, GCS_EXPORT_PATH).
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    CreateFlowRequest:
+      type: object
+      required:
+      - flowName
+      - nodes
+      properties:
+        flowName:
+          type: string
+          description: The name of the flow.
+        description:
+          type: string
+          description: A description of the flow.
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/APINode'
+        createNewVersion:
+          type: boolean
+          description: Whether to create a new version of the flow
+          default: false
+        versionMessage:
+          type: string
+          description: Version description provided by user
     NodeExportResult:
       type: object
       properties:
@@ -1161,6 +918,98 @@ components:
           type: array
           items:
             type: string
+    ExportJobParameter:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    APIFieldMapping:
+      type: object
+      required:
+      - datasetFieldName
+      - parentFieldName
+      properties:
+        datasetFieldName:
+          type: string
+          description: The field name in the dataset
+        parentFieldName:
+          type: string
+          description: The field name from the parent node
+    QuestionDimension:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        filterable:
+          type: boolean
+        plottable:
+          type: boolean
+    QuestionMetric:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        computed:
+          type: boolean
+    FieldMapping:
+      type: object
+      properties:
+        questionFieldName:
+          type: string
+          description: Question field name in the node
+        datasetFieldName:
+          type: string
+          description: Dataset field name to map to
+    CreateFlowResponse:
+      type: object
+      properties:
+        flowID:
+          type: string
+          description: The ID of the created flow
+        success:
+          type: boolean
+          description: Whether the flow creation was successful
+        message:
+          type: string
+          description: Additional information about the flow creation
+    QuestionDataTypeField:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        format:
+          type: string
+        description:
+          type: string
+    JobRunStatus:
+      type: string
+      enum:
+      - UNKNOWN_JOB_RUN_STATUS
+      - QUEUED
+      - PROCESSING
+      - COMPLETE
+      - FAILED
+      - PARTIALLY_FAILED
+      - THRESHOLD_WARNING
+      - NO_NEW_USERS
     FlowNodeMetadata:
       type: object
       properties:
@@ -1239,30 +1088,181 @@ components:
           items:
             type: string
           description: Branches
-    AssignedDatasetResult:
+    BulkNodeDeleteRequest:
       type: object
+      required:
+      - nodeIds
+      properties:
+        nodeIds:
+          type: array
+          items:
+            type: string
+    CleanroomFlowNodeDetails:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowNodeMetadata'
+          description: Detailed information for all nodes in the flow
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    GetCleanroomFlowResponse:
+      type: object
+      description: Response object containing the cleanroom flow details
+      properties:
+        cleanRoomFlow:
+          $ref: '#/components/schemas/ListItemCleanroomFlow'
+    QuestionParameter:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        index:
+          type: integer
+        parameterType:
+          type: string
+    DatasetOrganizationInfo:
+      type: object
+      properties:
+        requestedIdentifier:
+          type: string
+          description: Dataset identifier from request (UUID or name)
+        datasetID:
+          type: string
+          description: Dataset ID (resolved UUID)
+        datasetName:
+          type: string
+          description: Dataset name
+        organizationID:
+          type: string
+          description: Organization ID that owns the dataset
+        organizationName:
+          type: string
+          description: Organization name that owns the dataset
+        found:
+          type: boolean
+          description: Whether the dataset was found
+        errorMessage:
+          type: string
+          description: Error message if not found or inaccessible
+    ListItemCleanroomFlow:
+      type: object
+      properties:
+        ID:
+          type: string
+        displayID:
+          type: string
+        cleanRoomID:
+          type: string
+        flowID:
+          type: string
+        status:
+          type: string
+        stage:
+          type: string
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/NestedUserAudit'
+        flow:
+          $ref: '#/components/schemas/ListItemFlow'
+        runCount:
+          type: integer
+          format: int32
+        CryptoKeyID:
+          type: string
+        flowVersion:
+          type: integer
+          format: int32
+        isProvisioned:
+          type: boolean
+        billableConfigID:
+          type: string
+        isBillable:
+          type: boolean
+        ownerOrganizationID:
+          type: string
+    APINode:
+      type: object
+      required:
+      - nodeIdentifier
       properties:
         nodeIdentifier:
           type: string
-          description: Node display ID
+          description: Unique identifier for the node within the flow.
+        edges:
+          type: array
+          description: Edges connecting this node to other nodes with dataset mappings
+          items:
+            $ref: '#/components/schemas/APIEdge'
+        settings:
+          $ref: '#/components/schemas/NodeSettings'
+        tags:
+          type: string
+          description: Comma-separated list of branch tags for the node
+    FlowNodeExportJob:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          description: Display name of the export job.
+        status:
+          type: string
+          description: Job status (ACTIVE or PAUSED).
+        channelStatus:
+          type: string
+          description: Health status of the export channel.
+        partnerAccountId:
+          type: string
+        partnerAccountName:
+          type: string
+          description: Display name of the partner account.
+        createdAt:
+          type: string
+          format: date-time
+        lastRunTime:
+          type: string
+          format: date-time
+          description: Timestamp of the last execution of this export job.
+        exportParameters:
+          type: array
+          description: Export parameters configured for this job (e.g. S3 path, format).
+          items:
+            $ref: '#/components/schemas/ExportJobParameter'
+    DatasetAssignment:
+      type: object
+      properties:
         datasetName:
           type: string
-          description: Dataset name that was assigned
-        datasetID:
-          type: string
-          description: Dataset ID (resolved)
-        organizationName:
-          type: string
-          description: Organization name from request
-        ownership:
-          $ref: '#/components/schemas/DatasetOwnership'
-          description: Resolved ownership (OWNER, PARTNER)
+          description: Dataset name (will be resolved to ID)
         datasetMacro:
           type: string
           description: Dataset macro/type
-        status:
+        organizationName:
           type: string
-          description: Assignment status
+          description: Organization name from stakeholders list (will be resolved to ownership)
+        fieldMappings:
+          type: array
+          description: Field mappings using field names
+          items:
+            $ref: '#/components/schemas/FieldMapping'
   responses:
     BadRequest:
       description: Bad Request - Incorrect syntax or request

@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Data Connection Views API
+  title: External APIs for Customer Integration Data Connection…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -197,6 +197,15 @@ paths:
       - DataConnectionViews
 components:
   schemas:
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
     DataConnectionViewResponse:
       type: object
       properties:
@@ -238,6 +247,18 @@ components:
           $ref: '#/components/schemas/TimeAudit'
         userAudit:
           $ref: '#/components/schemas/UserAudit'
+    DataConnectionViewSourceInput:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: ID of the source data connection
+        macro:
+          type: string
+          description: Macro alias for the source data connection in the view query
+      required:
+      - dataConnectionId
+      - macro
     FieldConfiguration:
       type: object
       properties:
@@ -325,53 +346,58 @@ components:
           description: Indicates whether this field is a partition column
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
-    DataConnectionViewField:
+    ReturnObject:
       type: object
       properties:
-        name:
+        code:
           type: string
-          description: Name of the output field
-        type:
+        message:
           type: string
-          description: Data type of the output field
-    DataConnectionViewDetails:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the data connection view
-        query:
-          type: string
-          description: SQL query for the data connection view
-        dataConnections:
-          type: array
-          description: Source data connections referenced by the view query
-          items:
-            $ref: '#/components/schemas/DataConnectionViewSourceInput'
       required:
-      - name
-      - query
-      - dataConnections
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
+      - code
+      - message
     DeleteResponse:
       type: object
       properties:
         success:
           type: boolean
+    DataConnectionViews:
+      description: Paginated list of Data Connection Views
+      type: object
+      properties:
+        dataConnectionViews:
+          type: array
+          description: Data connection views for the current page
+          items:
+            $ref: '#/components/schemas/DataConnectionViewResponse'
+        limit:
+          type: integer
+          description: The number of data connection views returned per page
+        offset:
+          type: integer
+          description: The offset used for pagination
+        hasMore:
+          type: boolean
+          description: Whether there are more data connection views beyond this page
+    DataConnectionViewSource:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: ID of the source data connection
+        dataConnectionName:
+          type: string
+          description: Name of the source data connection
+        macro:
+          type: string
+          description: Macro alias for the source data connection in the view query
+        dataSourceId:
+          type: string
+          description: ID of the data source for the source data connection
+        fieldConfigurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldConfiguration'
     PartitionFieldConfig:
       type: object
       properties:
@@ -396,6 +422,24 @@ components:
           type: boolean
           default: false
           description: Indicates whether the partition field values are enforced for the CRQ run
+    DataConnectionViewDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data connection view
+        query:
+          type: string
+          description: SQL query for the data connection view
+        dataConnections:
+          type: array
+          description: Source data connections referenced by the view query
+          items:
+            $ref: '#/components/schemas/DataConnectionViewSourceInput'
+      required:
+      - name
+      - query
+      - dataConnections
     DataConnectionViewUpdateDetails:
       type: object
       description: Fields to update on a data connection view. Omitted fields retain their existing values.
@@ -411,74 +455,30 @@ components:
           description: Source data connections referenced by the view query
           items:
             $ref: '#/components/schemas/DataConnectionViewSourceInput'
-    ReturnObject:
+    TimeAudit:
       type: object
       properties:
-        code:
+        createdAt:
           type: string
-        message:
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
           type: string
-      required:
-      - code
-      - message
-    DataConnectionViewSource:
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    DataConnectionViewField:
       type: object
       properties:
-        dataConnectionId:
+        name:
           type: string
-          description: ID of the source data connection
-        dataConnectionName:
+          description: Name of the output field
+        type:
           type: string
-          description: Name of the source data connection
-        macro:
-          type: string
-          description: Macro alias for the source data connection in the view query
-        dataSourceId:
-          type: string
-          description: ID of the data source for the source data connection
-        fieldConfigurations:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldConfiguration'
-    DataConnectionViewSourceInput:
-      type: object
-      properties:
-        dataConnectionId:
-          type: string
-          description: ID of the source data connection
-        macro:
-          type: string
-          description: Macro alias for the source data connection in the view query
-      required:
-      - dataConnectionId
-      - macro
-    DataConnectionViews:
-      description: Paginated list of Data Connection Views
-      type: object
-      properties:
-        dataConnectionViews:
-          type: array
-          description: Data connection views for the current page
-          items:
-            $ref: '#/components/schemas/DataConnectionViewResponse'
-        limit:
-          type: integer
-          description: The number of data connection views returned per page
-        offset:
-          type: integer
-          description: The offset used for pagination
-        hasMore:
-          type: boolean
-          description: Whether there are more data connection views beyond this page
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
+          description: Data type of the output field
   responses:
     Forbidden:
       description: This action is not allowed

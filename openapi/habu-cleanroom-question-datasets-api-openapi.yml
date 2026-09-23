@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Question Datasets API
+  title: External APIs for Customer Integration Cleanroom Question…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -192,6 +192,58 @@ paths:
       - Cleanroom Question Datasets
 components:
   schemas:
+    CleanRoomStakeholders:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomStakeholder'
+      description: List of Cleanroom Stakeholders
+    CleanRoomQuestionDatasets:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionDataset'
+      description: List of Cleanroom Question Datasets
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    AssignCleanroomQuestionDatasetRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: ID of Organization ID to take ownership
+        macro:
+          type: string
+          description: name of Question Data Type
+    CleanRoomStakeholder:
+      type: object
+      properties:
+        organizationId:
+          type: string
+        organizationName:
+          type: string
+        ownership:
+          type: string
+    QuestionDataTypeOption:
+      type: object
+      properties:
+        dataTypeName:
+          type: string
+        datasetOptions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
     DatasetParameter:
       type: object
       properties:
@@ -204,6 +256,29 @@ components:
         type:
           type: string
           description: Dataset Parameter Type
+    QuestionDataTypeOptions:
+      type: array
+      items:
+        $ref: '#/components/schemas/QuestionDataTypeOption'
+      description: List of Cleanroom Question Data Type Options
+    DatasetField:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: Dataset ID
+        id:
+          type: string
+          description: Dataset Field ID
+        name:
+          type: string
+          description: Dataset Field Name
+        value:
+          type: string
+          description: Dataset Field Value
+        type:
+          type: string
+          description: Dataset Field Type
     CleanRoomQuestionDataset:
       type: object
       properties:
@@ -256,81 +331,6 @@ components:
           items:
             $ref: '#/components/schemas/DatasetField'
           description: Dataset Fields
-    CleanRoomStakeholder:
-      type: object
-      properties:
-        organizationId:
-          type: string
-        organizationName:
-          type: string
-        ownership:
-          type: string
-    DatasetField:
-      type: object
-      properties:
-        datasetId:
-          type: string
-          description: Dataset ID
-        id:
-          type: string
-          description: Dataset Field ID
-        name:
-          type: string
-          description: Dataset Field Name
-        value:
-          type: string
-          description: Dataset Field Value
-        type:
-          type: string
-          description: Dataset Field Type
-    CleanRoomStakeholders:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomStakeholder'
-      description: List of Cleanroom Stakeholders
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanRoomQuestionDatasets:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionDataset'
-      description: List of Cleanroom Question Datasets
-    AssignCleanroomQuestionDatasetRequest:
-      type: object
-      properties:
-        organizationId:
-          type: string
-          description: ID of Organization ID to take ownership
-        macro:
-          type: string
-          description: name of Question Data Type
-    QuestionDataTypeOptions:
-      type: array
-      items:
-        $ref: '#/components/schemas/QuestionDataTypeOption'
-      description: List of Cleanroom Question Data Type Options
-    QuestionDataTypeOption:
-      type: object
-      properties:
-        dataTypeName:
-          type: string
-        datasetOptions:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              name:
-                type: string
   responses:
     Forbidden:
       description: This action is not allowed
@@ -359,8 +359,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -368,8 +368,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:

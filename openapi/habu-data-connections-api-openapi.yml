@@ -292,6 +292,15 @@ paths:
       - Data Connections
 components:
   schemas:
+    IdentifierType:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
     DataConnectionResponse:
       type: object
       properties:
@@ -321,12 +330,37 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobParameters'
-    DeleteResponse:
+    DataConnectionRetryResponse:
       type: object
       properties:
         success:
           type: boolean
-    IdentifierType:
+    DataConnectionDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data connection
+        category:
+          type: string
+          description: Category of the data connection
+        credentialId:
+          type: string
+          description: Credential ID for the data connection
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        dataSource:
+          $ref: '#/components/schemas/DataSource'
+        dataSourceConfiguration:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobParameters'
+    FieldConfigurations:
+      description: A list of Field Configurations
+      type: array
+      items:
+        $ref: '#/components/schemas/FieldConfiguration'
+    DataType:
       type: object
       properties:
         id:
@@ -335,6 +369,54 @@ components:
           type: string
         displayName:
           type: string
+          enum:
+          - Ad Engagement
+          - Ad Exposure
+          - Ad Logs
+          - 'Amazon Marketing Cloud: Event-Level Ad Campaign Data'
+          - Binary Data
+          - CRM Data
+          - Campaign Data
+          - Campaign Mapping Data
+          - Code Container
+          - Conversion Events
+          - Databricks Container
+          - Databricks Notebook
+          - 'Facebook: Advanced Analytics Data'
+          - Generic
+          - 'Google Ads Data Hub: Event-Level Ad Campaign Data'
+          - Google Cloud Big Query
+          - Identity Graph
+          - JAR
+          - LinkedIn Marketing Solutions Config Data
+          - Machine Learning Model
+          - Member Profile
+          - Metadata
+          - Model Training
+          - Offline Conversions
+          - Page Data
+          - Service Container
+          - 'The Trade Desk: Raw Event Data Stream (REDS) Feed'
+          - 'The Trade Desk: Raw Event Data Stream (REDS) Metadata'
+          - Transaction Data
+          - User Data
+          - User-Segment Map
+          - WHEEL
+    IdentifierTypes:
+      description: A list of Identifier Types
+      type: array
+      items:
+        $ref: '#/components/schemas/IdentifierType'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    DataConnections:
+      description: A list of Data Connections
+      type: array
+      items:
+        $ref: '#/components/schemas/DataConnectionResponse'
     DataSource:
       type: object
       properties:
@@ -386,50 +468,6 @@ components:
           - Publisher Synthetic Dataset Library
         credentialSource:
           type: string
-    PartitionFieldConfig:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - Fixed
-          - Range
-          - Rolling
-          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
-        values:
-          type: array
-          items:
-            type: string
-        rollingUnit:
-          type: string
-          enum:
-          - Days
-          - Months
-          description: Applicable only in case of Rolling Date and Timestamp fields
-        isEnforced:
-          type: boolean
-          default: false
-          description: Indicates whether the partition field values are enforced for the CRQ run
-    DataConnectionDetails:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the data connection
-        category:
-          type: string
-          description: Category of the data connection
-        credentialId:
-          type: string
-          description: Credential ID for the data connection
-        dataType:
-          $ref: '#/components/schemas/DataType'
-        dataSource:
-          $ref: '#/components/schemas/DataSource'
-        dataSourceConfiguration:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobParameters'
     FieldConfiguration:
       type: object
       properties:
@@ -517,11 +555,6 @@ components:
           description: Indicates whether this field is a partition column
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
-    DataConnectionRetryResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
     ReturnObject:
       type: object
       properties:
@@ -532,11 +565,6 @@ components:
       required:
       - code
       - message
-    IdentifierTypes:
-      description: A list of Identifier Types
-      type: array
-      items:
-        $ref: '#/components/schemas/IdentifierType'
     JobParameters:
       type: object
       properties:
@@ -548,58 +576,30 @@ components:
           type: string
         value:
           type: string
-    DataConnections:
-      description: A list of Data Connections
-      type: array
-      items:
-        $ref: '#/components/schemas/DataConnectionResponse'
-    DataType:
+    PartitionFieldConfig:
       type: object
       properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayName:
+        type:
           type: string
           enum:
-          - Ad Engagement
-          - Ad Exposure
-          - Ad Logs
-          - 'Amazon Marketing Cloud: Event-Level Ad Campaign Data'
-          - Binary Data
-          - CRM Data
-          - Campaign Data
-          - Campaign Mapping Data
-          - Code Container
-          - Conversion Events
-          - Databricks Container
-          - Databricks Notebook
-          - 'Facebook: Advanced Analytics Data'
-          - Generic
-          - 'Google Ads Data Hub: Event-Level Ad Campaign Data'
-          - Google Cloud Big Query
-          - Identity Graph
-          - JAR
-          - LinkedIn Marketing Solutions Config Data
-          - Machine Learning Model
-          - Member Profile
-          - Metadata
-          - Model Training
-          - Offline Conversions
-          - Page Data
-          - Service Container
-          - 'The Trade Desk: Raw Event Data Stream (REDS) Feed'
-          - 'The Trade Desk: Raw Event Data Stream (REDS) Metadata'
-          - Transaction Data
-          - User Data
-          - User-Segment Map
-          - WHEEL
-    FieldConfigurations:
-      description: A list of Field Configurations
-      type: array
-      items:
-        $ref: '#/components/schemas/FieldConfiguration'
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
+          type: array
+          items:
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
   responses:
     BadRequest:
       description: Bad Request - Incorrect syntax or request

@@ -244,39 +244,49 @@ paths:
       - Cleanrooms
 components:
   schemas:
-    CleanRoomStakeholder:
-      type: object
+    CleanRoomType:
+      description: Model containing Cleanroom Type
       properties:
-        organizationId:
+        id:
           type: string
-        organizationName:
+        name:
           type: string
-        ownership:
+        displayName:
           type: string
-    DatasetMetadata:
+        listQuestionSupport:
+          type: boolean
+        analyticalQuestionSupport:
+          type: boolean
+        wallGarden:
+          type: boolean
+    QuestionUserListOutput:
       type: object
       properties:
         ID:
           type: string
         name:
           type: string
-        organizationID:
+        type:
           type: string
-        organizationName:
-          type: string
-        dataImportType:
+        isEncrypt:
+          type: boolean
+    AssetQuestionDataType:
+      type: object
+      properties:
+        ID:
           type: string
         macro:
           type: string
+        description:
+          type: string
+        importDataType:
+          type: string
+        optional:
+          type: boolean
         fields:
           type: array
           items:
-            $ref: '#/components/schemas/AssetDatasetField'
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
+            $ref: '#/components/schemas/QuestionDataTypeField'
     CleanRoomParameterRequest:
       type: object
       required:
@@ -321,24 +331,25 @@ components:
         enum:
         - DATA_DECIBEL
         - CROWD_SIZE
-    ComputeCapacityOption:
-      type: object
-      properties:
-        name:
-          type: string
-        description:
-          type: string
-    QuestionUserListOutput:
+    DatasetMetadata:
       type: object
       properties:
         ID:
           type: string
         name:
           type: string
-        type:
+        organizationID:
           type: string
-        isEncrypt:
-          type: boolean
+        organizationName:
+          type: string
+        dataImportType:
+          type: string
+        macro:
+          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetDatasetField'
     TimeAudit:
       type: object
       properties:
@@ -354,83 +365,14 @@ components:
           type: string
           format: date-time
           description: Timestamp for when the object was deleted (if applicable)
-    CleanRoomType:
-      description: Model containing Cleanroom Type
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        listQuestionSupport:
-          type: boolean
-        analyticalQuestionSupport:
-          type: boolean
-        wallGarden:
-          type: boolean
-    QuestionParameter:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        index:
-          type: integer
-        parameterType:
-          type: string
-    AssetDatasetField:
-      type: object
-      properties:
-        ID:
-          type: string
-        fieldName:
-          type: string
-        dataType:
-          type: string
-        isFilterable:
-          type: boolean
-        isUserIDField:
-          type: boolean
-        isPii:
-          type: boolean
-        isExcluded:
-          type: boolean
-        fieldLabel:
-          type: string
-    CleanRooms:
-      description: A list of Cleanrooms and their details
+    CleanRoomTypes:
       type: array
       items:
-        $ref: '#/components/schemas/CleanRoom'
-    QuestionMetric:
+        $ref: '#/components/schemas/CleanRoomType'
+    ComputeCapacityOption:
       type: object
       properties:
-        ID:
-          type: string
         name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        computed:
-          type: boolean
-    QuestionDataTypeField:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-        format:
           type: string
         description:
           type: string
@@ -449,33 +391,116 @@ components:
           type: boolean
         plottable:
           type: boolean
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    AssetQuestionDataType:
+    QuestionMetric:
       type: object
       properties:
         ID:
           type: string
-        macro:
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        computed:
+          type: boolean
+    CleanRooms:
+      description: A list of Cleanrooms and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoom'
+    CleanRoom:
+      description: Model containing the Cleanroom details
+      properties:
+        id:
+          type: string
+        displayId:
+          type: string
+        name:
           type: string
         description:
           type: string
-        importDataType:
+        ownerOrganization:
           type: string
-        optional:
-          type: boolean
-        fields:
+        partners:
           type: array
           items:
-            $ref: '#/components/schemas/QuestionDataTypeField'
+            type: string
+        startAt:
+          type: string
+        endAt:
+          type: string
+        questionsCount:
+          type: integer
+        status:
+          type: string
+        cleanRoomParameters:
+          type: object
+          additionalProperties:
+            type: string
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        cleanRoomTypeId:
+          type: string
+    CleanroomAssetDetails:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionMetadata'
+          description: Available questions for flow creation
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetMetadata'
+          description: Available datasets for assignment
+        computeCapacityOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComputeCapacityOption'
+          description: Available compute capacity options
+        fieldTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldTypeEnum'
+          description: Field type enumerations
+        stakeholders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomStakeholder'
+          description: Clean room stakeholder information
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanRoomTypeRequest:
+      type: string
+      enum:
+      - Hybrid
+      - Snowflake
+      - Databricks
+      - Google
+      - AWS
+      - Facebook
+      - AMC
+      - ADH
+      - LinkedIn
+      - HabuConfidentialComputing
+    QuestionDataTypeField:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        format:
+          type: string
+        description:
+          type: string
     CleanRoomRequest:
       type: object
       properties:
@@ -500,12 +525,30 @@ components:
       - name
       - startAt
       - type
-    FieldTypeEnum:
+    ReturnObject:
       type: object
       properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    QuestionParameter:
+      type: object
+      properties:
+        ID:
+          type: string
         name:
           type: string
-        description:
+        displayName:
+          type: string
+        type:
+          type: string
+        index:
+          type: integer
+        parameterType:
           type: string
     QuestionMetadata:
       type: object
@@ -554,84 +597,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuestionUserListOutput'
-    CleanRoom:
-      description: Model containing the Cleanroom details
+    CleanRoomStakeholder:
+      type: object
       properties:
-        id:
+        organizationId:
           type: string
-        displayId:
+        organizationName:
           type: string
+        ownership:
+          type: string
+    FieldTypeEnum:
+      type: object
+      properties:
         name:
           type: string
         description:
           type: string
-        ownerOrganization:
-          type: string
-        partners:
-          type: array
-          items:
-            type: string
-        startAt:
-          type: string
-        endAt:
-          type: string
-        questionsCount:
-          type: integer
-        status:
-          type: string
-        cleanRoomParameters:
-          type: object
-          additionalProperties:
-            type: string
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        cleanRoomTypeId:
-          type: string
-    CleanRoomTypeRequest:
-      type: string
-      enum:
-      - Hybrid
-      - Snowflake
-      - Databricks
-      - Google
-      - AWS
-      - Facebook
-      - AMC
-      - ADH
-      - LinkedIn
-      - HabuConfidentialComputing
-    CleanroomAssetDetails:
+    AssetDatasetField:
       type: object
       properties:
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionMetadata'
-          description: Available questions for flow creation
-        datasets:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetMetadata'
-          description: Available datasets for assignment
-        computeCapacityOptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ComputeCapacityOption'
-          description: Available compute capacity options
-        fieldTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldTypeEnum'
-          description: Field type enumerations
-        stakeholders:
-          type: array
-          items:
-            $ref: '#/components/schemas/CleanRoomStakeholder'
-          description: Clean room stakeholder information
-    CleanRoomTypes:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomType'
+        ID:
+          type: string
+        fieldName:
+          type: string
+        dataType:
+          type: string
+        isFilterable:
+          type: boolean
+        isUserIDField:
+          type: boolean
+        isPii:
+          type: boolean
+        isExcluded:
+          type: boolean
+        fieldLabel:
+          type: string
   responses:
     BadRequest:
       description: Bad Request - Incorrect syntax or request
@@ -669,8 +669,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    ResourceConflict:
-      description: Conflict with the current state of the resource
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -678,8 +678,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    ResourceConflict:
+      description: Conflict with the current state of the resource
       content:
         application/json:
           schema:

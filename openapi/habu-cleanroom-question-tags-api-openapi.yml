@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Question Tags API
+  title: External APIs for Customer Integration Cleanroom Question…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -81,25 +81,11 @@ paths:
       - Cleanroom Question Tags
 components:
   schemas:
-    GetCleanRoomQuestionParametersResponse:
-      type: object
-      properties:
-        name:
-          type: string
-        displayId:
-          type: string
-        parameters:
-          $ref: '#/components/schemas/CleanroomQuestionParameters'
     CleanRoomQuestionTags:
       description: A list of Cleanroom Question Tags
       type: array
       items:
         type: string
-    CleanroomQuestionParameters:
-      description: A list of Cleanroom Question Parameters
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanroomQuestionParameter'
     CleanroomQuestionParameter:
       type: object
       properties:
@@ -145,6 +131,27 @@ components:
           description: Cleanroom Question Parameter Default Value
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
+    ValueConstraintType:
+      type: string
+      description: Type of value constraint applied to a parameter
+      enum:
+      - ENFORCED_LIST
+      - DEFAULT_VALUE
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanroomQuestionParameters:
+      description: A list of Cleanroom Question Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionParameter'
     PartitionFieldConfig:
       type: object
       properties:
@@ -169,22 +176,15 @@ components:
           type: boolean
           default: false
           description: Indicates whether the partition field values are enforced for the CRQ run
-    ReturnObject:
+    GetCleanRoomQuestionParametersResponse:
       type: object
       properties:
-        code:
+        name:
           type: string
-        message:
+        displayId:
           type: string
-      required:
-      - code
-      - message
-    ValueConstraintType:
-      type: string
-      description: Type of value constraint applied to a parameter
-      enum:
-      - ENFORCED_LIST
-      - DEFAULT_VALUE
+        parameters:
+          $ref: '#/components/schemas/CleanroomQuestionParameters'
   responses:
     Unauthorized:
       description: Authorization information was missing or invalid

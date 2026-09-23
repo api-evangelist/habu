@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Datasets API
+  title: External APIs for Customer Integration Cleanroom Datasets…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -232,41 +232,40 @@ paths:
       - Cleanroom Datasets
 components:
   schemas:
-    DatasetParameter:
+    IdentifierType:
       type: object
       properties:
-        name:
-          type: string
-          description: Dataset Parameter Name
-        value:
-          type: string
-          description: Dataset Parameter Value
-        type:
-          type: string
-          description: Dataset Parameter Type
-    DatasetField:
-      type: object
-      properties:
-        datasetId:
-          type: string
-          description: Dataset ID
         id:
           type: string
-          description: Dataset Field ID
         name:
           type: string
-          description: Dataset Field Name
-        value:
+        displayName:
           type: string
-          description: Dataset Field Value
-        type:
-          type: string
-          description: Dataset Field Type
-    DatasetFieldMappings:
-      description: A list of Dataset Field Mappings
+    UpdateCleanroomDatasetPartnerAssignmentRequest:
       type: array
       items:
-        $ref: '#/components/schemas/DatasetFieldMapping'
+        $ref: '#/components/schemas/UpdateCleanroomDatasetPartnerAssignmentParameters'
+    UpdateCleanroomDatasetPartnerAssignmentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    DatasetPartitionParameterGroup:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: Data connection (import job) ID
+        dataConnectionName:
+          type: string
+          description: Data connection name
+        dataConnectionMacro:
+          type: string
+          description: Macro of the underlying data connection (set for view datasets)
+        partitionFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetPartitionField'
     CleanRoomDataset:
       type: object
       properties:
@@ -309,68 +308,33 @@ components:
           description: Whether this dataset is a view
         partnerCanAssign:
           type: boolean
-    DatasetPartitionParameterGroup:
+    CleanRoomDatasetUpdateRequest:
       type: object
+      description: 'The following fields are required: datasetFieldMapping.[fieldName, isExcluded, rename], datasetFilter.[datasetFieldName , operator, values]; all others are optional'
       properties:
-        dataConnectionId:
-          type: string
-          description: Data connection (import job) ID
-        dataConnectionName:
-          type: string
-          description: Data connection name
-        dataConnectionMacro:
-          type: string
-          description: Macro of the underlying data connection (set for view datasets)
-        partitionFields:
+        datasetFieldMappings:
+          $ref: '#/components/schemas/DatasetFieldMappings'
+        datasetFilters:
           type: array
           items:
-            $ref: '#/components/schemas/DatasetPartitionField'
-    IdentifierType:
+            $ref: '#/components/schemas/DatasetFilter'
+    IdentifierTypes:
+      description: A list of Identifier Types
+      type: array
+      items:
+        $ref: '#/components/schemas/IdentifierType'
+    DatasetPartitionParameter:
       type: object
       properties:
-        id:
-          type: string
         name:
           type: string
-        displayName:
+          description: Full parameter name including view macro prefix and date expansion suffixes
+        dataType:
           type: string
-    UpdateCleanroomDatasetPartnerAssignmentParameters:
-      type: object
-      properties:
-        datasetId:
-          type: string
-        partnerCanAssign:
-          type: boolean
-    PartitionFieldConfig:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - Fixed
-          - Range
-          - Rolling
-          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
-        values:
-          type: array
-          items:
-            type: string
-        rollingUnit:
-          type: string
-          enum:
-          - Days
-          - Months
-          description: Applicable only in case of Rolling Date and Timestamp fields
-        isEnforced:
-          type: boolean
-          default: false
-          description: Indicates whether the partition field values are enforced for the CRQ run
-    UpdateCleanroomDatasetPartnerAssignmentResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    DatasetFilter:
+          description: Parameter data type
+        partitionFieldConfig:
+          $ref: '#/components/schemas/PartitionFieldConfig'
+    DatasetField:
       type: object
       properties:
         datasetId:
@@ -378,34 +342,23 @@ components:
           description: Dataset ID
         id:
           type: string
-          description: Dataset Filter ID
-        datasetFieldName:
+          description: Dataset Field ID
+        name:
           type: string
           description: Dataset Field Name
-        datasetFieldType:
+        value:
+          type: string
+          description: Dataset Field Value
+        type:
           type: string
           description: Dataset Field Type
-        operator:
-          type: string
-          description: Operator to be applied on the Dataset Field
-          enum:
-          - ''
-          - EQUALS
-          - NOT_EQUALS
-          - IN
-          - NOT_IN
-        values:
-          type: array
-          items:
-            type: string
-          description: Values to filter the Dataset Field on
-    ConfigureCleanRoomDatasetRequest:
+    UpdateCleanroomDatasetPartnerAssignmentParameters:
       type: object
       properties:
-        rampIDConsent:
+        datasetId:
+          type: string
+        partnerCanAssign:
           type: boolean
-          default: false
-          description: Consent to the use of RampID as a join key in questions (https://storage.googleapis.com/lr-tech-docs-resources/Files/LiveRamp%20RampID%20Data%20Protection%20Attestation.pdf)
     DatasetPartitionField:
       type: object
       properties:
@@ -419,37 +372,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DatasetPartitionParameter'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanRoomDatasets:
-      description: A list of Cleanroom Datasets
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomDataset'
-    DatasetPartitionParameters:
-      type: object
-      description: Partition parameters discoverable when this dataset is assigned to a question
-      properties:
-        isView:
-          type: boolean
-          description: Whether this dataset is a view
-        partitionGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetPartitionParameterGroup'
-    IdentifierTypes:
-      description: A list of Identifier Types
-      type: array
-      items:
-        $ref: '#/components/schemas/IdentifierType'
     DatasetFieldMapping:
       type: object
       properties:
@@ -492,31 +414,109 @@ components:
           description: Indicates whether this field is a partition column
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
-    DatasetPartitionParameter:
+    DatasetFieldMappings:
+      description: A list of Dataset Field Mappings
+      type: array
+      items:
+        $ref: '#/components/schemas/DatasetFieldMapping'
+    DatasetFilter:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: Dataset ID
+        id:
+          type: string
+          description: Dataset Filter ID
+        datasetFieldName:
+          type: string
+          description: Dataset Field Name
+        datasetFieldType:
+          type: string
+          description: Dataset Field Type
+        operator:
+          type: string
+          description: Operator to be applied on the Dataset Field
+          enum:
+          - ''
+          - EQUALS
+          - NOT_EQUALS
+          - IN
+          - NOT_IN
+        values:
+          type: array
+          items:
+            type: string
+          description: Values to filter the Dataset Field on
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomDatasets:
+      description: A list of Cleanroom Datasets
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomDataset'
+    DatasetPartitionParameters:
+      type: object
+      description: Partition parameters discoverable when this dataset is assigned to a question
+      properties:
+        isView:
+          type: boolean
+          description: Whether this dataset is a view
+        partitionGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetPartitionParameterGroup'
+    DatasetParameter:
       type: object
       properties:
         name:
           type: string
-          description: Full parameter name including view macro prefix and date expansion suffixes
-        dataType:
+          description: Dataset Parameter Name
+        value:
           type: string
-          description: Parameter data type
-        partitionFieldConfig:
-          $ref: '#/components/schemas/PartitionFieldConfig'
-    UpdateCleanroomDatasetPartnerAssignmentRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/UpdateCleanroomDatasetPartnerAssignmentParameters'
-    CleanRoomDatasetUpdateRequest:
+          description: Dataset Parameter Value
+        type:
+          type: string
+          description: Dataset Parameter Type
+    PartitionFieldConfig:
       type: object
-      description: 'The following fields are required: datasetFieldMapping.[fieldName, isExcluded, rename], datasetFilter.[datasetFieldName , operator, values]; all others are optional'
       properties:
-        datasetFieldMappings:
-          $ref: '#/components/schemas/DatasetFieldMappings'
-        datasetFilters:
+        type:
+          type: string
+          enum:
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
           type: array
           items:
-            $ref: '#/components/schemas/DatasetFilter'
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
+    ConfigureCleanRoomDatasetRequest:
+      type: object
+      properties:
+        rampIDConsent:
+          type: boolean
+          default: false
+          description: Consent to the use of RampID as a join key in questions (https://storage.googleapis.com/lr-tech-docs-resources/Files/LiveRamp%20RampID%20Data%20Protection%20Attestation.pdf)
   responses:
     BadRequest:
       description: Bad Request - Incorrect syntax or request

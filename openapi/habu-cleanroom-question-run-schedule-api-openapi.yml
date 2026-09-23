@@ -1,7 +1,7 @@
 openapi: 3.2.0
 info:
   version: v1.0.0
-  title: External APIs for Customer Integration Cleanroom Question Run Schedule API
+  title: External APIs for Customer Integration Cleanroom Question…
   description: APIs to create and fetch Clean Room and related details from LiveRamp (previously Habu) for Customer Integration.
   contact:
     name: LiveRamp (previously Habu)
@@ -210,6 +210,99 @@ paths:
       - Cleanroom Question Run Schedule
 components:
   schemas:
+    CreateCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        id:
+          type: string
+    ScheduleQuestionParameters:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        qualifier:
+          $ref: '#/components/schemas/DateQualifier'
+        type:
+          type: string
+        isStatic:
+          type: boolean
+        parameterType:
+          type: string
+    CreateCleanroomQuestionRunScheduleInput:
+      type: object
+      properties:
+        parameters:
+          $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameters'
+        daysOfWeek:
+          type: array
+          items:
+            $ref: '#/components/schemas/DaysOfWeek'
+        repeatDayofMonth:
+          type: array
+          items:
+            type: integer
+        startSchedule:
+          type: string
+        name:
+          type: string
+        repeatFrequency:
+          $ref: '#/components/schemas/RepeatFrequency'
+        endSchedule:
+          type: string
+    CleanroomQuestionRunScheduleParameters:
+      description: A list of Cleanroom Question Run Schedule Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameter'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanroomQuestionRunParameterType:
+      type: string
+      enum:
+      - PARTITION_PARAMETER
+      - RUN_PARAMETER
+    GetAllRunSchedulesForCleanroomQuestionResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
+    DeleteCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    DateQualifier:
+      type: string
+      enum:
+      - DAYS
+      - MONTHS
+    DaysOfWeek:
+      type: string
+      enum:
+      - DAY_OF_WEEK_UNKNOWN
+      - SUN
+      - MON
+      - TUE
+      - WED
+      - THU
+      - FRI
+      - SAT
+    RepeatFrequency:
+      type: string
+      enum:
+      - FREQUENCY_UNKNOWN
+      - DAILY
+      - WEEKLY
+      - MONTHLY
     CleanroomQuestionRunScheduleDateParameterType:
       type: string
       enum:
@@ -233,34 +326,6 @@ components:
           $ref: '#/components/schemas/DateQualifier'
         dateType:
           $ref: '#/components/schemas/CleanroomQuestionRunScheduleDateParameterType'
-    DeleteCleanroomQuestionRunScheduleResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    CleanroomQuestionRunScheduleParameters:
-      description: A list of Cleanroom Question Run Schedule Parameters
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameter'
-    RepeatFrequency:
-      type: string
-      enum:
-      - FREQUENCY_UNKNOWN
-      - DAILY
-      - WEEKLY
-      - MONTHLY
-    DaysOfWeek:
-      type: string
-      enum:
-      - DAY_OF_WEEK_UNKNOWN
-      - SUN
-      - MON
-      - TUE
-      - WED
-      - THU
-      - FRI
-      - SAT
     GetCleanroomQuestionRunScheduleResponse:
       type: object
       properties:
@@ -306,71 +371,6 @@ components:
             type: integer
             format: int64
         displayId:
-          type: string
-    DateQualifier:
-      type: string
-      enum:
-      - DAYS
-      - MONTHS
-    ScheduleQuestionParameters:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
-        qualifier:
-          $ref: '#/components/schemas/DateQualifier'
-        type:
-          type: string
-        isStatic:
-          type: boolean
-        parameterType:
-          type: string
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanroomQuestionRunParameterType:
-      type: string
-      enum:
-      - PARTITION_PARAMETER
-      - RUN_PARAMETER
-    GetAllRunSchedulesForCleanroomQuestionResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
-    CreateCleanroomQuestionRunScheduleResponse:
-      type: object
-      properties:
-        id:
-          type: string
-    CreateCleanroomQuestionRunScheduleInput:
-      type: object
-      properties:
-        parameters:
-          $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameters'
-        daysOfWeek:
-          type: array
-          items:
-            $ref: '#/components/schemas/DaysOfWeek'
-        repeatDayofMonth:
-          type: array
-          items:
-            type: integer
-        startSchedule:
-          type: string
-        name:
-          type: string
-        repeatFrequency:
-          $ref: '#/components/schemas/RepeatFrequency'
-        endSchedule:
           type: string
   responses:
     Unauthorized:
