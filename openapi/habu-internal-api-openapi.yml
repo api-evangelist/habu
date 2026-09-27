@@ -197,7 +197,63 @@ paths:
       tags:
       - Internal
 components:
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
   schemas:
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
     CRQLoadStatus:
       type: string
       description: Per-CRQ load state for HI Snowflake report tables
@@ -207,29 +263,24 @@ components:
       - LOADED
       - STALE
       - FAILED
-    FlowIntelligence:
+    FlowIntelligenceOutput:
       type: object
-      description: HI bindings for a Cleanroom Flow's question outputs
+      description: One question output of a flow with its HI report-table referent
       properties:
-        flowId:
+        cleanRoomQuestionId:
           type: string
-        flowName:
+        displayId:
           type: string
-        outputs:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowIntelligenceOutput'
-    LoadedIntelligenceQuestions:
-      type: object
-      description: Page of CRQs with HI data loaded
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CleanRoomQuestionIntelligence'
-        nextPageToken:
+        title:
           type: string
-          description: Opaque next-page token; empty when no further pages
+        snowflakeReportTable:
+          type: string
+        metabaseTableId:
+          type: integer
+          format: int64
+        runStatus:
+          type: string
+          description: Run status (only populated when flowRunId is provided)
     CleanRoomIntelligence:
       type: object
       description: HI bindings for a Cleanroom
@@ -255,16 +306,6 @@ components:
           description: Metabase collection id (stored as string upstream)
         metabaseUrl:
           type: string
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
     CleanRoomQuestionIntelligence:
       type: object
       description: HI bindings for a Cleanroom Question
@@ -294,6 +335,17 @@ components:
           format: int64
         loadStatus:
           $ref: '#/components/schemas/CRQLoadStatus'
+    LoadedIntelligenceQuestions:
+      type: object
+      description: Page of CRQs with HI data loaded
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomQuestionIntelligence'
+        nextPageToken:
+          type: string
+          description: Opaque next-page token; empty when no further pages
     HIProvisionStatus:
       type: string
       description: Habu Intelligence provisioning lifecycle state for a Cleanroom
@@ -303,70 +355,18 @@ components:
       - PROVISIONING
       - ENABLED
       - FAILED
-    FlowIntelligenceOutput:
+    FlowIntelligence:
       type: object
-      description: One question output of a flow with its HI report-table referent
+      description: HI bindings for a Cleanroom Flow's question outputs
       properties:
-        cleanRoomQuestionId:
+        flowId:
           type: string
-        displayId:
+        flowName:
           type: string
-        title:
-          type: string
-        snowflakeReportTable:
-          type: string
-        metabaseTableId:
-          type: integer
-          format: int64
-        runStatus:
-          type: string
-          description: Run status (only populated when flowRunId is provided)
-  responses:
-    Forbidden:
-      description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
+        outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowIntelligenceOutput'
   securitySchemes:
     application:
       type: oauth2

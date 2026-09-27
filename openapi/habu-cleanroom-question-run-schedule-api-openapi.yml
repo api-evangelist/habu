@@ -210,26 +210,11 @@ paths:
       - Cleanroom Question Run Schedule
 components:
   schemas:
-    CreateCleanroomQuestionRunScheduleResponse:
-      type: object
-      properties:
-        id:
-          type: string
-    ScheduleQuestionParameters:
-      type: object
-      properties:
-        name:
-          type: string
-        value:
-          type: string
-        qualifier:
-          $ref: '#/components/schemas/DateQualifier'
-        type:
-          type: string
-        isStatic:
-          type: boolean
-        parameterType:
-          type: string
+    DateQualifier:
+      type: string
+      enum:
+      - DAYS
+      - MONTHS
     CreateCleanroomQuestionRunScheduleInput:
       type: object
       properties:
@@ -251,11 +236,21 @@ components:
           $ref: '#/components/schemas/RepeatFrequency'
         endSchedule:
           type: string
-    CleanroomQuestionRunScheduleParameters:
-      description: A list of Cleanroom Question Run Schedule Parameters
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameter'
+    ScheduleQuestionParameters:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+        qualifier:
+          $ref: '#/components/schemas/DateQualifier'
+        type:
+          type: string
+        isStatic:
+          type: boolean
+        parameterType:
+          type: string
     ReturnObject:
       type: object
       properties:
@@ -266,43 +261,6 @@ components:
       required:
       - code
       - message
-    CleanroomQuestionRunParameterType:
-      type: string
-      enum:
-      - PARTITION_PARAMETER
-      - RUN_PARAMETER
-    GetAllRunSchedulesForCleanroomQuestionResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
-    DeleteCleanroomQuestionRunScheduleResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    DateQualifier:
-      type: string
-      enum:
-      - DAYS
-      - MONTHS
-    DaysOfWeek:
-      type: string
-      enum:
-      - DAY_OF_WEEK_UNKNOWN
-      - SUN
-      - MON
-      - TUE
-      - WED
-      - THU
-      - FRI
-      - SAT
-    RepeatFrequency:
-      type: string
-      enum:
-      - FREQUENCY_UNKNOWN
-      - DAILY
-      - WEEKLY
-      - MONTHLY
     CleanroomQuestionRunScheduleDateParameterType:
       type: string
       enum:
@@ -326,6 +284,18 @@ components:
           $ref: '#/components/schemas/DateQualifier'
         dateType:
           $ref: '#/components/schemas/CleanroomQuestionRunScheduleDateParameterType'
+    RepeatFrequency:
+      type: string
+      enum:
+      - FREQUENCY_UNKNOWN
+      - DAILY
+      - WEEKLY
+      - MONTHLY
+    CreateCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        id:
+          type: string
     GetCleanroomQuestionRunScheduleResponse:
       type: object
       properties:
@@ -372,9 +342,39 @@ components:
             format: int64
         displayId:
           type: string
+    DeleteCleanroomQuestionRunScheduleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanroomQuestionRunScheduleParameters:
+      description: A list of Cleanroom Question Run Schedule Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionRunScheduleParameter'
+    GetAllRunSchedulesForCleanroomQuestionResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/GetCleanroomQuestionRunScheduleResponse'
+    DaysOfWeek:
+      type: string
+      enum:
+      - DAY_OF_WEEK_UNKNOWN
+      - SUN
+      - MON
+      - TUE
+      - WED
+      - THU
+      - FRI
+      - SAT
+    CleanroomQuestionRunParameterType:
+      type: string
+      enum:
+      - PARTITION_PARAMETER
+      - RUN_PARAMETER
   responses:
-    Unauthorized:
-      description: Authorization information was missing or invalid
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -391,8 +391,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

@@ -86,72 +86,9 @@ paths:
       tags:
       - Cleanroom Question Permissions
 components:
-  schemas:
-    QuestionAccess:
-      type: string
-      enum:
-      - UNKNOWN_ACCESS
-      - QUESTION_OWNER_ONLY
-      - ALL_CLEAN_ROOM_PARTNERS
-    CleanRoomQuestionPermissions:
-      type: object
-      properties:
-        id:
-          type: string
-        permission:
-          $ref: '#/components/schemas/QuestionPermission'
-        access:
-          $ref: '#/components/schemas/QuestionAccess'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanRoomQuestionPermissionsUpdateInput:
-      type: object
-      properties:
-        permission:
-          $ref: '#/components/schemas/QuestionPermission'
-        access:
-          $ref: '#/components/schemas/QuestionAccess'
-    QuestionPermission:
-      type: string
-      enum:
-      - UNKNOWN_PERMISSION
-      - VIEW_CODE
-      - EDIT
-      - CLONE
-      - RUN
-      - IN_PROGRESS
-      - VIEW_RESULTS
-      - DELETE
-    CleanRoomQuestionPermissionsResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
-      description: Array of Cleanroom Question Permissions
-    UpdateCleanRoomQuestionPermissionsRequest:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionPermissionsUpdateInput'
-      description: Array of Cleanroom Question Permission Updates
   responses:
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
       content:
         application/json:
           schema:
@@ -168,8 +105,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
+    NotFound:
+      description: The specified resource was not found
       content:
         application/json:
           schema:
@@ -186,6 +123,69 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+  schemas:
+    CleanRoomQuestionPermissionsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
+      description: Array of Cleanroom Question Permissions
+    QuestionPermission:
+      type: string
+      enum:
+      - UNKNOWN_PERMISSION
+      - VIEW_CODE
+      - EDIT
+      - CLONE
+      - RUN
+      - IN_PROGRESS
+      - VIEW_RESULTS
+      - DELETE
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    UpdateCleanRoomQuestionPermissionsRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissionsUpdateInput'
+      description: Array of Cleanroom Question Permission Updates
+    CleanRoomQuestionPermissionsUpdateInput:
+      type: object
+      properties:
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
+    CleanRoomQuestionPermissions:
+      type: object
+      properties:
+        id:
+          type: string
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
+    QuestionAccess:
+      type: string
+      enum:
+      - UNKNOWN_ACCESS
+      - QUESTION_OWNER_ONLY
+      - ALL_CLEAN_ROOM_PARTNERS
   securitySchemes:
     application:
       type: oauth2

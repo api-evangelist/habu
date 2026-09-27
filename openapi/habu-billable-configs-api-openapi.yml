@@ -120,11 +120,24 @@ paths:
       - Billable Configs
 components:
   schemas:
-    DeleteBillableConfigResponse:
+    BillableSourceType:
+      type: string
+      description: Type of entity a billable config applies to
+      enum:
+      - BILLABLE_UNKNOWN
+      - BILLABLE_RUN
+      - BILLABLE_FLOW_RUN
+      - BILLABLE_QUESTION
+      - BILLABLE_FLOW
+      - BILLABLE_CR
+      - BILLABLE_OWNER
+      - BILLABLE_PARTNER
+      - BILLABLE_CRQ
+    GetBillableConfigResponse:
       type: object
       properties:
-        success:
-          type: boolean
+        config:
+          $ref: '#/components/schemas/BillableConfig'
     UpsertBillableConfigRequest:
       type: object
       required:
@@ -142,31 +155,11 @@ components:
       required:
       - code
       - message
-    GetBillableConfigResponse:
-      type: object
-      properties:
-        config:
-          $ref: '#/components/schemas/BillableConfig'
-    BillableSourceType:
-      type: string
-      description: Type of entity a billable config applies to
-      enum:
-      - BILLABLE_UNKNOWN
-      - BILLABLE_RUN
-      - BILLABLE_FLOW_RUN
-      - BILLABLE_QUESTION
-      - BILLABLE_FLOW
-      - BILLABLE_CR
-      - BILLABLE_OWNER
-      - BILLABLE_PARTNER
-      - BILLABLE_CRQ
-    UpsertBillableConfigResponse:
+    DeleteBillableConfigResponse:
       type: object
       properties:
         success:
           type: boolean
-        billableConfigId:
-          type: string
     BillableConfig:
       type: object
       description: Billable configuration for a source entity
@@ -185,6 +178,13 @@ components:
           description: Billable flag as string ("true" or "false")
         compositeSourceId:
           type: string
+    UpsertBillableConfigResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        billableConfigId:
+          type: string
   responses:
     Forbidden:
       description: This action is not allowed
@@ -195,8 +195,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -213,8 +213,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

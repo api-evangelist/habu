@@ -127,62 +127,6 @@ paths:
       - Cleanroom
 components:
   schemas:
-    BfmtJoinColumns:
-      description: Detailed information about the Bfmt Join Columns
-      type: object
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    ExecutionInstanceOutputs:
-      description: Clean Room Measurement Execution Instance Outputs
-      type: array
-      items:
-        type: object
-        properties:
-          name:
-            type: string
-            description: Category of the output
-          status:
-            type: string
-            description: Status of the specific run
-          message:
-            type: string
-            description: Detailed error message if any
-          href:
-            type: string
-            description: The api to be invoked to get output details
-          method:
-            type: string
-            description: Http method
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanroomQuestionRunPartitionParameter:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of Cleanroom Question Run Partition Parameter
-        value:
-          type: string
-          description: Value of Cleanroom Question Run Partition Parameter
-        dataType:
-          type: string
-          description: Data Type of Cleanroom Question Run Partition Parameter
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
     CleanRoomExecutionInstanceInput:
       type: object
       properties:
@@ -204,33 +148,50 @@ components:
           type: string
         runtimeParameters:
           $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
-    Datasets:
-      description: Detailed information about the datasets
+    BfmtJoinColumns:
+      description: Detailed information about the Bfmt Join Columns
       type: object
       properties:
-        datasetType:
+        key:
           type: string
-        subType:
+        value:
           type: string
-        datasetId:
+    ReturnObject:
+      type: object
+      properties:
+        code:
           type: string
-        macro:
+        message:
           type: string
-        partitionValues:
-          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
-        bfmtJoinColumns:
-          type: array
-          items:
-            $ref: '#/components/schemas/BfmtJoinColumns'
-    MeasurementExecutionTemplateResponse:
+      required:
+      - code
+      - message
+    DeleteResponse:
       type: object
       properties:
         success:
           type: boolean
-        cleanRoomExecutionInstanceId:
-          type: string
-        cleanRoomExecutionTemplateId:
-          type: string
+    ExecutionInstanceOutputs:
+      description: Clean Room Measurement Execution Instance Outputs
+      type: array
+      items:
+        type: object
+        properties:
+          name:
+            type: string
+            description: Category of the output
+          status:
+            type: string
+            description: Status of the specific run
+          message:
+            type: string
+            description: Detailed error message if any
+          href:
+            type: string
+            description: The api to be invoked to get output details
+          method:
+            type: string
+            description: Http method
     CleanroomQuestionRunPartitionParameters:
       description: A list of Cleanroom Question Run Partition Parameters
       type: array
@@ -255,9 +216,48 @@ components:
           type: string
         outputs:
           $ref: '#/components/schemas/ExecutionInstanceOutputs'
+    MeasurementExecutionTemplateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        cleanRoomExecutionInstanceId:
+          type: string
+        cleanRoomExecutionTemplateId:
+          type: string
+    CleanroomQuestionRunPartitionParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of Cleanroom Question Run Partition Parameter
+        value:
+          type: string
+          description: Value of Cleanroom Question Run Partition Parameter
+        dataType:
+          type: string
+          description: Data Type of Cleanroom Question Run Partition Parameter
+    Datasets:
+      description: Detailed information about the datasets
+      type: object
+      properties:
+        datasetType:
+          type: string
+        subType:
+          type: string
+        datasetId:
+          type: string
+        macro:
+          type: string
+        partitionValues:
+          $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameters'
+        bfmtJoinColumns:
+          type: array
+          items:
+            $ref: '#/components/schemas/BfmtJoinColumns'
   responses:
-    Unauthorized:
-      description: Authorization information was missing or invalid
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -274,8 +274,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

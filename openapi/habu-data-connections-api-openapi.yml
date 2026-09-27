@@ -292,15 +292,11 @@ paths:
       - Data Connections
 components:
   schemas:
-    IdentifierType:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
+    DataConnections:
+      description: A list of Data Connections
+      type: array
+      items:
+        $ref: '#/components/schemas/DataConnectionResponse'
     DataConnectionResponse:
       type: object
       properties:
@@ -330,31 +326,31 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/JobParameters'
-    DataConnectionRetryResponse:
+    JobParameters:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        value:
+          type: string
+    DeleteResponse:
       type: object
       properties:
         success:
           type: boolean
-    DataConnectionDetails:
+    IdentifierType:
       type: object
       properties:
+        id:
+          type: string
         name:
           type: string
-          description: Name of the data connection
-        category:
+        displayName:
           type: string
-          description: Category of the data connection
-        credentialId:
-          type: string
-          description: Credential ID for the data connection
-        dataType:
-          $ref: '#/components/schemas/DataType'
-        dataSource:
-          $ref: '#/components/schemas/DataSource'
-        dataSourceConfiguration:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobParameters'
     FieldConfigurations:
       description: A list of Field Configurations
       type: array
@@ -407,16 +403,45 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/IdentifierType'
-    DeleteResponse:
+    DataConnectionRetryResponse:
       type: object
       properties:
         success:
           type: boolean
-    DataConnections:
-      description: A list of Data Connections
-      type: array
-      items:
-        $ref: '#/components/schemas/DataConnectionResponse'
+    PartitionFieldConfig:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - Fixed
+          - Range
+          - Rolling
+          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
+        values:
+          type: array
+          items:
+            type: string
+        rollingUnit:
+          type: string
+          enum:
+          - Days
+          - Months
+          description: Applicable only in case of Rolling Date and Timestamp fields
+        isEnforced:
+          type: boolean
+          default: false
+          description: Indicates whether the partition field values are enforced for the CRQ run
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
     DataSource:
       type: object
       properties:
@@ -468,6 +493,26 @@ components:
           - Publisher Synthetic Dataset Library
         credentialSource:
           type: string
+    DataConnectionDetails:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the data connection
+        category:
+          type: string
+          description: Category of the data connection
+        credentialId:
+          type: string
+          description: Credential ID for the data connection
+        dataType:
+          $ref: '#/components/schemas/DataType'
+        dataSource:
+          $ref: '#/components/schemas/DataSource'
+        dataSourceConfiguration:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobParameters'
     FieldConfiguration:
       type: object
       properties:
@@ -555,54 +600,9 @@ components:
           description: Indicates whether this field is a partition column
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    JobParameters:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        value:
-          type: string
-    PartitionFieldConfig:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - Fixed
-          - Range
-          - Rolling
-          description: Fixed is used for String and Integer type fields, Range and Rolling is for Date and Timestamp
-        values:
-          type: array
-          items:
-            type: string
-        rollingUnit:
-          type: string
-          enum:
-          - Days
-          - Months
-          description: Applicable only in case of Rolling Date and Timestamp fields
-        isEnforced:
-          type: boolean
-          default: false
-          description: Indicates whether the partition field values are enforced for the CRQ run
   responses:
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -619,15 +619,6 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -637,8 +628,17 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

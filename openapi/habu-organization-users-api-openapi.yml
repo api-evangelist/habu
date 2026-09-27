@@ -72,6 +72,11 @@ components:
       required:
       - code
       - message
+    OrganizationUsers:
+      description: A list of Organization Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/OrganizationUser'
     User:
       type: object
       properties:
@@ -83,11 +88,6 @@ components:
           description: Name of the user
         email:
           type: string
-    OrganizationUsers:
-      description: A list of Organization Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/OrganizationUser'
   responses:
     Forbidden:
       description: This action is not allowed
@@ -98,8 +98,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -116,8 +116,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

@@ -81,11 +81,6 @@ paths:
       - Cleanroom Question Tags
 components:
   schemas:
-    CleanRoomQuestionTags:
-      description: A list of Cleanroom Question Tags
-      type: array
-      items:
-        type: string
     CleanroomQuestionParameter:
       type: object
       properties:
@@ -131,27 +126,15 @@ components:
           description: Cleanroom Question Parameter Default Value
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
-    ValueConstraintType:
-      type: string
-      description: Type of value constraint applied to a parameter
-      enum:
-      - ENFORCED_LIST
-      - DEFAULT_VALUE
-    ReturnObject:
+    GetCleanRoomQuestionParametersResponse:
       type: object
       properties:
-        code:
+        name:
           type: string
-        message:
+        displayId:
           type: string
-      required:
-      - code
-      - message
-    CleanroomQuestionParameters:
-      description: A list of Cleanroom Question Parameters
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanroomQuestionParameter'
+        parameters:
+          $ref: '#/components/schemas/CleanroomQuestionParameters'
     PartitionFieldConfig:
       type: object
       properties:
@@ -176,18 +159,35 @@ components:
           type: boolean
           default: false
           description: Indicates whether the partition field values are enforced for the CRQ run
-    GetCleanRoomQuestionParametersResponse:
+    ReturnObject:
       type: object
       properties:
-        name:
+        code:
           type: string
-        displayId:
+        message:
           type: string
-        parameters:
-          $ref: '#/components/schemas/CleanroomQuestionParameters'
+      required:
+      - code
+      - message
+    CleanroomQuestionParameters:
+      description: A list of Cleanroom Question Parameters
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanroomQuestionParameter'
+    ValueConstraintType:
+      type: string
+      description: Type of value constraint applied to a parameter
+      enum:
+      - ENFORCED_LIST
+      - DEFAULT_VALUE
+    CleanRoomQuestionTags:
+      description: A list of Cleanroom Question Tags
+      type: array
+      items:
+        type: string
   responses:
-    Unauthorized:
-      description: Authorization information was missing or invalid
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -204,8 +204,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

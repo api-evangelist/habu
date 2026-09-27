@@ -48,6 +48,10 @@ components:
           type: string
         displayName:
           type: string
+    ImportDataTypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/ImportDataType'
     ReturnObject:
       type: object
       properties:
@@ -58,13 +62,9 @@ components:
       required:
       - code
       - message
-    ImportDataTypes:
-      type: array
-      items:
-        $ref: '#/components/schemas/ImportDataType'
   responses:
-    Unauthorized:
-      description: Authorization information was missing or invalid
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -81,8 +81,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    Unauthorized:
+      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:
