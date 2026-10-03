@@ -85,6 +85,15 @@ paths:
       - Cleanroom Roles
 components:
   responses:
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Forbidden:
       description: This action is not allowed
       content:
@@ -94,8 +103,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -121,15 +130,6 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
   schemas:
     ReturnObject:
       type: object
@@ -141,6 +141,11 @@ components:
       required:
       - code
       - message
+    CleanRoomRoles:
+      description: A list of Cleanroom Roles
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomRole'
     CleanRoomRole:
       properties:
         id:
@@ -151,11 +156,6 @@ components:
           type: string
         organizationId:
           type: string
-    CleanRoomRoles:
-      description: A list of Cleanroom Roles
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomRole'
   securitySchemes:
     application:
       type: oauth2

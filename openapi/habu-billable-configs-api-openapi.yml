@@ -120,24 +120,6 @@ paths:
       - Billable Configs
 components:
   schemas:
-    BillableSourceType:
-      type: string
-      description: Type of entity a billable config applies to
-      enum:
-      - BILLABLE_UNKNOWN
-      - BILLABLE_RUN
-      - BILLABLE_FLOW_RUN
-      - BILLABLE_QUESTION
-      - BILLABLE_FLOW
-      - BILLABLE_CR
-      - BILLABLE_OWNER
-      - BILLABLE_PARTNER
-      - BILLABLE_CRQ
-    GetBillableConfigResponse:
-      type: object
-      properties:
-        config:
-          $ref: '#/components/schemas/BillableConfig'
     UpsertBillableConfigRequest:
       type: object
       required:
@@ -145,21 +127,13 @@ components:
       properties:
         config:
           $ref: '#/components/schemas/BillableConfig'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    DeleteBillableConfigResponse:
+    UpsertBillableConfigResponse:
       type: object
       properties:
         success:
           type: boolean
+        billableConfigId:
+          type: string
     BillableConfig:
       type: object
       description: Billable configuration for a source entity
@@ -178,13 +152,39 @@ components:
           description: Billable flag as string ("true" or "false")
         compositeSourceId:
           type: string
-    UpsertBillableConfigResponse:
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    BillableSourceType:
+      type: string
+      description: Type of entity a billable config applies to
+      enum:
+      - BILLABLE_UNKNOWN
+      - BILLABLE_RUN
+      - BILLABLE_FLOW_RUN
+      - BILLABLE_QUESTION
+      - BILLABLE_FLOW
+      - BILLABLE_CR
+      - BILLABLE_OWNER
+      - BILLABLE_PARTNER
+      - BILLABLE_CRQ
+    GetBillableConfigResponse:
+      type: object
+      properties:
+        config:
+          $ref: '#/components/schemas/BillableConfig'
+    DeleteBillableConfigResponse:
       type: object
       properties:
         success:
           type: boolean
-        billableConfigId:
-          type: string
   responses:
     Forbidden:
       description: This action is not allowed
@@ -204,6 +204,15 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -215,15 +224,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

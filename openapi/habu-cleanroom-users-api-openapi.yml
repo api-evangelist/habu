@@ -208,114 +208,7 @@ paths:
       tags:
       - Cleanroom Users
 components:
-  schemas:
-    AddCleanRoomUserRequest:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: (deprecated) id of the user in the organization
-        roleId:
-          type: string
-          description: (deprecated) id of Role that you want to assign the user
-        email:
-          type: string
-          description: email of the user in the organization
-        role:
-          type: string
-          description: Role that you want to assign the user
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    CleanRoomUsers:
-      description: A list of Cleanroom Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomUser'
-    CleanRoomRole:
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        cleanRoomId:
-          type: string
-        organizationId:
-          type: string
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          description: User ID
-        name:
-          type: string
-          description: Name of the user
-        email:
-          type: string
-    CleanRoomUser:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Cleanroom User ID
-        cleanRoomId:
-          type: string
-          description: Cleanroom ID
-        user:
-          $ref: '#/components/schemas/User'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        role:
-          $ref: '#/components/schemas/CleanRoomRole'
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
   responses:
-    Forbidden:
-      description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
     InternalServerError:
       description: Internal Server Error
       content:
@@ -325,8 +218,26 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     ResourceConflict:
       description: Conflict with the current state of the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -352,15 +263,104 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
+  schemas:
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom User ID
+        cleanRoomId:
+          type: string
+          description: Cleanroom ID
+        user:
+          $ref: '#/components/schemas/User'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        role:
+          $ref: '#/components/schemas/CleanRoomRole'
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    CleanRoomUsers:
+      description: A list of Cleanroom Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomUser'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    AddCleanRoomUserRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: (deprecated) id of the user in the organization
+        roleId:
+          type: string
+          description: (deprecated) id of Role that you want to assign the user
+        email:
+          type: string
+          description: email of the user in the organization
+        role:
+          type: string
+          description: Role that you want to assign the user
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+        name:
+          type: string
+          description: Name of the user
+        email:
+          type: string
   securitySchemes:
     application:
       type: oauth2

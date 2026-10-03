@@ -53,7 +53,46 @@ paths:
       tags:
       - Data Source Parameters
 components:
+  schemas:
+    DataSourceParameters:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataSourceParameter'
+    DataSourceParameter:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        type:
+          type: string
+        index:
+          type: integer
+        dataSourceId:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
   responses:
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Forbidden:
       description: This action is not allowed
       content:
@@ -63,8 +102,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -90,45 +129,6 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-  schemas:
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    DataSourceParameter:
-      type: object
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        index:
-          type: integer
-        dataSourceId:
-          type: string
-    DataSourceParameters:
-      type: array
-      items:
-        $ref: '#/components/schemas/DataSourceParameter'
   securitySchemes:
     application:
       type: oauth2

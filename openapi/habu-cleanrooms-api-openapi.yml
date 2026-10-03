@@ -244,13 +244,39 @@ paths:
       - Cleanrooms
 components:
   schemas:
-    ComputeCapacityOption:
+    FieldTypeEnum:
       type: object
       properties:
         name:
           type: string
         description:
           type: string
+    QuestionUserListOutput:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        isEncrypt:
+          type: boolean
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
     CleanRoomRequest:
       type: object
       properties:
@@ -275,30 +301,69 @@ components:
       - name
       - startAt
       - type
-    DatasetMetadata:
+    CleanRoomParameterRequest:
+      type: object
+      required:
+      - CLOUD
+      - REGION
+      properties:
+        REGION:
+          type: string
+          enum:
+          - REGION_EU
+          - REGION_US
+          - REGION_APAC
+          - REGION_AFRICA
+          - REGION_UAE
+        SUB_REGION:
+          type: string
+          enum:
+          - SUB_REGION_EAST1
+          - SUB_REGION_WEST1
+          - SUB_REGION_NORTH1
+          - SUB_REGION_SOUTH1
+          - SUB_REGION_CENTRAL1
+          - SUB_REGION_NORTHEAST1
+          - SUB_REGION_SOUTHEAST1
+          - SUB_REGION_ME_CENTRAL1
+          - SUB_REGION_EU_WEST4
+          - SUB_REGION_EAST2
+        CLOUD:
+          type: string
+          enum:
+          - CLOUD_AWS
+          - CLOUD_GCP
+          - CLOUD_AZURE
+        ENABLE_EXPORT, ENABLE_VIEW_QUERY, ENABLE_HABU_INTELLIGENCE, ENABLE_PAIR, ENABLE_OPJA:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+          description: Each of these values take a true or false, please separate them for example ENABLE_EXPORT = true, ENABLE_VIEW_QUERY = true
+      additionalProperties:
+        type: string
+        enum:
+        - DATA_DECIBEL
+        - CROWD_SIZE
+    ReturnObject:
       type: object
       properties:
-        ID:
+        code:
           type: string
-        name:
+        message:
           type: string
-        organizationID:
+      required:
+      - code
+      - message
+    CleanRoomStakeholder:
+      type: object
+      properties:
+        organizationId:
           type: string
         organizationName:
           type: string
-        dataImportType:
+        ownership:
           type: string
-        macro:
-          type: string
-        fields:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetDatasetField'
-    CleanRooms:
-      description: A list of Cleanrooms and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoom'
     QuestionMetadata:
       type: object
       properties:
@@ -346,43 +411,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/QuestionUserListOutput'
-    CleanRoomType:
-      description: Model containing Cleanroom Type
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        listQuestionSupport:
-          type: boolean
-        analyticalQuestionSupport:
-          type: boolean
-        wallGarden:
-          type: boolean
-    QuestionMetric:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        displayName:
-          type: string
-        type:
-          type: string
-        computed:
-          type: boolean
-    CleanRoomTypes:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomType'
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
     AssetQuestionDataType:
       type: object
       properties:
@@ -415,21 +443,91 @@ components:
           type: boolean
         plottable:
           type: boolean
-    TimeAudit:
+    CleanRoomType:
+      description: Model containing Cleanroom Type
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        listQuestionSupport:
+          type: boolean
+        analyticalQuestionSupport:
+          type: boolean
+        wallGarden:
+          type: boolean
+    CleanRooms:
+      description: A list of Cleanrooms and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoom'
+    QuestionDataTypeField:
       type: object
       properties:
-        createdAt:
+        ID:
           type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
+        name:
           type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
+        type:
           type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
+        format:
+          type: string
+        description:
+          type: string
+    CleanroomAssetDetails:
+      type: object
+      properties:
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionMetadata'
+          description: Available questions for flow creation
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/DatasetMetadata'
+          description: Available datasets for assignment
+        computeCapacityOptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComputeCapacityOption'
+          description: Available compute capacity options
+        fieldTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldTypeEnum'
+          description: Field type enumerations
+        stakeholders:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomStakeholder'
+          description: Clean room stakeholder information
+    AssetDatasetField:
+      type: object
+      properties:
+        ID:
+          type: string
+        fieldName:
+          type: string
+        dataType:
+          type: string
+        isFilterable:
+          type: boolean
+        isUserIDField:
+          type: boolean
+        isPii:
+          type: boolean
+        isExcluded:
+          type: boolean
+        fieldLabel:
+          type: string
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
     CleanRoomTypeRequest:
       type: string
       enum:
@@ -443,16 +541,19 @@ components:
       - ADH
       - LinkedIn
       - HabuConfidentialComputing
-    ReturnObject:
+    QuestionMetric:
       type: object
       properties:
-        code:
+        ID:
           type: string
-        message:
+        name:
           type: string
-      required:
-      - code
-      - message
+        displayName:
+          type: string
+        type:
+          type: string
+        computed:
+          type: boolean
     QuestionParameter:
       type: object
       properties:
@@ -468,66 +569,17 @@ components:
           type: integer
         parameterType:
           type: string
-    CleanRoomStakeholder:
-      type: object
-      properties:
-        organizationId:
-          type: string
-        organizationName:
-          type: string
-        ownership:
-          type: string
-    FieldTypeEnum:
+    CleanRoomTypes:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomType'
+    ComputeCapacityOption:
       type: object
       properties:
         name:
           type: string
         description:
           type: string
-    CleanRoomParameterRequest:
-      type: object
-      required:
-      - CLOUD
-      - REGION
-      properties:
-        REGION:
-          type: string
-          enum:
-          - REGION_EU
-          - REGION_US
-          - REGION_APAC
-          - REGION_AFRICA
-          - REGION_UAE
-        SUB_REGION:
-          type: string
-          enum:
-          - SUB_REGION_EAST1
-          - SUB_REGION_WEST1
-          - SUB_REGION_NORTH1
-          - SUB_REGION_SOUTH1
-          - SUB_REGION_CENTRAL1
-          - SUB_REGION_NORTHEAST1
-          - SUB_REGION_SOUTHEAST1
-          - SUB_REGION_ME_CENTRAL1
-          - SUB_REGION_EU_WEST4
-          - SUB_REGION_EAST2
-        CLOUD:
-          type: string
-          enum:
-          - CLOUD_AWS
-          - CLOUD_GCP
-          - CLOUD_AZURE
-        ENABLE_EXPORT, ENABLE_VIEW_QUERY, ENABLE_HABU_INTELLIGENCE, ENABLE_PAIR, ENABLE_OPJA:
-          type: string
-          enum:
-          - 'true'
-          - 'false'
-          description: Each of these values take a true or false, please separate them for example ENABLE_EXPORT = true, ENABLE_VIEW_QUERY = true
-      additionalProperties:
-        type: string
-        enum:
-        - DATA_DECIBEL
-        - CROWD_SIZE
     CleanRoom:
       description: Model containing the Cleanroom details
       properties:
@@ -561,80 +613,28 @@ components:
           $ref: '#/components/schemas/TimeAudit'
         cleanRoomTypeId:
           type: string
-    CleanroomAssetDetails:
-      type: object
-      properties:
-        questions:
-          type: array
-          items:
-            $ref: '#/components/schemas/QuestionMetadata'
-          description: Available questions for flow creation
-        datasets:
-          type: array
-          items:
-            $ref: '#/components/schemas/DatasetMetadata'
-          description: Available datasets for assignment
-        computeCapacityOptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ComputeCapacityOption'
-          description: Available compute capacity options
-        fieldTypes:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldTypeEnum'
-          description: Field type enumerations
-        stakeholders:
-          type: array
-          items:
-            $ref: '#/components/schemas/CleanRoomStakeholder'
-          description: Clean room stakeholder information
-    QuestionUserListOutput:
+    DatasetMetadata:
       type: object
       properties:
         ID:
           type: string
         name:
           type: string
-        type:
+        organizationID:
           type: string
-        isEncrypt:
-          type: boolean
-    AssetDatasetField:
-      type: object
-      properties:
-        ID:
+        organizationName:
           type: string
-        fieldName:
+        dataImportType:
           type: string
-        dataType:
+        macro:
           type: string
-        isFilterable:
-          type: boolean
-        isUserIDField:
-          type: boolean
-        isPii:
-          type: boolean
-        isExcluded:
-          type: boolean
-        fieldLabel:
-          type: string
-    QuestionDataTypeField:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        type:
-          type: string
-        format:
-          type: string
-        description:
-          type: string
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetDatasetField'
   responses:
-    InternalServerError:
-      description: Internal Server Error
+    NotFound:
+      description: The specified resource was not found
       content:
         application/json:
           schema:
@@ -651,8 +651,17 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
       content:
         application/json:
           schema:
@@ -662,15 +671,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     ResourceConflict:
       description: Conflict with the current state of the resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
       content:
         application/json:
           schema:

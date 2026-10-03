@@ -176,53 +176,93 @@ paths:
       tags:
       - Destinations
 components:
-  responses:
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Forbidden:
-      description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
   schemas:
+    PartnerConfig:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        index:
+          type: integer
+          format: int32
+        type:
+          type: string
+        encrypted:
+          type: boolean
+    UpdateDestinationRequest:
+      type: object
+      description: Request to update a destination connection (partner account).
+      properties:
+        name:
+          type: string
+          description: Optional; if provided, updates name for the destination connection.
+        credential:
+          $ref: '#/components/schemas/PrimageOrganizationCredential'
+          description: Optional; if provided, updates credential associated with this destination connection.
+        publicKey:
+          type: string
+          description: Optional; if provided, updates public key associated with this destination connection.
+    CreateDestinationRequest:
+      type: object
+      required:
+      - name
+      - partner
+      description: Request to create a destination connection (partner account).
+      properties:
+        name:
+          type: string
+          description: Display name for the destination connection
+        partner:
+          type: object
+          required:
+          - ID
+          properties:
+            ID:
+              type: string
+              description: Partner id (from list destination partners)
+          description: Partner to connect; only ID is required for create
+        credential:
+          $ref: '#/components/schemas/PrimageOrganizationCredential'
+          description: Optional; required for partners with a credential source. Use existing ID or name + credentials for new.
+        publicKey:
+          type: string
+          description: Optional; only allowed for certain partners (e.g. S3 IAM Role Export, GCS Export)
+    JobCount:
+      type: object
+      properties:
+        jobType:
+          type: string
+        count:
+          type: integer
+          format: int32
+          minimum: 0
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
     ListDestinationPartnersResponse:
       type: object
       properties:
@@ -230,15 +270,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Partner'
-    PrimageCredential:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        value:
-          type: string
     PicanmixType:
       type: string
       enum:
@@ -247,40 +278,27 @@ components:
       - OFFLINE_CONVERSIONS
       - EXPORTS
       - QUESTION_USER_LIST
-    Partner:
+    PartnerConfigs:
+      type: array
+      items:
+        $ref: '#/components/schemas/PartnerConfig'
+    PrimageOrganizationCredential:
       type: object
       properties:
         ID:
           type: string
         name:
           type: string
-        displayName:
-          type: string
-        logoUrl:
-          type: string
-        credentialSourceName:
-          type: string
-        partnerConfigArray:
-          $ref: '#/components/schemas/PartnerConfigs'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        type:
-          $ref: '#/components/schemas/PicanmixType'
-        credentialSources:
+        credentials:
           type: array
           items:
-            type: string
-        partnerConfigMap:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/PartnerConfigs'
-    DeleteResponse:
+            $ref: '#/components/schemas/PrimageCredential'
+    UpdateDestinationResponse:
       type: object
+      description: Response after updating a destination connection (partner account).
       properties:
-        success:
-          type: boolean
+        partnerAccount:
+          $ref: '#/components/schemas/PartnerAccount'
     ListDestinationsResponse:
       type: object
       properties:
@@ -297,6 +315,20 @@ components:
         offset:
           type: integer
           description: The offset used for pagination
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    PrimageCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
     PartnerAccount:
       type: object
       properties:
@@ -326,103 +358,44 @@ components:
           type: string
         publicKey:
           type: string
-    UpdateDestinationRequest:
-      type: object
-      description: Request to update a destination connection (partner account).
-      properties:
-        name:
-          type: string
-          description: Optional; if provided, updates name for the destination connection.
-        credential:
-          $ref: '#/components/schemas/PrimageOrganizationCredential'
-          description: Optional; if provided, updates credential associated with this destination connection.
-        publicKey:
-          type: string
-          description: Optional; if provided, updates public key associated with this destination connection.
-    TimeAudit:
+    UserAudit:
       type: object
       properties:
-        createdAt:
+        createdBy:
           type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
+          description: Identifier of the user who created the object
+        updatedBy:
           type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    PrimageOrganizationCredential:
+          description: Identifier of the user who last updated the object
+    Partner:
       type: object
       properties:
         ID:
           type: string
         name:
           type: string
-        credentials:
+        displayName:
+          type: string
+        logoUrl:
+          type: string
+        credentialSourceName:
+          type: string
+        partnerConfigArray:
+          $ref: '#/components/schemas/PartnerConfigs'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        type:
+          $ref: '#/components/schemas/PicanmixType'
+        credentialSources:
           type: array
           items:
-            $ref: '#/components/schemas/PrimageCredential'
-    JobCount:
-      type: object
-      properties:
-        jobType:
-          type: string
-        count:
-          type: integer
-          format: int32
-          minimum: 0
-    CreateDestinationRequest:
-      type: object
-      required:
-      - name
-      - partner
-      description: Request to create a destination connection (partner account).
-      properties:
-        name:
-          type: string
-          description: Display name for the destination connection
-        partner:
+            type: string
+        partnerConfigMap:
           type: object
-          required:
-          - ID
-          properties:
-            ID:
-              type: string
-              description: Partner id (from list destination partners)
-          description: Partner to connect; only ID is required for create
-        credential:
-          $ref: '#/components/schemas/PrimageOrganizationCredential'
-          description: Optional; required for partners with a credential source. Use existing ID or name + credentials for new.
-        publicKey:
-          type: string
-          description: Optional; only allowed for certain partners (e.g. S3 IAM Role Export, GCS Export)
-    PartnerConfig:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        index:
-          type: integer
-          format: int32
-        type:
-          type: string
-        encrypted:
-          type: boolean
+          additionalProperties:
+            $ref: '#/components/schemas/PartnerConfigs'
     LatestJobRunStatusCount:
       type: object
       properties:
@@ -458,25 +431,52 @@ components:
       - CONFIG_CONFIGURED
       - CONFIG_FAILED
       - CONFIG_AVAILABLE
-    UpdateDestinationResponse:
-      type: object
-      description: Response after updating a destination connection (partner account).
-      properties:
-        partnerAccount:
-          $ref: '#/components/schemas/PartnerAccount'
-    PartnerConfigs:
-      type: array
-      items:
-        $ref: '#/components/schemas/PartnerConfig'
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
   securitySchemes:
     application:
       type: oauth2

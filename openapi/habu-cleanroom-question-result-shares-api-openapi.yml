@@ -89,20 +89,21 @@ paths:
       - Cleanroom Question Result Shares
 components:
   schemas:
+    UpsertCleanRoomQuestionResultShareResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
     UpsertCleanRoomQuestionResultSharesApiInput:
       description: A list of Cleanroom Result Shares
       type: array
       items:
         $ref: '#/components/schemas/UpsertCleanRoomQuestionResultShares'
-    UpsertCleanRoomQuestionResultShares:
-      type: object
-      properties:
-        PartnerID:
-          type: string
-          description: Partner ID
-        PostRunQueryID:
-          type: string
-          description: Post Run Query ID
+    CleanRoomQuestionResultShares:
+      description: A list of Cleanroom Result Shares
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionResultShare'
     ReturnObject:
       type: object
       properties:
@@ -113,6 +114,15 @@ components:
       required:
       - code
       - message
+    UpsertCleanRoomQuestionResultShares:
+      type: object
+      properties:
+        PartnerID:
+          type: string
+          description: Partner ID
+        PostRunQueryID:
+          type: string
+          description: Post Run Query ID
     CleanRoomQuestionResultShare:
       type: object
       properties:
@@ -125,19 +135,18 @@ components:
         PostRunQueryID:
           type: string
           description: Post Run Query ID
-    CleanRoomQuestionResultShares:
-      description: A list of Cleanroom Result Shares
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionResultShare'
-    UpsertCleanRoomQuestionResultShareResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
   responses:
     InternalServerError:
       description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -156,15 +165,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

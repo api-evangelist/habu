@@ -54,14 +54,11 @@ paths:
       - Organization Users
 components:
   schemas:
-    OrganizationUser:
-      type: object
-      properties:
-        roleName:
-          type: string
-          description: Name of the user role in the organization
-        user:
-          $ref: '#/components/schemas/User'
+    OrganizationUsers:
+      description: A list of Organization Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/OrganizationUser'
     ReturnObject:
       type: object
       properties:
@@ -72,11 +69,14 @@ components:
       required:
       - code
       - message
-    OrganizationUsers:
-      description: A list of Organization Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/OrganizationUser'
+    OrganizationUser:
+      type: object
+      properties:
+        roleName:
+          type: string
+          description: Name of the user role in the organization
+        user:
+          $ref: '#/components/schemas/User'
     User:
       type: object
       properties:
@@ -89,6 +89,15 @@ components:
         email:
           type: string
   responses:
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Forbidden:
       description: This action is not allowed
       content:
@@ -98,8 +107,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -118,15 +127,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

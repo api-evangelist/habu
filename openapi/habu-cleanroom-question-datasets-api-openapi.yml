@@ -191,76 +191,7 @@ paths:
       tags:
       - Cleanroom Question Datasets
 components:
-  responses:
-    Forbidden:
-      description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
   schemas:
-    QuestionDataTypeOption:
-      type: object
-      properties:
-        dataTypeName:
-          type: string
-        datasetOptions:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              name:
-                type: string
-    AssignCleanroomQuestionDatasetRequest:
-      type: object
-      properties:
-        organizationId:
-          type: string
-          description: ID of Organization ID to take ownership
-        macro:
-          type: string
-          description: name of Question Data Type
     DatasetField:
       type: object
       properties:
@@ -279,26 +210,29 @@ components:
         type:
           type: string
           description: Dataset Field Type
-    ReturnObject:
+    AssignCleanroomQuestionDatasetRequest:
       type: object
       properties:
-        code:
+        organizationId:
           type: string
-        message:
+          description: ID of Organization ID to take ownership
+        macro:
           type: string
-      required:
-      - code
-      - message
-    QuestionDataTypeOptions:
-      type: array
-      items:
-        $ref: '#/components/schemas/QuestionDataTypeOption'
-      description: List of Cleanroom Question Data Type Options
-    CleanRoomStakeholders:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomStakeholder'
-      description: List of Cleanroom Stakeholders
+          description: name of Question Data Type
+    QuestionDataTypeOption:
+      type: object
+      properties:
+        dataTypeName:
+          type: string
+        datasetOptions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
     CleanRoomQuestionDataset:
       type: object
       properties:
@@ -351,6 +285,30 @@ components:
           items:
             $ref: '#/components/schemas/DatasetField'
           description: Dataset Fields
+    CleanRoomQuestionDatasets:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionDataset'
+      description: List of Cleanroom Question Datasets
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomStakeholder:
+      type: object
+      properties:
+        organizationId:
+          type: string
+        organizationName:
+          type: string
+        ownership:
+          type: string
     DatasetParameter:
       type: object
       properties:
@@ -363,20 +321,62 @@ components:
         type:
           type: string
           description: Dataset Parameter Type
-    CleanRoomQuestionDatasets:
+    QuestionDataTypeOptions:
       type: array
       items:
-        $ref: '#/components/schemas/CleanRoomQuestionDataset'
-      description: List of Cleanroom Question Datasets
-    CleanRoomStakeholder:
-      type: object
-      properties:
-        organizationId:
-          type: string
-        organizationName:
-          type: string
-        ownership:
-          type: string
+        $ref: '#/components/schemas/QuestionDataTypeOption'
+      description: List of Cleanroom Question Data Type Options
+    CleanRoomStakeholders:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomStakeholder'
+      description: List of Cleanroom Stakeholders
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
   securitySchemes:
     application:
       type: oauth2
