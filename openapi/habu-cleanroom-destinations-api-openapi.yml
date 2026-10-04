@@ -197,29 +197,6 @@ paths:
       - Cleanroom Destinations
 components:
   schemas:
-    PartnerConfig:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        index:
-          type: integer
-          format: int32
-        type:
-          type: string
-        encrypted:
-          type: boolean
-    JobCount:
-      type: object
-      properties:
-        jobType:
-          type: string
-        count:
-          type: integer
-          format: int32
-          minimum: 0
     TimeAudit:
       type: object
       properties:
@@ -235,24 +212,15 @@ components:
           type: string
           format: date-time
           description: Timestamp for when the object was deleted (if applicable)
-    ReviewDestinationProvisioningRequest:
+    JobCount:
       type: object
-      required:
-      - decision
       properties:
-        decision:
+        jobType:
           type: string
-          description: Decision to approve or reject the destination provisioning request.
-          enum:
-          - APPROVE
-          - REJECT
-    ProvisionCleanroomDestinationRequest:
-      type: object
-      properties:
-        destinations:
-          type: array
-          items:
-            type: string
+        count:
+          type: integer
+          format: int32
+          minimum: 0
     CleanroomProvisionedDestination:
       type: object
       properties:
@@ -270,126 +238,13 @@ components:
         isUsedForActivation:
           type: boolean
           description: Whether this partner account is tied to activation in this cleanroom.
-    ReturnObject:
+    ProvisionCleanroomDestinationRequest:
       type: object
       properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    PicanmixType:
-      type: string
-      enum:
-      - UNKNOWN_PICANMIX_TYPE
-      - USER_LIST
-      - OFFLINE_CONVERSIONS
-      - EXPORTS
-      - QUESTION_USER_LIST
-    ReviewDestinationProvisioningResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: true if the provisioning request decision was applied successfully.
-    PartnerConfigs:
-      type: array
-      items:
-        $ref: '#/components/schemas/PartnerConfig'
-    PrimageOrganizationCredential:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        credentials:
+        destinations:
           type: array
           items:
-            $ref: '#/components/schemas/PrimageCredential'
-    ActivationChannelProvision:
-      type: object
-      properties:
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        cleanroomId:
-          type: string
-        partnerAccountId:
-          type: string
-        channelStatus:
-          type: string
-    ListCleanroomDestinationsResponse:
-      type: object
-      properties:
-        partnerAccounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/CleanroomProvisionedDestination'
-        total:
-          type: integer
-          format: int32
-        limit:
-          type: integer
-          format: int32
-        offset:
-          type: integer
-          format: int32
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    PrimageCredential:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        value:
-          type: string
-    PartnerAccount:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        organizationID:
-          type: string
-        partner:
-          $ref: '#/components/schemas/Partner'
-        credential:
-          $ref: '#/components/schemas/PrimageOrganizationCredential'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        jobCount:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobCount'
-        latestJobRunStatusCount:
-          $ref: '#/components/schemas/LatestJobRunStatusCount'
-        configStatus:
-          $ref: '#/components/schemas/ConfigStatus'
-        errorMessage:
-          type: string
-        publicKey:
-          type: string
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
+            type: string
     Partner:
       type: object
       properties:
@@ -419,6 +274,49 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/PartnerConfigs'
+    PartnerConfig:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        index:
+          type: integer
+          format: int32
+        type:
+          type: string
+        encrypted:
+          type: boolean
+    PartnerAccount:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        partner:
+          $ref: '#/components/schemas/Partner'
+        credential:
+          $ref: '#/components/schemas/PrimageOrganizationCredential'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        jobCount:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobCount'
+        latestJobRunStatusCount:
+          $ref: '#/components/schemas/LatestJobRunStatusCount'
+        configStatus:
+          $ref: '#/components/schemas/ConfigStatus'
+        errorMessage:
+          type: string
+        publicKey:
+          type: string
     LatestJobRunStatusCount:
       type: object
       properties:
@@ -446,10 +344,31 @@ components:
           type: integer
           format: int32
           minimum: 0
-    ProvisionCleanroomDestinationResponse:
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    PartnerConfigs:
       type: array
       items:
-        $ref: '#/components/schemas/ActivationChannelProvision'
+        $ref: '#/components/schemas/PartnerConfig'
+    ReviewDestinationProvisioningRequest:
+      type: object
+      required:
+      - decision
+      properties:
+        decision:
+          type: string
+          description: Decision to approve or reject the destination provisioning request.
+          enum:
+          - APPROVE
+          - REJECT
     ConfigStatus:
       type: string
       enum:
@@ -458,7 +377,97 @@ components:
       - CONFIG_CONFIGURED
       - CONFIG_FAILED
       - CONFIG_AVAILABLE
+    PicanmixType:
+      type: string
+      enum:
+      - UNKNOWN_PICANMIX_TYPE
+      - USER_LIST
+      - OFFLINE_CONVERSIONS
+      - EXPORTS
+      - QUESTION_USER_LIST
+    ActivationChannelProvision:
+      type: object
+      properties:
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        cleanroomId:
+          type: string
+        partnerAccountId:
+          type: string
+        channelStatus:
+          type: string
+    PrimageCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    ListCleanroomDestinationsResponse:
+      type: object
+      properties:
+        partnerAccounts:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanroomProvisionedDestination'
+        total:
+          type: integer
+          format: int32
+        limit:
+          type: integer
+          format: int32
+        offset:
+          type: integer
+          format: int32
+    ProvisionCleanroomDestinationResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/ActivationChannelProvision'
+    ReviewDestinationProvisioningResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: true if the provisioning request decision was applied successfully.
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    PrimageOrganizationCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrimageCredential'
   responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -488,15 +497,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     InternalServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

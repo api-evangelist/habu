@@ -87,33 +87,6 @@ paths:
       - Cleanroom Question Permissions
 components:
   schemas:
-    CleanRoomQuestionPermissionsUpdateInput:
-      type: object
-      properties:
-        permission:
-          $ref: '#/components/schemas/QuestionPermission'
-        access:
-          $ref: '#/components/schemas/QuestionAccess'
-    CleanRoomQuestionPermissions:
-      type: object
-      properties:
-        id:
-          type: string
-        permission:
-          $ref: '#/components/schemas/QuestionPermission'
-        access:
-          $ref: '#/components/schemas/QuestionAccess'
-    QuestionAccess:
-      type: string
-      enum:
-      - UNKNOWN_ACCESS
-      - QUESTION_OWNER_ONLY
-      - ALL_CLEAN_ROOM_PARTNERS
-    CleanRoomQuestionPermissionsResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
-      description: Array of Cleanroom Question Permissions
     ReturnObject:
       type: object
       properties:
@@ -129,6 +102,26 @@ components:
       items:
         $ref: '#/components/schemas/CleanRoomQuestionPermissionsUpdateInput'
       description: Array of Cleanroom Question Permission Updates
+    CleanRoomQuestionPermissionsResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionPermissions'
+      description: Array of Cleanroom Question Permissions
+    CleanRoomQuestionPermissions:
+      type: object
+      properties:
+        id:
+          type: string
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
+    QuestionAccess:
+      type: string
+      enum:
+      - UNKNOWN_ACCESS
+      - QUESTION_OWNER_ONLY
+      - ALL_CLEAN_ROOM_PARTNERS
     QuestionPermission:
       type: string
       enum:
@@ -140,27 +133,16 @@ components:
       - IN_PROGRESS
       - VIEW_RESULTS
       - DELETE
+    CleanRoomQuestionPermissionsUpdateInput:
+      type: object
+      properties:
+        permission:
+          $ref: '#/components/schemas/QuestionPermission'
+        access:
+          $ref: '#/components/schemas/QuestionAccess'
   responses:
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -177,8 +159,26 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

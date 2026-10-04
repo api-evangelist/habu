@@ -339,11 +339,6 @@ paths:
       - Cleanroom Questions
 components:
   schemas:
-    CleanRoomQuestions:
-      description: A list of Cleanroom Questions and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestion'
     UpdateCleanroomQuestionComputeCapacityResponse:
       type: object
       properties:
@@ -408,6 +403,16 @@ components:
           type: string
         questionId:
           type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
     UpdateCleanroomQuestionComputeCapacityRequest:
       type: object
       properties:
@@ -422,28 +427,6 @@ components:
       - MEDIUM
       - LARGE
       - XLARGE
-    SegmentationResponse:
-      description: Response when segmentation is enabled or updated successfully
-      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
-      properties:
-        assetId:
-          type: string
-          description: The created or updated asset ID
-          example: 5f3e2b1a-90ab-4cde-8fgh-1234567890ab
-        success:
-          type: boolean
-          description: Indicates whether the operation succeeded
-          example: true
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
     SegmentationRequest:
       description: Request body for enabling or updating segmentation for a Cleanroom Question
       required:
@@ -458,6 +441,23 @@ components:
           type: string
           description: Ramp ID type
           example: NAME
+    SegmentationResponse:
+      description: Response when segmentation is enabled or updated successfully
+      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
+      properties:
+        assetId:
+          type: string
+          description: The created or updated asset ID
+          example: 5f3e2b1a-90ab-4cde-8fgh-1234567890ab
+        success:
+          type: boolean
+          description: Indicates whether the operation succeeded
+          example: true
+    CleanRoomQuestions:
+      description: A list of Cleanroom Questions and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestion'
     DeleteResponse:
       type: object
       properties:
@@ -521,24 +521,6 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -548,8 +530,26 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

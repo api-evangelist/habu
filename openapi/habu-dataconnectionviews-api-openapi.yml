@@ -197,6 +197,80 @@ paths:
       - DataConnectionViews
 components:
   schemas:
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    DataConnectionViewSourceInput:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: ID of the source data connection
+        macro:
+          type: string
+          description: Macro alias for the source data connection in the view query
+      required:
+      - dataConnectionId
+      - macro
+    DataConnectionViews:
+      description: Paginated list of Data Connection Views
+      type: object
+      properties:
+        dataConnectionViews:
+          type: array
+          description: Data connection views for the current page
+          items:
+            $ref: '#/components/schemas/DataConnectionViewResponse'
+        limit:
+          type: integer
+          description: The number of data connection views returned per page
+        offset:
+          type: integer
+          description: The offset used for pagination
+        hasMore:
+          type: boolean
+          description: Whether there are more data connection views beyond this page
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    DataConnectionViewSource:
+      type: object
+      properties:
+        dataConnectionId:
+          type: string
+          description: ID of the source data connection
+        dataConnectionName:
+          type: string
+          description: Name of the source data connection
+        macro:
+          type: string
+          description: Macro alias for the source data connection in the view query
+        dataSourceId:
+          type: string
+          description: ID of the data source for the source data connection
+        fieldConfigurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldConfiguration'
     DataConnectionViewResponse:
       type: object
       properties:
@@ -238,18 +312,21 @@ components:
           $ref: '#/components/schemas/TimeAudit'
         userAudit:
           $ref: '#/components/schemas/UserAudit'
-    DataConnectionViewSourceInput:
+    DataConnectionViewUpdateDetails:
       type: object
+      description: Fields to update on a data connection view. Omitted fields retain their existing values.
       properties:
-        dataConnectionId:
+        name:
           type: string
-          description: ID of the source data connection
-        macro:
+          description: Name of the data connection view
+        query:
           type: string
-          description: Macro alias for the source data connection in the view query
-      required:
-      - dataConnectionId
-      - macro
+          description: SQL query for the data connection view
+        dataConnections:
+          type: array
+          description: Source data connections referenced by the view query
+          items:
+            $ref: '#/components/schemas/DataConnectionViewSourceInput'
     FieldConfiguration:
       type: object
       properties:
@@ -337,33 +414,6 @@ components:
           description: Indicates whether this field is a partition column
         partitionFieldConfig:
           $ref: '#/components/schemas/PartitionFieldConfig'
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
-    DataConnectionViews:
-      description: Paginated list of Data Connection Views
-      type: object
-      properties:
-        dataConnectionViews:
-          type: array
-          description: Data connection views for the current page
-          items:
-            $ref: '#/components/schemas/DataConnectionViewResponse'
-        limit:
-          type: integer
-          description: The number of data connection views returned per page
-        offset:
-          type: integer
-          description: The offset used for pagination
-        hasMore:
-          type: boolean
-          description: Whether there are more data connection views beyond this page
     DataConnectionViewDetails:
       type: object
       properties:
@@ -382,31 +432,11 @@ components:
       - name
       - query
       - dataConnections
-    ReturnObject:
+    DeleteResponse:
       type: object
       properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
+        success:
+          type: boolean
     DataConnectionViewField:
       type: object
       properties:
@@ -416,6 +446,15 @@ components:
         type:
           type: string
           description: Data type of the output field
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
     PartitionFieldConfig:
       type: object
       properties:
@@ -440,66 +479,9 @@ components:
           type: boolean
           default: false
           description: Indicates whether the partition field values are enforced for the CRQ run
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    DataConnectionViewSource:
-      type: object
-      properties:
-        dataConnectionId:
-          type: string
-          description: ID of the source data connection
-        dataConnectionName:
-          type: string
-          description: Name of the source data connection
-        macro:
-          type: string
-          description: Macro alias for the source data connection in the view query
-        dataSourceId:
-          type: string
-          description: ID of the data source for the source data connection
-        fieldConfigurations:
-          type: array
-          items:
-            $ref: '#/components/schemas/FieldConfiguration'
-    DataConnectionViewUpdateDetails:
-      type: object
-      description: Fields to update on a data connection view. Omitted fields retain their existing values.
-      properties:
-        name:
-          type: string
-          description: Name of the data connection view
-        query:
-          type: string
-          description: SQL query for the data connection view
-        dataConnections:
-          type: array
-          description: Source data connections referenced by the view query
-          items:
-            $ref: '#/components/schemas/DataConnectionViewSourceInput'
   responses:
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -516,8 +498,26 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

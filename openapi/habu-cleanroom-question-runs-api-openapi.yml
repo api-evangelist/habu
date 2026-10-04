@@ -499,21 +499,6 @@ components:
           type: integer
         status:
           type: string
-    CleanroomQuestionRunActivationSummary:
-      description: Model containing the Cleanroom Question Run Activation Summary
-      properties:
-        cleanroomQuestionRunId:
-          type: string
-        cleanroomQuestionRunName:
-          type: string
-        activationSummary:
-          type: array
-          items:
-            $ref: '#/components/schemas/ActivationSummary'
-    RunTableStats:
-      type: object
-      additionalProperties:
-        type: string
     QuestionRunStatus:
       description: Model containing the Cleanroom Question Run status details
       required:
@@ -531,116 +516,11 @@ components:
           example:
             detail1: Value1
             detail2: Value2
-    QuestionRunCreateParameters:
-      description: Model containing the Cleanroom Question Run parameters for a Create Run request
-      required:
-      - name
-      properties:
-        name:
-          type: string
-        parameters:
-          type: object
-          description: Key-value pairs for question parameters
-          additionalProperties:
-            type: string
-          example:
-            param1: Value1
-            param2: Value2
-    CleanroomQuestionRunPartitionParameter:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of Cleanroom Question Run Partition Parameter
-        value:
-          type: string
-          description: Value of Cleanroom Question Run Partition Parameter
-        dataType:
-          type: string
-          description: Data Type of Cleanroom Question Run Partition Parameter
-    CleanroomQuestionRunAuditDetails:
-      description: Model containing the Cleanroom Question Run Audit Details
-      properties:
-        cleanroomQuestionRunId:
-          type: string
-        auditDetails:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditDetails'
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    QuestionRunResultData:
-      description: Model containing the Cleanroom Question Run Result Data
-      properties:
-        metadata:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunTableMetadata'
-        stats:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunTableStats'
-        count:
-          type: integer
-        multipleOutputs:
-          type: array
-          items:
-            type: string
-    AuditDetails:
-      properties:
-        eventTime:
-          type: string
-          format: date-time
-        eventType:
-          type: string
-        message:
-          type: string
-        details:
-          additionalProperties:
-            type: object
-    RunTableMetadata:
-      type: object
-      properties:
-        fieldName:
-          type: string
-        dataType:
-          type: string
-        columnName:
-          type: string
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    QuestionRunsMetadata:
-      description: A list of Cleanroom Question Runs and their Metadata
+    CleanroomQuestionRunPartitionParameters:
+      description: A list of Cleanroom Question Run Partition Parameters
       type: array
       items:
-        $ref: '#/components/schemas/QuestionRunMetadata'
-    GetExplainPlanResponse:
-      type: object
-      description: Response containing the execution plan for a SQL cleanroom question run
-      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
-      properties:
-        success:
-          type: boolean
-          description: Whether the explain plan retrieval was successful
-        explainPlan:
-          type: string
-          description: When success is true, the execution plan details. When success is false, this field should be omitted or null.
-        errorMessage:
-          type: string
-          description: When success is false, details explaining why the explain plan could not be retrieved.
-      required:
-      - success
+        $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameter'
     QuestionRunMetadata:
       description: Model containing the Cleanroom Question Run Metadata
       properties:
@@ -701,14 +581,143 @@ components:
           type: string
         questionVersion:
           type: integer
-    CleanroomQuestionRunPartitionParameters:
-      description: A list of Cleanroom Question Run Partition Parameters
+    RunTableStats:
+      type: object
+      additionalProperties:
+        type: string
+    QuestionRunResultData:
+      description: Model containing the Cleanroom Question Run Result Data
+      properties:
+        metadata:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunTableMetadata'
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunTableStats'
+        count:
+          type: integer
+        multipleOutputs:
+          type: array
+          items:
+            type: string
+    RunTableMetadata:
+      type: object
+      properties:
+        fieldName:
+          type: string
+        dataType:
+          type: string
+        columnName:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    AuditDetails:
+      properties:
+        eventTime:
+          type: string
+          format: date-time
+        eventType:
+          type: string
+        message:
+          type: string
+        details:
+          additionalProperties:
+            type: object
+    QuestionRunCreateParameters:
+      description: Model containing the Cleanroom Question Run parameters for a Create Run request
+      required:
+      - name
+      properties:
+        name:
+          type: string
+        parameters:
+          type: object
+          description: Key-value pairs for question parameters
+          additionalProperties:
+            type: string
+          example:
+            param1: Value1
+            param2: Value2
+    QuestionRunsMetadata:
+      description: A list of Cleanroom Question Runs and their Metadata
       type: array
       items:
-        $ref: '#/components/schemas/CleanroomQuestionRunPartitionParameter'
+        $ref: '#/components/schemas/QuestionRunMetadata'
+    CleanroomQuestionRunPartitionParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of Cleanroom Question Run Partition Parameter
+        value:
+          type: string
+          description: Value of Cleanroom Question Run Partition Parameter
+        dataType:
+          type: string
+          description: Data Type of Cleanroom Question Run Partition Parameter
+    GetExplainPlanResponse:
+      type: object
+      description: Response containing the execution plan for a SQL cleanroom question run
+      x-class-extra-annotation: '@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)'
+      properties:
+        success:
+          type: boolean
+          description: Whether the explain plan retrieval was successful
+        explainPlan:
+          type: string
+          description: When success is true, the execution plan details. When success is false, this field should be omitted or null.
+        errorMessage:
+          type: string
+          description: When success is false, details explaining why the explain plan could not be retrieved.
+      required:
+      - success
+    CleanroomQuestionRunAuditDetails:
+      description: Model containing the Cleanroom Question Run Audit Details
+      properties:
+        cleanroomQuestionRunId:
+          type: string
+        auditDetails:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditDetails'
+    CleanroomQuestionRunActivationSummary:
+      description: Model containing the Cleanroom Question Run Activation Summary
+      properties:
+        cleanroomQuestionRunId:
+          type: string
+        cleanroomQuestionRunName:
+          type: string
+        activationSummary:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivationSummary'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
   responses:
-    PreconditionFailed:
-      description: Precondition Failed - a required precondition for the request has not been met
+    QuestionRunStatusUpdate:
+      description: Successfully sent the updated Cleanroom Question Run status
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -718,15 +727,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    QuestionRunStatusUpdate:
-      description: Successfully sent the updated Cleanroom Question Run status
       content:
         application/json:
           schema:
@@ -761,8 +761,8 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
+    PreconditionFailed:
+      description: Precondition Failed - a required precondition for the request has not been met
       content:
         application/json:
           schema:

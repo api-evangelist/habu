@@ -54,11 +54,6 @@ paths:
       - Organization Users
 components:
   schemas:
-    OrganizationUsers:
-      description: A list of Organization Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/OrganizationUser'
     ReturnObject:
       type: object
       properties:
@@ -69,14 +64,6 @@ components:
       required:
       - code
       - message
-    OrganizationUser:
-      type: object
-      properties:
-        roleName:
-          type: string
-          description: Name of the user role in the organization
-        user:
-          $ref: '#/components/schemas/User'
     User:
       type: object
       properties:
@@ -88,27 +75,22 @@ components:
           description: Name of the user
         email:
           type: string
+    OrganizationUsers:
+      description: A list of Organization Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/OrganizationUser'
+    OrganizationUser:
+      type: object
+      properties:
+        roleName:
+          type: string
+          description: Name of the user role in the organization
+        user:
+          $ref: '#/components/schemas/User'
   responses:
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -125,8 +107,26 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

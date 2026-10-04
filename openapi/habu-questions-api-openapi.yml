@@ -207,30 +207,6 @@ paths:
       - Questions
 components:
   schemas:
-    QuestionDataType:
-      description: Details about the data types used in the question
-      type: object
-      properties:
-        id:
-          type: string
-        macro:
-          type: string
-        datasetID:
-          type: string
-        importDataType:
-          $ref: '#/components/schemas/QuestionImportDataType'
-        dataSetTypeFields:
-          type: array
-          items:
-            $ref: '#/components/schemas/DataSetTypeField'
-    DataSetTypeField:
-      description: Fields associated with a specific data type
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
     QuestionCreationResponse:
       description: Model containing the response for a question creation request
       properties:
@@ -243,16 +219,6 @@ components:
         questionID:
           type: string
           description: The ID of the created question
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
     QuestionDetails:
       description: Detailed information about the question
       type: object
@@ -311,18 +277,38 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserListOutput'
-    Measure:
-      description: Metrics associated with the question
+    CreateQuestionSettings:
+      description: Settings for how the create question api will behave
+      type: object
+      properties:
+        queryValidation:
+          type: boolean
+          description: If true, the query will be validated before being saved
+    DeleteQuestionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was deleted successfully
+    QuestionUpdateResponse:
+      description: Model containing the response for a question update request
+      properties:
+        success:
+          type: boolean
+          description: Indicates if the question was created updated
+        message:
+          type: string
+          description: Message indicating what went wrong if the question was not created successfully
+        question:
+          $ref: '#/components/schemas/QuestionDetails'
+    DataSetTypeField:
+      description: Fields associated with a specific data type
       type: object
       properties:
         name:
           type: string
         type:
           type: string
-        isIdentity:
-          type: boolean
-        noise:
-          type: boolean
     Parameter:
       description: A parameter used within the question
       type: object
@@ -346,21 +332,6 @@ components:
         isSynced:
           type: boolean
           description: Parameter Sync Status
-    CreateQuestionSettings:
-      description: Settings for how the create question api will behave
-      type: object
-      properties:
-        queryValidation:
-          type: boolean
-          description: If true, the query will be validated before being saved
-    Dimension:
-      description: Dimensions used within the question
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
     Question:
       description: Model containing the Question details
       type: object
@@ -375,33 +346,29 @@ components:
           type: string
         settings:
           $ref: '#/components/schemas/CreateQuestionSettings'
-    QueryDetail:
-      description: A single query detail within the question
+    CleanRoomTypeRequest:
+      type: string
+      enum:
+      - Hybrid
+      - Snowflake
+      - Databricks
+      - Google
+      - AWS
+      - Facebook
+      - AMC
+      - ADH
+      - LinkedIn
+      - HabuConfidentialComputing
+    ReturnObject:
       type: object
       properties:
-        query:
+        code:
           type: string
-        cleanRoomType:
-          $ref: '#/components/schemas/CleanRoomTypeRequest'
-        queryLanguage:
-          type: string
-    QuestionUpdateResponse:
-      description: Model containing the response for a question update request
-      properties:
-        success:
-          type: boolean
-          description: Indicates if the question was created updated
         message:
           type: string
-          description: Message indicating what went wrong if the question was not created successfully
-        question:
-          $ref: '#/components/schemas/QuestionDetails'
-    DeleteQuestionResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Indicates if the question was deleted successfully
+      required:
+      - code
+      - message
     QuestionImportDataType:
       type: string
       enum:
@@ -446,20 +413,62 @@ components:
           type: string
         type:
           type: string
-    CleanRoomTypeRequest:
-      type: string
-      enum:
-      - Hybrid
-      - Snowflake
-      - Databricks
-      - Google
-      - AWS
-      - Facebook
-      - AMC
-      - ADH
-      - LinkedIn
-      - HabuConfidentialComputing
+    Measure:
+      description: Metrics associated with the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        isIdentity:
+          type: boolean
+        noise:
+          type: boolean
+    Dimension:
+      description: Dimensions used within the question
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+    QueryDetail:
+      description: A single query detail within the question
+      type: object
+      properties:
+        query:
+          type: string
+        cleanRoomType:
+          $ref: '#/components/schemas/CleanRoomTypeRequest'
+        queryLanguage:
+          type: string
+    QuestionDataType:
+      description: Details about the data types used in the question
+      type: object
+      properties:
+        id:
+          type: string
+        macro:
+          type: string
+        datasetID:
+          type: string
+        importDataType:
+          $ref: '#/components/schemas/QuestionImportDataType'
+        dataSetTypeFields:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataSetTypeField'
   responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -480,15 +489,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     InternalServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

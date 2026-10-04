@@ -192,47 +192,6 @@ paths:
       - Cleanroom Question Datasets
 components:
   schemas:
-    DatasetField:
-      type: object
-      properties:
-        datasetId:
-          type: string
-          description: Dataset ID
-        id:
-          type: string
-          description: Dataset Field ID
-        name:
-          type: string
-          description: Dataset Field Name
-        value:
-          type: string
-          description: Dataset Field Value
-        type:
-          type: string
-          description: Dataset Field Type
-    AssignCleanroomQuestionDatasetRequest:
-      type: object
-      properties:
-        organizationId:
-          type: string
-          description: ID of Organization ID to take ownership
-        macro:
-          type: string
-          description: name of Question Data Type
-    QuestionDataTypeOption:
-      type: object
-      properties:
-        dataTypeName:
-          type: string
-        datasetOptions:
-          type: array
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-              name:
-                type: string
     CleanRoomQuestionDataset:
       type: object
       properties:
@@ -285,11 +244,6 @@ components:
           items:
             $ref: '#/components/schemas/DatasetField'
           description: Dataset Fields
-    CleanRoomQuestionDatasets:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomQuestionDataset'
-      description: List of Cleanroom Question Datasets
     ReturnObject:
       type: object
       properties:
@@ -300,15 +254,39 @@ components:
       required:
       - code
       - message
-    CleanRoomStakeholder:
+    QuestionDataTypeOption:
+      type: object
+      properties:
+        dataTypeName:
+          type: string
+        datasetOptions:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+    CleanRoomStakeholders:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomStakeholder'
+      description: List of Cleanroom Stakeholders
+    AssignCleanroomQuestionDatasetRequest:
       type: object
       properties:
         organizationId:
           type: string
-        organizationName:
+          description: ID of Organization ID to take ownership
+        macro:
           type: string
-        ownership:
-          type: string
+          description: name of Question Data Type
+    CleanRoomQuestionDatasets:
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomQuestionDataset'
+      description: List of Cleanroom Question Datasets
     DatasetParameter:
       type: object
       properties:
@@ -326,32 +304,36 @@ components:
       items:
         $ref: '#/components/schemas/QuestionDataTypeOption'
       description: List of Cleanroom Question Data Type Options
-    CleanRoomStakeholders:
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomStakeholder'
-      description: List of Cleanroom Stakeholders
+    CleanRoomStakeholder:
+      type: object
+      properties:
+        organizationId:
+          type: string
+        organizationName:
+          type: string
+        ownership:
+          type: string
+    DatasetField:
+      type: object
+      properties:
+        datasetId:
+          type: string
+          description: Dataset ID
+        id:
+          type: string
+          description: Dataset Field ID
+        name:
+          type: string
+          description: Dataset Field Name
+        value:
+          type: string
+          description: Dataset Field Value
+        type:
+          type: string
+          description: Dataset Field Type
   responses:
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -368,8 +350,26 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

@@ -208,71 +208,7 @@ paths:
       tags:
       - Cleanroom Users
 components:
-  responses:
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Forbidden:
-      description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    ResourceConflict:
-      description: Conflict with the current state of the resource
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    NotFound:
-      description: The specified resource was not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    Unauthorized:
-      description: Authorization information was missing or invalid
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
   schemas:
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
     ReturnObject:
       type: object
       properties:
@@ -283,6 +219,42 @@ components:
       required:
       - code
       - message
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+        name:
+          type: string
+          description: Name of the user
+        email:
+          type: string
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    TimeAudit:
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
+          type: string
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
     CleanRoomUser:
       type: object
       properties:
@@ -300,41 +272,11 @@ components:
           $ref: '#/components/schemas/UserAudit'
         role:
           $ref: '#/components/schemas/CleanRoomRole'
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
-    CleanRoomUsers:
-      description: A list of Cleanroom Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomUser'
     DeleteResponse:
       type: object
       properties:
         success:
           type: boolean
-    CleanRoomRole:
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        cleanRoomId:
-          type: string
-        organizationId:
-          type: string
     AddCleanRoomUserRequest:
       type: object
       properties:
@@ -350,17 +292,75 @@ components:
         role:
           type: string
           description: Role that you want to assign the user
-    User:
+    CleanRoomUsers:
+      description: A list of Cleanroom Users and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomUser'
+    UserAudit:
       type: object
       properties:
-        id:
+        createdBy:
           type: string
-          description: User ID
-        name:
+          description: Identifier of the user who created the object
+        updatedBy:
           type: string
-          description: Name of the user
-        email:
-          type: string
+          description: Identifier of the user who last updated the object
+  responses:
+    Forbidden:
+      description: This action is not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    ResourceConflict:
+      description: Conflict with the current state of the resource
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    Unauthorized:
+      description: Authorization information was missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
   securitySchemes:
     application:
       type: oauth2

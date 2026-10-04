@@ -179,55 +179,6 @@ paths:
       - Cleanroom Exports
 components:
   schemas:
-    PartnerConfig:
-      type: object
-      properties:
-        ID:
-          type: string
-        name:
-          type: string
-        index:
-          type: integer
-          format: int32
-        type:
-          type: string
-        encrypted:
-          type: boolean
-    ExportJobRunByDate:
-      type: object
-      properties:
-        date:
-          type: string
-        organization:
-          type: string
-        jobRuns:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExportJobRun'
-    JobCount:
-      type: object
-      properties:
-        jobType:
-          type: string
-        count:
-          type: integer
-          format: int32
-          minimum: 0
-    TimeAudit:
-      type: object
-      properties:
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was last updated
-        deletedAt:
-          type: string
-          format: date-time
-          description: Timestamp for when the object was deleted (if applicable)
     CreateDataExportJobRequest:
       type: object
       properties:
@@ -243,82 +194,42 @@ components:
             $ref: '#/components/schemas/ExportJobParameter'
         cleanroomDatasetId:
           type: string
-    JobRunType:
-      type: string
-      enum:
-      - UNKNOWN_JOB_RUN_TYPE
-      - FULL_REFRESH
-      - INCREMENTAL
-    JobDetailParameter:
+    TimeAudit:
       type: object
       properties:
-        label:
+        createdAt:
           type: string
-        value:
+          format: date-time
+          description: Timestamp for when the object was created
+        updatedAt:
           type: string
-    ReturnObject:
-      type: object
-      properties:
-        code:
+          format: date-time
+          description: Timestamp for when the object was last updated
+        deletedAt:
           type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    ChangeJobStatusResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    ExportJobRun:
+          format: date-time
+          description: Timestamp for when the object was deleted (if applicable)
+    CreateDataExportJobResponse:
+      type: array
+      items:
+        type: string
+    JobDetails:
       type: object
       properties:
         id:
           type: string
-        jobId:
+        name:
           type: string
-        status:
-          $ref: '#/components/schemas/JobRunStatus'
-        submitTime:
-          type: string
-          format: date-time
-        startTime:
-          type: string
-          format: date-time
-        endTime:
-          type: string
-          format: date-time
-        totalRecords:
-          type: integer
-        consentedRecords:
-          type: integer
-        cumulativeRecords:
-          type: integer
-        sourceJobRunID:
-          type: string
-        jobRunType:
-          $ref: '#/components/schemas/JobRunType'
-        details:
-          $ref: '#/components/schemas/JobDetails'
-        errorMessage:
-          type: string
-    PicanmixType:
+        jobDetailParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/JobDetailParameter'
+    DataOutJobStatus:
       type: string
       enum:
-      - UNKNOWN_PICANMIX_TYPE
-      - USER_LIST
-      - OFFLINE_CONVERSIONS
-      - EXPORTS
-      - QUESTION_USER_LIST
-    ChangeJobStatusRequest:
-      type: object
-      required:
-      - status
-      properties:
-        status:
-          type: string
-          description: Target job status (ACTIVE or PAUSED).
+      - UNKNOWN_JOB_STATUS
+      - ACTIVE
+      - PAUSED
     DataExportJob:
       type: object
       properties:
@@ -351,101 +262,69 @@ components:
           format: date-time
         partnerAccountCrChannelStatus:
           type: string
-    DataOutJobStatus:
-      type: string
-      enum:
-      - UNKNOWN_JOB_STATUS
-      - ACTIVE
-      - PAUSED
-    PartnerConfigs:
-      type: array
-      items:
-        $ref: '#/components/schemas/PartnerConfig'
-    PrimageOrganizationCredential:
+    ListDataExportJobRunsResponse:
       type: object
       properties:
-        ID:
+        organization:
           type: string
-        name:
+        question:
           type: string
-        credentials:
+        jobRunsByDate:
           type: array
           items:
-            $ref: '#/components/schemas/PrimageCredential'
-    ExportJobParameter:
+            $ref: '#/components/schemas/ExportJobRunByDate'
+        exportDetailParameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobParameter'
+    JobCount:
       type: object
       properties:
-        name:
+        jobType:
+          type: string
+        count:
+          type: integer
+          format: int32
+          minimum: 0
+    JobDetailParameter:
+      type: object
+      properties:
+        label:
           type: string
         value:
           type: string
-    DeleteResponse:
+    ExportJobRun:
       type: object
       properties:
-        success:
-          type: boolean
-    PrimageCredential:
-      type: object
-      properties:
-        ID:
+        id:
           type: string
-        name:
+        jobId:
           type: string
-        value:
+        status:
+          $ref: '#/components/schemas/JobRunStatus'
+        submitTime:
           type: string
-    JobRunStatus:
-      type: string
-      enum:
-      - UNKNOWN_JOB_RUN_STATUS
-      - QUEUED
-      - PROCESSING
-      - COMPLETE
-      - FAILED
-      - PARTIALLY_FAILED
-      - THRESHOLD_WARNING
-      - NO_NEW_USERS
-    DataExportJobs:
-      type: array
-      items:
-        $ref: '#/components/schemas/DataExportJob'
-    PartnerAccount:
-      type: object
-      properties:
-        ID:
+          format: date-time
+        startTime:
           type: string
-        name:
+          format: date-time
+        endTime:
           type: string
-        organizationID:
+          format: date-time
+        totalRecords:
+          type: integer
+        consentedRecords:
+          type: integer
+        cumulativeRecords:
+          type: integer
+        sourceJobRunID:
           type: string
-        partner:
-          $ref: '#/components/schemas/Partner'
-        credential:
-          $ref: '#/components/schemas/PrimageOrganizationCredential'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        jobCount:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobCount'
-        latestJobRunStatusCount:
-          $ref: '#/components/schemas/LatestJobRunStatusCount'
-        configStatus:
-          $ref: '#/components/schemas/ConfigStatus'
+        jobRunType:
+          $ref: '#/components/schemas/JobRunType'
+        details:
+          $ref: '#/components/schemas/JobDetails'
         errorMessage:
           type: string
-        publicKey:
-          type: string
-    UserAudit:
-      type: object
-      properties:
-        createdBy:
-          type: string
-          description: Identifier of the user who created the object
-        updatedBy:
-          type: string
-          description: Identifier of the user who last updated the object
     Partner:
       type: object
       properties:
@@ -475,25 +354,49 @@ components:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/PartnerConfigs'
-    ListDataExportJobRunsResponse:
+    PartnerConfig:
       type: object
       properties:
-        organization:
+        ID:
           type: string
-        question:
+        name:
           type: string
-        jobRunsByDate:
+        index:
+          type: integer
+          format: int32
+        type:
+          type: string
+        encrypted:
+          type: boolean
+    PartnerAccount:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        organizationID:
+          type: string
+        partner:
+          $ref: '#/components/schemas/Partner'
+        credential:
+          $ref: '#/components/schemas/PrimageOrganizationCredential'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        jobCount:
           type: array
           items:
-            $ref: '#/components/schemas/ExportJobRunByDate'
-        exportDetailParameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/ExportJobParameter'
-    CreateDataExportJobResponse:
-      type: array
-      items:
-        type: string
+            $ref: '#/components/schemas/JobCount'
+        latestJobRunStatusCount:
+          $ref: '#/components/schemas/LatestJobRunStatusCount'
+        configStatus:
+          $ref: '#/components/schemas/ConfigStatus'
+        errorMessage:
+          type: string
+        publicKey:
+          type: string
     LatestJobRunStatusCount:
       type: object
       properties:
@@ -521,17 +424,41 @@ components:
           type: integer
           format: int32
           minimum: 0
-    JobDetails:
+    ReturnObject:
       type: object
       properties:
-        id:
+        code:
           type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    JobRunType:
+      type: string
+      enum:
+      - UNKNOWN_JOB_RUN_TYPE
+      - FULL_REFRESH
+      - INCREMENTAL
+    PartnerConfigs:
+      type: array
+      items:
+        $ref: '#/components/schemas/PartnerConfig'
+    ExportJobParameter:
+      type: object
+      properties:
         name:
           type: string
-        jobDetailParameters:
-          type: array
-          items:
-            $ref: '#/components/schemas/JobDetailParameter'
+        value:
+          type: string
+    ChangeJobStatusRequest:
+      type: object
+      required:
+      - status
+      properties:
+        status:
+          type: string
+          description: Target job status (ACTIVE or PAUSED).
     ConfigStatus:
       type: string
       enum:
@@ -540,7 +467,89 @@ components:
       - CONFIG_CONFIGURED
       - CONFIG_FAILED
       - CONFIG_AVAILABLE
+    ExportJobRunByDate:
+      type: object
+      properties:
+        date:
+          type: string
+        organization:
+          type: string
+        jobRuns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExportJobRun'
+    PicanmixType:
+      type: string
+      enum:
+      - UNKNOWN_PICANMIX_TYPE
+      - USER_LIST
+      - OFFLINE_CONVERSIONS
+      - EXPORTS
+      - QUESTION_USER_LIST
+    ChangeJobStatusResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    PrimageCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        value:
+          type: string
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+    DataExportJobs:
+      type: array
+      items:
+        $ref: '#/components/schemas/DataExportJob'
+    JobRunStatus:
+      type: string
+      enum:
+      - UNKNOWN_JOB_RUN_STATUS
+      - QUEUED
+      - PROCESSING
+      - COMPLETE
+      - FAILED
+      - PARTIALLY_FAILED
+      - THRESHOLD_WARNING
+      - NO_NEW_USERS
+    UserAudit:
+      type: object
+      properties:
+        createdBy:
+          type: string
+          description: Identifier of the user who created the object
+        updatedBy:
+          type: string
+          description: Identifier of the user who last updated the object
+    PrimageOrganizationCredential:
+      type: object
+      properties:
+        ID:
+          type: string
+        name:
+          type: string
+        credentials:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrimageCredential'
   responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -570,15 +579,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     InternalServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

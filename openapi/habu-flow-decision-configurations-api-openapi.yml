@@ -144,160 +144,6 @@ paths:
       - Flow Decision Configurations
 components:
   schemas:
-    CreateOrUpdateFlowDecisionConfigurationResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-        decisionNodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/DecisionNodeInput'
-        cleanRoomOverride:
-          type: boolean
-          description: True if config was written to the CRF-scoped override tier; false if written to the base tier
-    DeleteFlowDecisionConfigurationResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-        deletedNodesCount:
-          type: integer
-    EdgeReferenceInput:
-      type: object
-      required:
-      - parentNodeIdentifier
-      - childNodeIdentifier
-      properties:
-        parentNodeIdentifier:
-          type: string
-          description: Parent node UUID or label
-        childNodeIdentifier:
-          type: string
-          description: Child node UUID or label
-    DecisionNodeResponse:
-      type: object
-      properties:
-        nodeID:
-          type: string
-        nodeLabel:
-          type: string
-        conditionLogic:
-          type: string
-        conditions:
-          type: array
-          items:
-            $ref: '#/components/schemas/DecisionConditionResponse'
-        retryConfig:
-          $ref: '#/components/schemas/RetryConfigResponse'
-        conditionsFailAction:
-          type: string
-          description: Action when conditions fail (RETRY_WITH_PARAMETERS or END_FLOW)
-        gatedEdges:
-          $ref: '#/components/schemas/GatedEdgesResponse'
-    NodeConfigurationResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        nodeID:
-          type: string
-        name:
-          type: string
-        configIndex:
-          type: integer
-        parameters:
-          type: object
-          additionalProperties:
-            type: string
-    GatedEdgesInput:
-      type: object
-      properties:
-        truePath:
-          type: array
-          items:
-            $ref: '#/components/schemas/EdgeReferenceInput'
-        falsePath:
-          type: array
-          items:
-            $ref: '#/components/schemas/EdgeReferenceInput'
-    DecisionConditionResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        sourceNodeID:
-          type: string
-        fieldName:
-          type: string
-        operator:
-          type: string
-        expectedValue:
-          type: string
-        expectedValueEnd:
-          type: string
-        expectedValues:
-          type: array
-          items:
-            type: string
-        aggregation:
-          type: string
-        conditionOrder:
-          type: integer
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    NodeConfigurationInput:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Configuration ID (omit for create, include for update)
-        name:
-          type: string
-        configIndex:
-          type: integer
-        parameters:
-          type: object
-          additionalProperties:
-            type: string
-    GetFlowDecisionConfigurationResponse:
-      type: object
-      properties:
-        decisionNodes:
-          type: array
-          items:
-            $ref: '#/components/schemas/DecisionNodeResponse'
-        cleanRoomOverride:
-          type: boolean
-          description: True if the config was resolved from the CRF-scoped override tier; false if from the base tier
-    EdgeReferenceResponse:
-      type: object
-      properties:
-        edgeID:
-          type: string
-        parentNodeID:
-          type: string
-        childNodeID:
-          type: string
-    GatedEdgesResponse:
-      type: object
-      properties:
-        truePath:
-          type: array
-          items:
-            $ref: '#/components/schemas/EdgeReferenceResponse'
     RetryConfigResponse:
       type: object
       properties:
@@ -313,6 +159,43 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NodeConfigurationResponse'
+    RetryConfigInput:
+      type: object
+      properties:
+        maxRetries:
+          type: integer
+          default: 0
+        retryNodeIdentifiers:
+          type: array
+          items:
+            type: string
+          description: Node UUIDs or labels for retry
+        configurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodeConfigurationInput'
+    GatedEdgesResponse:
+      type: object
+      properties:
+        truePath:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdgeReferenceResponse'
+    NodeConfigurationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        nodeID:
+          type: string
+        name:
+          type: string
+        configIndex:
+          type: integer
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
     CreateOrUpdateFlowDecisionConfigurationRequest:
       type: object
       required:
@@ -325,6 +208,16 @@ components:
         cleanRoomOverride:
           type: boolean
           description: If true, write to the CRF-scoped override tier; if false, write to the base tier
+    GetFlowDecisionConfigurationResponse:
+      type: object
+      properties:
+        decisionNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionNodeResponse'
+        cleanRoomOverride:
+          type: boolean
+          description: True if the config was resolved from the CRF-scoped override tier; false if from the base tier
     DecisionConditionInput:
       type: object
       required:
@@ -353,21 +246,6 @@ components:
         conditionOrder:
           type: integer
           default: 0
-    RetryConfigInput:
-      type: object
-      properties:
-        maxRetries:
-          type: integer
-          default: 0
-        retryNodeIdentifiers:
-          type: array
-          items:
-            type: string
-          description: Node UUIDs or labels for retry
-        configurations:
-          type: array
-          items:
-            $ref: '#/components/schemas/NodeConfigurationInput'
     DecisionNodeInput:
       type: object
       required:
@@ -392,7 +270,138 @@ components:
           default: RETRY_WITH_PARAMETERS
         gatedEdges:
           $ref: '#/components/schemas/GatedEdgesInput'
+    EdgeReferenceResponse:
+      type: object
+      properties:
+        edgeID:
+          type: string
+        parentNodeID:
+          type: string
+        childNodeID:
+          type: string
+    GatedEdgesInput:
+      type: object
+      properties:
+        truePath:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdgeReferenceInput'
+        falsePath:
+          type: array
+          items:
+            $ref: '#/components/schemas/EdgeReferenceInput'
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CreateOrUpdateFlowDecisionConfigurationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        decisionNodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionNodeInput'
+        cleanRoomOverride:
+          type: boolean
+          description: True if config was written to the CRF-scoped override tier; false if written to the base tier
+    DecisionNodeResponse:
+      type: object
+      properties:
+        nodeID:
+          type: string
+        nodeLabel:
+          type: string
+        conditionLogic:
+          type: string
+        conditions:
+          type: array
+          items:
+            $ref: '#/components/schemas/DecisionConditionResponse'
+        retryConfig:
+          $ref: '#/components/schemas/RetryConfigResponse'
+        conditionsFailAction:
+          type: string
+          description: Action when conditions fail (RETRY_WITH_PARAMETERS or END_FLOW)
+        gatedEdges:
+          $ref: '#/components/schemas/GatedEdgesResponse'
+    DeleteFlowDecisionConfigurationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        deletedNodesCount:
+          type: integer
+    EdgeReferenceInput:
+      type: object
+      required:
+      - parentNodeIdentifier
+      - childNodeIdentifier
+      properties:
+        parentNodeIdentifier:
+          type: string
+          description: Parent node UUID or label
+        childNodeIdentifier:
+          type: string
+          description: Child node UUID or label
+    NodeConfigurationInput:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Configuration ID (omit for create, include for update)
+        name:
+          type: string
+        configIndex:
+          type: integer
+        parameters:
+          type: object
+          additionalProperties:
+            type: string
+    DecisionConditionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        sourceNodeID:
+          type: string
+        fieldName:
+          type: string
+        operator:
+          type: string
+        expectedValue:
+          type: string
+        expectedValueEnd:
+          type: string
+        expectedValues:
+          type: array
+          items:
+            type: string
+        aggregation:
+          type: string
+        conditionOrder:
+          type: integer
   responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -413,15 +422,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     InternalServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:

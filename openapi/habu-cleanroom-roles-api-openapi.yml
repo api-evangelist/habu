@@ -84,27 +84,35 @@ paths:
       tags:
       - Cleanroom Roles
 components:
+  schemas:
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    CleanRoomRoles:
+      description: A list of Cleanroom Roles
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomRole'
   responses:
-    InternalServerError:
-      description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
     Forbidden:
       description: This action is not allowed
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
@@ -121,6 +129,15 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     Unauthorized:
       description: Authorization information was missing or invalid
       content:
@@ -130,32 +147,15 @@ components:
         application/xml:
           schema:
             $ref: '#/components/schemas/ReturnObject'
-  schemas:
-    ReturnObject:
-      type: object
-      properties:
-        code:
-          type: string
-        message:
-          type: string
-      required:
-      - code
-      - message
-    CleanRoomRoles:
-      description: A list of Cleanroom Roles
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomRole'
-    CleanRoomRole:
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        cleanRoomId:
-          type: string
-        organizationId:
-          type: string
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
   securitySchemes:
     application:
       type: oauth2

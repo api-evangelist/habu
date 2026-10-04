@@ -436,40 +436,17 @@ paths:
       - Cleanroom Partners
 components:
   schemas:
-    CleanRoomPartnerResponse:
+    User:
       type: object
       properties:
         id:
           type: string
-          description: Cleanroom Partner ID
-        partnerOrganizationId:
-          type: string
-          description: Cleanroom Partner Organization ID
+          description: User ID
         name:
           type: string
-          description: Partner Organization name
-        userCount:
-          type: integer
-          description: CleanRoom User count
-        cleanRoomUsers:
-          $ref: '#/components/schemas/CleanRoomUsers'
-    CleanRoomUser:
-      type: object
-      properties:
-        id:
+          description: Name of the user
+        email:
           type: string
-          description: Cleanroom User ID
-        cleanRoomId:
-          type: string
-          description: Cleanroom ID
-        user:
-          $ref: '#/components/schemas/User'
-        timeAudit:
-          $ref: '#/components/schemas/TimeAudit'
-        userAudit:
-          $ref: '#/components/schemas/UserAudit'
-        role:
-          $ref: '#/components/schemas/CleanRoomRole'
     TimeAudit:
       type: object
       properties:
@@ -485,36 +462,20 @@ components:
           type: string
           format: date-time
           description: Timestamp for when the object was deleted (if applicable)
-    CleanRoomRole:
-      properties:
-        id:
-          type: string
-        name:
-          type: string
-        cleanRoomId:
-          type: string
-        organizationId:
-          type: string
-    ReturnObject:
+    CleanRoomRoles:
+      description: A list of Cleanroom Roles
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomRole'
+    AddCleanRoomPartnerRequest:
       type: object
       properties:
-        code:
+        partnerAdminEmail:
           type: string
-        message:
+          description: Cleanroom Partner Admin's Email
+        invitationNote:
           type: string
-      required:
-      - code
-      - message
-    CleanRoomUsers:
-      description: A list of Cleanroom Users and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomUser'
-    CleanRoomPartners:
-      description: A list of Cleanroom Partners and their details
-      type: array
-      items:
-        $ref: '#/components/schemas/CleanRoomPartnerResponse'
+          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
     InvitationDetail:
       type: object
       properties:
@@ -543,25 +504,65 @@ components:
           $ref: '#/components/schemas/InviteStatus'
         timeAudit:
           $ref: '#/components/schemas/TimeAudit'
-    AddCleanRoomPartnerRequest:
-      type: object
-      properties:
-        partnerAdminEmail:
-          type: string
-          description: Cleanroom Partner Admin's Email
-        invitationNote:
-          type: string
-          default: We are making some insights based on our data available to you in a Clean Room and would like to invite you to take a look. Getting started is super easy.
-    DeleteResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-    CleanRoomRoles:
-      description: A list of Cleanroom Roles
+    CleanRoomUsers:
+      description: A list of Cleanroom Users and their details
       type: array
       items:
-        $ref: '#/components/schemas/CleanRoomRole'
+        $ref: '#/components/schemas/CleanRoomUser'
+    CleanRoomRole:
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        cleanRoomId:
+          type: string
+        organizationId:
+          type: string
+    ReturnObject:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+      - code
+      - message
+    CleanRoomUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom User ID
+        cleanRoomId:
+          type: string
+          description: Cleanroom ID
+        user:
+          $ref: '#/components/schemas/User'
+        timeAudit:
+          $ref: '#/components/schemas/TimeAudit'
+        userAudit:
+          $ref: '#/components/schemas/UserAudit'
+        role:
+          $ref: '#/components/schemas/CleanRoomRole'
+    CleanRoomPartnerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Cleanroom Partner ID
+        partnerOrganizationId:
+          type: string
+          description: Cleanroom Partner Organization ID
+        name:
+          type: string
+          description: Partner Organization name
+        userCount:
+          type: integer
+          description: CleanRoom User count
+        cleanRoomUsers:
+          $ref: '#/components/schemas/CleanRoomUsers'
     InviteStatus:
       type: string
       enum:
@@ -572,6 +573,16 @@ components:
       - REQUEST_SENT_ADMIN
       - IN_PROGRESS
       - DECLINED_BY_ADMIN
+    CleanRoomPartners:
+      description: A list of Cleanroom Partners and their details
+      type: array
+      items:
+        $ref: '#/components/schemas/CleanRoomPartnerResponse'
+    DeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
     UserAudit:
       type: object
       properties:
@@ -581,18 +592,16 @@ components:
         updatedBy:
           type: string
           description: Identifier of the user who last updated the object
-    User:
-      type: object
-      properties:
-        id:
-          type: string
-          description: User ID
-        name:
-          type: string
-          description: Name of the user
-        email:
-          type: string
   responses:
+    BadRequest:
+      description: Bad Request - Incorrect syntax or request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/ReturnObject'
     NotFound:
       description: The specified resource was not found
       content:
@@ -622,15 +631,6 @@ components:
             $ref: '#/components/schemas/ReturnObject'
     InternalServerError:
       description: Internal Server Error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/ReturnObject'
-    BadRequest:
-      description: Bad Request - Incorrect syntax or request
       content:
         application/json:
           schema:
